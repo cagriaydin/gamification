@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "894062225492",
+    "firebase_url": "https://yorglassik.firebaseio.com",
+    "project_id": "yorglassik",
+    "storage_bucket": "yorglassik.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:894062225492:android:33213d334db45f3770a5c1",
+        "android_client_info": {
+          "package_name": "com.crossplatformers.yorglassIK"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "894062225492-eb0not0l508cvisk01pnipjp86u4l3nb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBx7R8CWSv-PWvXWVnxVLyPbG0haBXVOxs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "894062225492-eb0not0l508cvisk01pnipjp86u4l3nb.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "894062225492-c24986o41hhnpu62c5dt1pi9da2l9p57.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.crossplatformers.yorglassIK"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
