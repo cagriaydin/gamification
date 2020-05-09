@@ -26,7 +26,7 @@ class _MyAppState extends State<MyApp> {
   bool hasConnection = false;
   @override
   void initState() {
-    AuthenticationService().signOut();
+    // AuthenticationService().signOut();
     listenConnection();
     AuthenticationService.instance.onAuthStateChanged.listen((event) {
       if (event != null) {
