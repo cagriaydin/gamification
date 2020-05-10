@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:yorglass_ik/pages/bottom_navigation.dart';
 import 'package:yorglass_ik/services/authentication-service.dart';
-import 'package:yorglass_ik/shared/custom_box_shadow.dart';
 
 class HomePage extends StatefulWidget {
   @override
