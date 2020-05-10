@@ -16,13 +16,6 @@ class _HomePageState extends State<HomePage> {
   }
 
   @override
-  void initState() {
-    Future.delayed(Duration(seconds: 2)).then((value) => openMenu());
-    // TODO: implement initState
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
