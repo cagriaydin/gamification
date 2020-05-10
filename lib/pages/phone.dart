@@ -116,6 +116,7 @@ class _PhoneValidationPageState extends State<PhoneValidationPage> {
                                     textAlign: TextAlign.end,
                                     autofocus: false,
                                     controller: registrationNumberController,
+                                    
                                     onTap: () async {
                                       await Future.delayed(
                                           Duration(milliseconds: 400));
