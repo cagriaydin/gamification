@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:yorglass_ik/pages/feed.dart';
 import 'package:yorglass_ik/widgets/bottom.navi.bar.dart';
 
 class BottomNavigation extends StatefulWidget {
@@ -33,26 +34,6 @@ class _BottomNavigationState extends State<BottomNavigation> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        leading: GestureDetector(
-          onTap: () => widget.openMenu(),
-          child: Icon(
-            Icons.menu,
-            color: Color(0xff2DB3C1),
-            size: 40,
-          ),
-        ),
-        title: Center(child: Image.asset("assets/yorglass.png")),
-        actions: <Widget>[
-          Icon(
-            Icons.search,
-            color: Theme.of(context).primaryColor,
-            size: 30,
-          ),
-        ],
-      ),
       bottomNavigationBar: BottomNavyBar(
         selectedIndex: _selectedIndex,
         backgroundColor: Colors.white,
@@ -86,7 +67,9 @@ class _BottomNavigationState extends State<BottomNavigation> {
           }
         },
         children: <Widget>[
-          Container(),
+          FeedPage(
+            menuFunction: widget.openMenu,
+          ),
           Container(),
         ],
       ),

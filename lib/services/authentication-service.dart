@@ -12,7 +12,7 @@ class AuthenticationService {
     code: '20407',
     name: 'ANIL ÇELEBİ',
     branchName: 'ATAŞEHİR',
-    image: 'https://lh3.googleusercontent.com/proxy/veLJiq2sZ7100dmk3mqabSkB9rO5ixyVFIztg4_fCSMXdRQJ3fg0JXbk9rkUDSfo86h_8V2mTDTwl4HDTkMPzCEFRGnYwpRMz0UHxzIXebgWwCImdg',
+    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTvweLJdoaNaEthMNJKQhDgqGbad9FT-qiXiqAMTgcAbWgyLuJO&usqp=CAU',
   );
 
   Future<VerificationStatusEnum> signIn(AuthCredential credential) async {

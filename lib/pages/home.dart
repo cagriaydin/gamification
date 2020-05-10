@@ -97,29 +97,39 @@ class _HomePageState extends State<HomePage> {
               height: showMenu ? height * 0.8 : height,
               top: showMenu ? height * 0.1 : 0,
               left: showMenu ? width * 0.6 : 0,
-              child: GestureDetector(
-                onTap: () {
-                  if (showMenu) openMenu();
-                },
-                child: Container(
-                  child: BottomNavigation(
-                    openMenu: openMenu,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    boxShadow: [
-                      BoxShadow(
-                        spreadRadius: 20,
-                        color: Color(0xffD1F7FB),
-                        offset: new Offset(0, 0),
-                        blurRadius: 20,
-                      ),
-                    ],
-                  ),
+              child: Container(
+                child: BottomNavigation(
+                  openMenu: openMenu,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(
+                      spreadRadius: 20,
+                      color: Color(0xffD1F7FB),
+                      offset: new Offset(0, 0),
+                      blurRadius: 20,
+                    ),
+                  ],
                 ),
               ),
               duration: Duration(milliseconds: 200),
             ),
+            showMenu
+                ? Positioned(
+                    width: width,
+                    height: showMenu ? height * 0.8 : height,
+                    top: showMenu ? height * 0.1 : 0,
+                    left: showMenu ? width * 0.6 : 0,
+                    child: GestureDetector(
+                      onTap: () {
+                        openMenu();
+                      },
+                      child: Container(
+                        color: Colors.transparent,
+                      ),
+                    ))
+                : SizedBox(height: 0),
           ],
         ),
       ),
