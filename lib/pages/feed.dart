@@ -66,6 +66,10 @@ class _FeedPageState extends State<FeedPage> {
           children: <Widget>[
             Flexible(
               child: ContentSelector(
+                onChange: (ContentOption currentContentOption) {
+                  //TODO: Change list here
+                  print(currentContentOption.title);
+                },
                 options: _options,
               ),
             )
