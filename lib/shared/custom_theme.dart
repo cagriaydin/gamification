@@ -19,11 +19,9 @@ ThemeData customTheme = ThemeData.light().copyWith(
   accentColor: secondaryDark,
   primaryColor: lightPrimary,
   primaryColorLight: secondaryLight,
-  cardColor: darkCard,
   highlightColor: onPrimary,
   iconTheme: IconThemeData(color: secondaryLight),
-  floatingActionButtonTheme:
-      FloatingActionButtonThemeData(backgroundColor: onPrimary),
+  floatingActionButtonTheme: FloatingActionButtonThemeData(backgroundColor: onPrimary),
   primaryIconTheme: IconThemeData.fallback().copyWith(color: secondaryLight),
   colorScheme: ColorScheme.fromSwatch(
     backgroundColor: lightPrimary,
@@ -35,11 +33,8 @@ ThemeData customTheme = ThemeData.light().copyWith(
     primarySwatch: Colors.blue,
   ),
   textTheme: ThemeData.light().textTheme.copyWith(
-        title: ThemeData.light().textTheme.title.copyWith(
-              color: title,
-              fontSize: 24.0,
-              fontWeight: FontWeight.bold
-            ),
+        body1: ThemeData.light().textTheme.title.copyWith(color: title, fontSize: 18.0, fontWeight: FontWeight.normal),
+        title: ThemeData.light().textTheme.title.copyWith(color: title, fontSize: 24.0, fontWeight: FontWeight.bold),
         subhead: ThemeData.light().textTheme.subhead.copyWith(
               color: subTitle,
             ),
