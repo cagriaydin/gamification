@@ -2,19 +2,33 @@ import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:yorglass_ik/models/content_option.dart';
 import 'package:yorglass_ik/models/user.dart';
+import 'package:yorglass_ik/pages/leader_board_page.dart';
+import 'package:yorglass_ik/widgets/blur_background_image.dart';
+import 'package:yorglass_ik/widgets/content_selector.dart';
+import 'package:yorglass_ik/widgets/flag_avatar.dart';
 import 'package:yorglass_ik/widgets/gradient_text.dart';
+import 'package:yorglass_ik/widgets/leader_board.dart';
+import 'package:yorglass_ik/widgets/build_user_info.dart';
 
 class ProfilePage extends StatelessWidget {
   final Function menuFunction;
   final User user;
+  final PageController pageController = PageController(initialPage: 0);
 
-  const ProfilePage({Key key, @required this.menuFunction, @required this.user})
+  final List<ContentOption> options = [
+    ContentOption(title: 'Liderler', isActive: true),
+    ContentOption(title: 'Ödüllerim'),
+  ];
+
+  ProfilePage({Key key, @required this.menuFunction, @required this.user})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final padding = MediaQuery.of(context).padding;
+    final size = MediaQuery.of(context).size;
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
@@ -39,14 +53,20 @@ class ProfilePage extends StatelessWidget {
               child: Column(
                 children: [
                   SizedBox(
-                    height: 32,
+                    height: size.height < 600 ? 0 : padding.top,
+                  ),
+                  SizedBox(
+                    height: 16,
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       GradientText('%75'),
-                      UserInfo(user: user),
+                      BuildUserInfo(
+                        user: user,
+                        radius: size.height < 700 ? 50 : 70,
+                      ),
                       Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -62,118 +82,99 @@ class ProfilePage extends StatelessWidget {
           ),
           Flexible(
             flex: 3,
-            child: Container(
-              child: Text('below'),
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                Flexible(
+                  child: Padding(
+                    padding: size.height < 600
+                        ? const EdgeInsets.all(8)
+                        : const EdgeInsets.all(16.0),
+                    child: ContentSelector(
+                      onChange: onContentSelectorChange,
+                      options: options,
+                      contentSelectorType: ContentSelectorType.tab,
+                    ),
+                  ),
+                ),
+                Expanded(
+                  flex: 5,
+                  child: PageView(
+                    physics: NeverScrollableScrollPhysics(),
+                    controller: pageController,
+                    children: [
+                      Column(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Flexible(
+                            child: GestureDetector(
+                              onTap: () => pushLeaderBoardPage(context),
+                              child: LeaderBoard(
+                                users: [user, user, user],
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: OutlineButton(
+                              child: Text('Lider Tablosunu Gör'),
+                              textColor: Color(0xff2DB3C1),
+                              borderSide: BorderSide(
+                                color: Color(0xff2DB3C1),
+                                style: BorderStyle.solid,
+                                width: 1,
+                              ),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(20))),
+                              onPressed: () => pushLeaderBoardPage(context),
+                            ),
+                          )
+                        ],
+                      ),
+                      Column(
+                        children: [
+                          Text('Liderler'),
+                          FlagAvatar(
+                            imageUrl: user.image,
+                            point: 300,
+                            rank: 1,
+                          )
+                        ],
+                      ),
+                    ],
+                  ),
+                )
+              ],
             ),
           ),
         ],
       ),
     );
   }
-}
 
-class UserInfo extends StatelessWidget {
-  const UserInfo({
-    Key key,
-    @required this.user,
-  }) : super(key: key);
-
-  final User user;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Stack(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: CircleAvatar(
-                radius: 70,
-                backgroundImage: NetworkImage(user.image),
-              ),
+  Future pushLeaderBoardPage(BuildContext context) {
+    return Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (BuildContext context) {
+          return LeaderBoardPage(
+            leaderBoard: LeaderBoard(
+              users: [user, user, user],
             ),
-            Positioned.fill(
-              child: CircularPercentIndicator(
-                radius: 160.0,
-                lineWidth: 10.0,
-                animation: true,
-                percent: 0.75,
-                circularStrokeCap: CircularStrokeCap.round,
-                backgroundColor: Colors.white,
-                progressColor: Color(0xff2DB3C1),
-                curve: Curves.easeOut,
-              ),
-            ),
-          ],
-        ),
-        Text(
-          user.name,
-          textAlign: TextAlign.center,
-          style:
-              TextStyle(color: Color(0xff26315F), fontWeight: FontWeight.w500),
-        ),
-        Row(
-          children: [
-            Image.asset(
-              "assets/blue_pin.png",
-              scale: 4,
-            ),
-            Text(
-              user.branchName,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                  color: Color(0xff3FC1C9), fontWeight: FontWeight.w300),
-            ),
-          ],
-        )
-      ],
+          );
+        },
+      ),
     );
   }
-}
 
-class BlurBackgroundImage extends StatelessWidget {
-  const BlurBackgroundImage({
-    Key key,
-    this.child,
-    this.imageUrl,
-  }) : super(key: key);
-
-  final Widget child;
-  final String imageUrl;
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      fit: StackFit.expand,
-      children: [
-        Opacity(
-          opacity: .3,
-          child: Image.network(
-            imageUrl,
-            fit: BoxFit.fill,
-          ),
-        ),
-        BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
-          child: Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  Colors.white.withOpacity(.3),
-                  Colors.white.withOpacity(.1),
-                  Colors.white.withOpacity(.3),
-                ],
-              ),
-            ),
-          ),
-        ),
-        child,
-      ],
-    );
+  onContentSelectorChange(ContentOption contentOption) {
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) => pageController.animateToPage(
+              contentOption.title == 'Liderler' ? 0 : 1,
+              duration: Duration(milliseconds: 300),
+              curve: Curves.easeOut,
+            ));
   }
 }

@@ -29,8 +29,8 @@ class GradientText extends StatelessWidget {
           ).createShader(Rect.fromLTWH(
             0.0,
             0.0,
-            300.0,
-            300.0,
+            225.0,
+            225.0,
           )),
       ),
     );
