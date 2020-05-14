@@ -64,6 +64,7 @@ class ProfilePage extends StatelessWidget {
                     children: [
                       GradientText('%75'),
                       BuildUserInfo(
+                        showPercentage: true,
                         user: user,
                         radius: size.height < 700 ? 50 : 70,
                       ),

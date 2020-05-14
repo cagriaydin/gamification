@@ -7,10 +7,12 @@ class BuildUserInfo extends StatelessWidget {
     Key key,
     @required this.user,
     this.radius,
+    this.showPercentage = false,
   }) : super(key: key);
 
   final User user;
   final double radius;
+  final bool showPercentage;
 
   @override
   Widget build(BuildContext context) {
@@ -27,18 +29,19 @@ class BuildUserInfo extends StatelessWidget {
                 backgroundImage: NetworkImage(user.image),
               ),
             ),
-            Positioned.fill(
-              child: CircularPercentIndicator(
-                radius: (radius + 70) ?? 160.0,
-                lineWidth: 10.0,
-                animation: true,
-                percent: 0.75,
-                circularStrokeCap: CircularStrokeCap.round,
-                backgroundColor: Colors.white,
-                progressColor: Color(0xff2DB3C1),
-                curve: Curves.easeOut,
+            if (showPercentage)
+              Positioned.fill(
+                child: CircularPercentIndicator(
+                  radius: (radius + 70) ?? 160.0,
+                  lineWidth: 10.0,
+                  animation: true,
+                  percent: 0.75,
+                  circularStrokeCap: CircularStrokeCap.round,
+                  backgroundColor: Colors.white,
+                  progressColor: Color(0xff2DB3C1),
+                  curve: Curves.easeOut,
+                ),
               ),
-            ),
           ],
         ),
         Text(
