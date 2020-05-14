@@ -3,11 +3,12 @@ import 'package:yorglass_ik/models/user.dart';
 import 'package:yorglass_ik/pages/feed.dart';
 import 'package:yorglass_ik/pages/profile.dart';
 import 'package:yorglass_ik/widgets/bottom.navi.bar.dart';
+import 'package:yorglass_ik/widgets/custom_drawer/custom_drawer.dart';
 
 class BottomNavigation extends StatefulWidget {
-  final Function openMenu;
+  final GlobalKey<CustomDrawerState> drawerController;
 
-  BottomNavigation({this.openMenu});
+  BottomNavigation({this.drawerController});
 
   @override
   _BottomNavigationState createState() => _BottomNavigationState();
@@ -64,6 +65,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
         ],
       ),
       body: PageView(
+        physics: NeverScrollableScrollPhysics(),
         controller: _pageController,
         onPageChanged: (index) {
           setState(() => _selectedIndex = index);
@@ -73,10 +75,10 @@ class _BottomNavigationState extends State<BottomNavigation> {
         },
         children: <Widget>[
           FeedPage(
-            menuFunction: widget.openMenu,
+            menuFunction: toggleDrawer,
           ),
           ProfilePage(
-            menuFunction: widget.openMenu,
+            menuFunction: toggleDrawer,
             user: User(
               point: 300,
               name: 'Ramazan Demir',
@@ -89,5 +91,9 @@ class _BottomNavigationState extends State<BottomNavigation> {
         ],
       ),
     );
+  }
+
+  toggleDrawer() {
+    widget.drawerController.currentState.toggle();
   }
 }
