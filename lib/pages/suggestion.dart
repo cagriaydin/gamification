@@ -14,8 +14,8 @@ class SuggestionPage extends StatefulWidget {
 class _SuggestionPageState extends State<SuggestionPage> {
   Suggestion suggestion;
 
-  TextEditingController titleController = new TextEditingController();
-  TextEditingController descriptionController = new TextEditingController();
+  final TextEditingController titleController = TextEditingController();
+  final TextEditingController descriptionController = TextEditingController();
 
   final color = Color(0xFF2FB4C2);
 
@@ -210,7 +210,7 @@ class _SuggestionPageState extends State<SuggestionPage> {
         descriptionController.text.length >= 10) {
       suggestion.title = titleController.text;
       suggestion.description = descriptionController.text;
-      SuggestionRepository().sendSuggestion(suggestion);
+      SuggestionRepository.instance.sendSuggestion(suggestion);
     }
     return;
   }
