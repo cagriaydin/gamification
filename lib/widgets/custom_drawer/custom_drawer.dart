@@ -42,9 +42,16 @@ class CustomDrawerState extends State<CustomDrawer>
     super.initState();
   }
 
-  toggle() => animationController.isDismissed
-      ? animationController.forward()
-      : animationController.reverse();
+  toggle() {
+    if (animationController.isDismissed) {
+      isOpen = false;
+    } else {
+      isOpen = true;
+    }
+    return animationController.isDismissed
+        ? animationController.forward()
+        : animationController.reverse();
+  }
 
   void openDrawer() {
     isOpen = true;
@@ -84,7 +91,7 @@ class CustomDrawerState extends State<CustomDrawer>
                     ..translate(slide)
                     ..scale(scale),
                   alignment: Alignment.centerLeft,
-                  child: isOpen
+                  child: !isOpen
                       ? GestureDetector(
                           behavior: HitTestBehavior.opaque,
                           onTap: () => closeDrawer(),
