@@ -1,14 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:yorglass_ik/repositories/feed-repository.dart';
+import 'package:yorglass_ik/widgets/feed-widget.dart';
 
 class FeedPage extends StatefulWidget {
   final Function menuFunction;
   FeedPage({this.menuFunction});
+  List<FeedContent> feedList = new List<FeedContent>();
 
   @override
   _FeedPageState createState() => _FeedPageState();
 }
 
 class _FeedPageState extends State<FeedPage> {
+  var feedList = getFeed().map((feedItem) {
+    return new FeedContent(
+      feedItem: feedItem,
+      isLiked: false,
+    );
+  }).toList();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -66,7 +75,12 @@ class _FeedPageState extends State<FeedPage> {
                   ],
                 )
               ],
-            )
+            ),
+            Expanded(
+              child: ListView(
+                children: feedList,
+              ),
+            ),
           ],
         ),
       ),
