@@ -42,25 +42,11 @@ class CustomDrawerState extends State<CustomDrawer>
     super.initState();
   }
 
-  toggle() {
-    if (animationController.isDismissed) {
-      isOpen = false;
-    } else {
-      isOpen = true;
-    }
-    return animationController.isDismissed
-        ? animationController.forward()
-        : animationController.reverse();
-  }
-
-  void openDrawer() {
-    isOpen = true;
-    animationController.forward();
-  }
-
-  void closeDrawer() {
-    isOpen = false;
-    animationController.reverse();
+  @override
+  void dispose() {
+    print('CustomDrawerState disposed');
+    animationController.dispose();
+    super.dispose();
   }
 
   @override
@@ -106,6 +92,27 @@ class CustomDrawerState extends State<CustomDrawer>
         ),
       ),
     );
+  }
+
+  toggle() {
+    if (animationController.isDismissed) {
+      isOpen = false;
+    } else {
+      isOpen = true;
+    }
+    return animationController.isDismissed
+        ? animationController.forward()
+        : animationController.reverse();
+  }
+
+  void openDrawer() {
+    isOpen = true;
+    animationController.forward();
+  }
+
+  void closeDrawer() {
+    isOpen = false;
+    animationController.reverse();
   }
 
   void onHorizontalDragStart(DragStartDetails details) {
