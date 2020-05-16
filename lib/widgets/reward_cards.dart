@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:yorglass_ik/models/reward.dart';
 import 'package:yorglass_ik/pages/rewards_page.dart';
 import 'package:yorglass_ik/widgets/blur_widget.dart';
 import 'package:yorglass_ik/widgets/flag_avatar.dart';
 
 class RewardCards extends StatelessWidget {
+  final Reward reward;
+
+  const RewardCards({Key key, @required this.reward}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     final double cardPadding = 32.0;
@@ -71,12 +76,39 @@ class RewardCards extends StatelessWidget {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(8)),
                 gradient: getGradient(),
+                boxShadow: [
+                  BoxShadow(
+                    offset: Offset(-2, 2),
+                    spreadRadius: 1,
+                    blurRadius: 2,
+                    color: const Color(0xff1A8EA7).withOpacity(.2),
+                  ),
+                ],
               ),
               child: BlurWidget(
-                backgroundChild: FlagAvatar(
-                  point: 500,
-                  imageUrl:
-                      'https://vrl-eu-cdn.wetransfer.net/ivise/eyJwaXBlbGluZSI6W1sic3JnYiIse31dLFsiYXV0b19vcmllbnQiLHt9XSxbImdlb20iLHsiZ2VvbWV0cnlfc3RyaW5nIjoiNTEyeDUxMj4ifV0sWyJmb3JjZV9qcGdfb3V0Iix7InF1YWxpdHkiOjg1fV0sWyJzaGFycGVuIix7InJhZGl1cyI6MC43NSwic2lnbWEiOjAuNX1dLFsiZXhwaXJlX2FmdGVyIix7InNlY29uZHMiOjYwNDgwMH1dXSwic3JjX3VybCI6InMzOi8vd2V0cmFuc2Zlci1ldS1wcm9kLW91dGdvaW5nL2U2NjQ4MGMzOGY1OTUxOTc2ZDQ0MjRjZjc3NGViMDhlMjAyMDA1MTMxMDUzNTkvYmFmNmIxOWU4MjJlOTc3ZmZiMzJhNDg3MTg4ZGNlMTA5ODcwZDYxYSJ9/24d49e9ef8cb5f1be34bbe1cfd228e6cbb7a247f26aa702ec2b8268bfadadc0f',
+                backgroundChild: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    FlagAvatar(
+                      point: reward.point,
+                      imageUrl: reward.image,
+                    ),
+                    Positioned(
+                      child: Column(
+                        children: [
+                          Icon(Icons.favorite),
+                          Text(
+                            reward.likeCount.toString(),
+                            style: TextStyle(
+                              color: Colors.white,
+                            ),
+                          )
+                        ],
+                      ),
+                      bottom: 16,
+                      right: 8,
+                    ),
+                  ],
                 ),
                 child: Container(),
               ),

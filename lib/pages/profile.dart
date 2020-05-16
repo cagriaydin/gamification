@@ -1,18 +1,16 @@
 import 'dart:ui';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:yorglass_ik/models/content_option.dart';
+import 'package:yorglass_ik/models/reward.dart';
 import 'package:yorglass_ik/models/user.dart';
 import 'package:yorglass_ik/pages/leader_board_page.dart';
 import 'package:yorglass_ik/pages/rewards_page.dart';
 import 'package:yorglass_ik/widgets/blur_background_image.dart';
-import 'package:yorglass_ik/widgets/blur_widget.dart';
+import 'package:yorglass_ik/widgets/build_user_info.dart';
 import 'package:yorglass_ik/widgets/content_selector.dart';
-import 'package:yorglass_ik/widgets/flag_avatar.dart';
 import 'package:yorglass_ik/widgets/gradient_text.dart';
 import 'package:yorglass_ik/widgets/leader_board.dart';
-import 'package:yorglass_ik/widgets/build_user_info.dart';
 import 'package:yorglass_ik/widgets/reward_cards.dart';
 
 class ProfilePage extends StatelessWidget {
@@ -65,7 +63,7 @@ class ProfilePage extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      GradientText('%75'),
+                      GradientText('%' + user.percentage.toString()),
                       BuildUserInfo(
                         showPercentage: true,
                         user: user,
@@ -139,7 +137,15 @@ class ProfilePage extends StatelessWidget {
                       ),
                       Column(
                         children: [
-                          Flexible(child: RewardCards()),
+                          Flexible(
+                            child: RewardCards(
+                              reward: Reward(
+                                point: 25000,
+                                image:
+                                    'https://i.picsum.photos/id/0/5616/3744.jpg',
+                              ),
+                            ),
+                          ),
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: OutlineButton(

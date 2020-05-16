@@ -16,6 +16,8 @@ class User {
   String branchName;
   String code;
   String image;
+
+  int percentage;
   int point;
   List<String> likedFeeds;
   List<String> deletedFeeds;
@@ -24,6 +26,7 @@ class User {
     this.id,
     @required this.name,
     @required this.point,
+    @required this.percentage,
     @required this.branchName,
     @required this.code,
     @required this.image,
@@ -34,7 +37,8 @@ class User {
   User copyWith({
     String id,
     String name,
-    String point,
+    int point,
+    int percentage,
     String branchName,
     String code,
     String image,
@@ -45,6 +49,7 @@ class User {
         id: id ?? this.id,
         name: name ?? this.name,
         point: point ?? this.point,
+        percentage: percentage ?? this.percentage,
         branchName: branchName ?? this.branchName,
         code: code ?? this.code,
         image: image ?? this.image,
@@ -56,6 +61,7 @@ class User {
         id: json["id"] == null ? null : json["id"],
         name: json["name"] == null ? null : json["name"],
         point: json["point"] == null ? null : json["point"],
+        percentage: json["percentage"] == null ? null : json["percentage"],
         branchName: json["branchName"] == null ? null : json["branchName"],
         code: json["code"] == null ? null : json["code"],
         image: json["image"] == null ? null : json["image"],
@@ -67,6 +73,7 @@ class User {
         id: snapshot.data["id"] == null ? null : snapshot.data["id"],
         name: snapshot.data["name"] == null ? null : snapshot.data["name"],
         point: snapshot.data["point"] == null ? null : snapshot.data["point"],
+        percentage: snapshot.data["percentage"] == null ? null : snapshot.data["percentage"],
         branchName: snapshot.data["branchName"] == null ? null : snapshot.data["branchName"],
         code: snapshot.data["code"] == null ? null : snapshot.data["code"],
         image: snapshot.data["image"] == null ? null : snapshot.data["image"],
@@ -78,6 +85,7 @@ class User {
         "id": id == null ? null : id,
         "name": name == null ? null : name,
         "point": point == null ? null : point,
+        "percentage": percentage == null ? null : percentage,
         "branchName": branchName == null ? null : branchName,
         "code": code == null ? null : code,
         "image": image == null ? null : image,
