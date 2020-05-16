@@ -6,10 +6,12 @@ class OutcomeButton extends StatelessWidget {
     GlobalKey key,
     @required this.text,
     @required this.action,
+    this.color,
   }) : super(key: key);
 
   final String text;
   final Function action;
+  final Color color;
 
   @override
   Widget build(BuildContext context) {
@@ -17,18 +19,18 @@ class OutcomeButton extends StatelessWidget {
       child: GestureDetector(
         onTap: () => action(),
         child: Container(
-          width: MediaQuery.of(context).size.width - 100,
+          width: MediaQuery.of(context).size.width - 150,
           decoration: BoxDecoration(
             color: Colors.transparent,
             borderRadius: BorderRadius.circular(21.5),
             boxShadow: [
               CustomBoxShadow(
-                  color: Theme.of(context).primaryColorDark,
+                  color: color ?? Theme.of(context).primaryColorDark,
                   offset: new Offset(1, 3),
                   blurRadius: 3.0,
                   blurStyle: BlurStyle.outer),
               CustomBoxShadow(
-                  color: Theme.of(context).primaryColorDark,
+                  color: color ?? Theme.of(context).primaryColorDark,
                   offset: new Offset(-1, 3),
                   blurRadius: 3.0,
                   blurStyle: BlurStyle.outer),
@@ -45,9 +47,8 @@ class OutcomeButton extends StatelessWidget {
               child: Text(
                 text,
                 style: TextStyle(
-                  color: Color(0xFF26315F),
+                  color: color ?? Color(0xFF26315F),
                   fontSize: 20,
-                  fontStyle: FontStyle.italic,
                 ),
               ),
             ),

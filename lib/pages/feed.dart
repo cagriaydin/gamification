@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:yorglass_ik/repositories/feed-repository.dart';
 import 'package:yorglass_ik/widgets/feed-widget.dart';
+import 'package:yorglass_ik/models/content_option.dart';
+import 'package:yorglass_ik/widgets/content_selector.dart';
 
 class FeedPage extends StatefulWidget {
   final Function menuFunction;
+
   FeedPage({this.menuFunction});
   List<FeedContent> feedList = new List<FeedContent>();
 
@@ -18,6 +21,24 @@ class _FeedPageState extends State<FeedPage> {
       isLiked: false,
     );
   }).toList();
+  var _options = [
+    ContentOption(
+      title: "Duyurular",
+      count: 15,
+      isActive: true,
+    ),
+    ContentOption(
+      title: "Webinar",
+      count: 10,
+      isActive: false,
+    ),
+    ContentOption(
+      title: "B2B",
+      count: 10,
+      isActive: false,
+    ),
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -52,29 +73,14 @@ class _FeedPageState extends State<FeedPage> {
         padding: const EdgeInsets.only(top: 16),
         child: Column(
           children: <Widget>[
-            Row(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                Column(
-                  children: <Widget>[
-                    Text("Duyurular"),
-                    Text("15 İleti"),
-                  ],
-                ),
-                Column(
-                  children: <Widget>[
-                    Text("Webinarlar"),
-                    Text("10 İleti"),
-                  ],
-                ),
-                Column(
-                  children: <Widget>[
-                    Text("B2B"),
-                    Text("10 İleti"),
-                  ],
-                )
-              ],
+            Flexible(
+              child: ContentSelector(
+                onChange: (ContentOption currentContentOption) {
+                  //TODO: Change list here
+                  print(currentContentOption.title);
+                },
+                options: _options,
+              ),
             ),
             Expanded(
               child: ListView(
