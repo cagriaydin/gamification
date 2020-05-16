@@ -7,18 +7,27 @@ import 'package:yorglass_ik/models/authentication-status.dart';
 import 'package:yorglass_ik/models/user.dart';
 
 class AuthenticationService {
-  static final instance = FirebaseAuth.instance;
+  static final firebaseAuthInstance = FirebaseAuth.instance;
+
+  AuthenticationService._privateConstructor();
+
+  static final AuthenticationService _instance =
+      AuthenticationService._privateConstructor();
+
+  static AuthenticationService get instance => _instance;
+
   static User verifiedUser = User(
     code: '20407',
     name: 'ANIL ÇELEBİ',
     branchName: 'ATAŞEHİR',
-    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTvweLJdoaNaEthMNJKQhDgqGbad9FT-qiXiqAMTgcAbWgyLuJO&usqp=CAU',
+    image:
+        'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTvweLJdoaNaEthMNJKQhDgqGbad9FT-qiXiqAMTgcAbWgyLuJO&usqp=CAU',
   );
 
   Future<VerificationStatusEnum> signIn(AuthCredential credential) async {
     AuthResult result;
     try {
-      result = await instance.signInWithCredential(credential);
+      result = await firebaseAuthInstance.signInWithCredential(credential);
       if (result != null) {
         return VerificationStatusEnum.ok;
       }
@@ -36,36 +45,47 @@ class AuthenticationService {
     }
   }
 
-  Future<VerificationStatusEnum> signInWithOTP(String smsCode, String verId) async {
-    AuthCredential _authCredential = PhoneAuthProvider.getCredential(verificationId: verId, smsCode: smsCode);
+  Future<VerificationStatusEnum> signInWithOTP(
+      String smsCode, String verId) async {
+    AuthCredential _authCredential = PhoneAuthProvider.getCredential(
+        verificationId: verId, smsCode: smsCode);
     VerificationStatusEnum status = await signIn(_authCredential);
     return status;
   }
 
   signOut() async {
-    await instance.signOut();
+    await firebaseAuthInstance.signOut();
   }
 
-  verifyPhone(String phoneNo, BuildContext context, Function callback(AuthenticationStatus authenticationStatus)) async {
+  verifyPhone(String phoneNo, BuildContext context,
+      Function callback(AuthenticationStatus authenticationStatus)) async {
     AuthenticationStatus status;
     final PhoneVerificationCompleted verified = (AuthCredential auth) {
-      status = AuthenticationStatus(authenticationEnum: AuthenticationEnum.success);
+      status =
+          AuthenticationStatus(authenticationEnum: AuthenticationEnum.success);
       callback(status);
     };
-    final PhoneVerificationFailed verificationFailed = (AuthException authException) {
-      status = AuthenticationStatus(authenticationEnum: AuthenticationEnum.fail, exceptionCode: authException.code);
+    final PhoneVerificationFailed verificationFailed =
+        (AuthException authException) {
+      status = AuthenticationStatus(
+          authenticationEnum: AuthenticationEnum.fail,
+          exceptionCode: authException.code);
       callback(status);
     };
     final PhoneCodeSent smsSent = (String verId, [int forceResend]) {
-      status = AuthenticationStatus(authenticationEnum: AuthenticationEnum.smsSent, verificationId: verId);
+      status = AuthenticationStatus(
+          authenticationEnum: AuthenticationEnum.smsSent,
+          verificationId: verId);
       callback(status);
     };
     final PhoneCodeAutoRetrievalTimeout autoTimeout = (String verId) {
-      status = AuthenticationStatus(authenticationEnum: AuthenticationEnum.timeout, verificationId: verId);
+      status = AuthenticationStatus(
+          authenticationEnum: AuthenticationEnum.timeout,
+          verificationId: verId);
       callback(status);
     };
 
-    await instance.verifyPhoneNumber(
+    await firebaseAuthInstance.verifyPhoneNumber(
         phoneNumber: phoneNo,
         timeout: const Duration(
           seconds: 30,

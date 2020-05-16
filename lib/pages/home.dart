@@ -91,7 +91,7 @@ class _HomePageState extends State<HomePage> {
                 ),
                 Container(
                   child: GestureDetector(
-                    onTap: () => AuthenticationService().signOut(),
+                    onTap: () => AuthenticationService.instance.signOut(),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.start,

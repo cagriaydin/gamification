@@ -197,7 +197,7 @@ class _ValidationCodePageState extends State<ValidationCodePage> {
     setState(() {
       hasLoading = true;
     });
-    VerificationStatusEnum status = await AuthenticationService()
+    VerificationStatusEnum status = await AuthenticationService.instance
         .signInWithOTP(codeController.text, widget.verificationId);
     switch (status) {
       case VerificationStatusEnum.ok:

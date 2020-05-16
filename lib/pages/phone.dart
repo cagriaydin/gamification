@@ -116,7 +116,6 @@ class _PhoneValidationPageState extends State<PhoneValidationPage> {
                                     textAlign: TextAlign.end,
                                     autofocus: false,
                                     controller: registrationNumberController,
-                                    
                                     onTap: () async {
                                       await Future.delayed(
                                           Duration(milliseconds: 400));
@@ -201,8 +200,8 @@ class _PhoneValidationPageState extends State<PhoneValidationPage> {
       setState(() {
         isLoading = true;
       });
-      await AuthenticationService().verifyPhone('+90' + phoneNumber, context,
-          (status) {
+      await AuthenticationService.instance
+          .verifyPhone('+90' + phoneNumber, context, (status) {
         if (status.authenticationEnum == AuthenticationEnum.smsSent) {
           setState(() {
             isLoading = false;
