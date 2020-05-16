@@ -42,11 +42,17 @@ class _ContentSelectorState extends State<ContentSelector>
 
   @override
   void initState() {
+//    bool hasActiveElement = false;
     widget.options.forEach((element) {
       if (element.isActive) {
+//        hasActiveElement = true;
         onChangeCallback(element);
       }
     });
+//    if (!hasActiveElement) {
+//      widget.options.first.isActive = true;
+//        onChangeCallback(widget.options.first);
+//    }
     super.initState();
   }
 

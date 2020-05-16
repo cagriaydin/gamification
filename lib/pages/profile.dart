@@ -5,12 +5,15 @@ import 'package:flutter/material.dart';
 import 'package:yorglass_ik/models/content_option.dart';
 import 'package:yorglass_ik/models/user.dart';
 import 'package:yorglass_ik/pages/leader_board_page.dart';
+import 'package:yorglass_ik/pages/rewards_page.dart';
 import 'package:yorglass_ik/widgets/blur_background_image.dart';
+import 'package:yorglass_ik/widgets/blur_widget.dart';
 import 'package:yorglass_ik/widgets/content_selector.dart';
 import 'package:yorglass_ik/widgets/flag_avatar.dart';
 import 'package:yorglass_ik/widgets/gradient_text.dart';
 import 'package:yorglass_ik/widgets/leader_board.dart';
 import 'package:yorglass_ik/widgets/build_user_info.dart';
+import 'package:yorglass_ik/widgets/reward_cards.dart';
 
 class ProfilePage extends StatelessWidget {
   final Function menuFunction;
@@ -135,7 +138,27 @@ class ProfilePage extends StatelessWidget {
                         ],
                       ),
                       Column(
-                        children: [Text('Liderler'), RewardCards()],
+                        children: [
+                          Flexible(child: RewardCards()),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: OutlineButton(
+                              child: Text('Ödülleri Gör'),
+                              textColor: Color(0xff2DB3C1),
+                              borderSide: BorderSide(
+                                color: Color(0xff2DB3C1),
+                                style: BorderStyle.solid,
+                                width: 1,
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(20),
+                                ),
+                              ),
+                              onPressed: () => pushRewardsPage(context),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
@@ -163,6 +186,17 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
+  Future pushRewardsPage(BuildContext context) {
+    return Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (BuildContext context) {
+          return RewardsPage();
+        },
+      ),
+    );
+  }
+
   onContentSelectorChange(ContentOption contentOption) {
     WidgetsBinding.instance
         .addPostFrameCallback((_) => pageController.animateToPage(
@@ -170,84 +204,5 @@ class ProfilePage extends StatelessWidget {
               duration: Duration(milliseconds: 300),
               curve: Curves.easeOut,
             ));
-  }
-}
-
-class RewardCards extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    final double cardPadding = 32.0;
-    final size = MediaQuery.of(context).size;
-    final theme = Theme.of(context);
-
-    final card = Container(
-      width: size.width / 2.2,
-      height: size.width / 2.2,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(8)),
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            theme.highlightColor,
-            theme.highlightColor,
-          ],
-        ),
-      ),
-      child: FlagAvatar(point: 500,imageUrl: 'https://picsum.photos/id/1/200/300'),
-    );
-
-    return Stack(
-      children: [
-        Positioned(
-          top: cardPadding + 30,
-          left: cardPadding,
-          child: Transform.scale(
-            scale: 0.8,
-            child: Container(
-              width: size.width / 2.2,
-              height: size.width / 2.2,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(8)),
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Colors.black,
-                    Colors.grey,
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ),
-        Positioned(
-          top: cardPadding + 16,
-          left: cardPadding,
-          child: Transform.scale(
-            scale: 0.9,
-            child: Container(
-              width: size.width / 2.2,
-              height: size.width / 2.2,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(8)),
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Colors.blueGrey,
-                    Colors.lightBlueAccent,
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ),
-        Padding(
-          padding: EdgeInsets.all(cardPadding),
-          child: card,
-        ),
-      ],
-    );
   }
 }
