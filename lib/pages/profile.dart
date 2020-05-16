@@ -135,14 +135,7 @@ class ProfilePage extends StatelessWidget {
                         ],
                       ),
                       Column(
-                        children: [
-                          Text('Liderler'),
-                          FlagAvatar(
-                            imageUrl: user.image,
-                            point: 300,
-                            rank: 1,
-                          )
-                        ],
+                        children: [Text('Liderler'), RewardCards()],
                       ),
                     ],
                   ),
@@ -177,5 +170,84 @@ class ProfilePage extends StatelessWidget {
               duration: Duration(milliseconds: 300),
               curve: Curves.easeOut,
             ));
+  }
+}
+
+class RewardCards extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final double cardPadding = 32.0;
+    final size = MediaQuery.of(context).size;
+    final theme = Theme.of(context);
+
+    final card = Container(
+      width: size.width / 2.2,
+      height: size.width / 2.2,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.all(Radius.circular(8)),
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            theme.highlightColor,
+            theme.highlightColor,
+          ],
+        ),
+      ),
+      child: FlagAvatar(point: 500,imageUrl: 'https://picsum.photos/id/1/200/300'),
+    );
+
+    return Stack(
+      children: [
+        Positioned(
+          top: cardPadding + 30,
+          left: cardPadding,
+          child: Transform.scale(
+            scale: 0.8,
+            child: Container(
+              width: size.width / 2.2,
+              height: size.width / 2.2,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(8)),
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Colors.black,
+                    Colors.grey,
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+        Positioned(
+          top: cardPadding + 16,
+          left: cardPadding,
+          child: Transform.scale(
+            scale: 0.9,
+            child: Container(
+              width: size.width / 2.2,
+              height: size.width / 2.2,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(8)),
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Colors.blueGrey,
+                    Colors.lightBlueAccent,
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.all(cardPadding),
+          child: card,
+        ),
+      ],
+    );
   }
 }

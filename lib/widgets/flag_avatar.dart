@@ -41,29 +41,30 @@ class FlagAvatar extends StatelessWidget {
                   'assets/crown.png',
                   scale: 1.4,
                 ),
-              Positioned(
-                right: 8,
-                top: 6,
-                child: Container(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(rank.toString()),
+              if (rank != null)
+                Positioned(
+                  right: 8,
+                  top: 6,
+                  child: Container(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(rank.toString()),
+                    ),
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                              color: Color(0xff26315F),
+                              blurRadius: 2,
+                              offset: Offset(0, 4)),
+                          BoxShadow(
+                              color: Color(0xff2DB3C1),
+                              blurRadius: 2,
+                              offset: Offset(0, 2))
+                        ]),
                   ),
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                            color: Color(0xff26315F),
-                            blurRadius: 2,
-                            offset: Offset(0, 4)),
-                        BoxShadow(
-                            color: Color(0xff2DB3C1),
-                            blurRadius: 2,
-                            offset: Offset(0, 2))
-                      ]),
-                ),
-              )
+                )
             ],
           ),
         ],
