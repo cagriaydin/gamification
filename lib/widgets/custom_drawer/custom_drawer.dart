@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 
 class CustomDrawer extends StatefulWidget {
   /// You should pass a [Scaffold] to build your page
-  final Builder bodyBuilder;
+  final Widget bodyBuilder;
 
   /// This is the Drawer you will build
-  final Builder drawerBuilder;
+  final Widget drawerBuilder;
 
   const CustomDrawer({
     Key key,
@@ -77,13 +77,11 @@ class CustomDrawerState extends State<CustomDrawer>
                     ..translate(slide)
                     ..scale(scale),
                   alignment: Alignment.centerLeft,
-                  child: !isOpen
-                      ? GestureDetector(
-                          behavior: HitTestBehavior.opaque,
-                          onTap: () => closeDrawer(),
-                          child: widget.bodyBuilder,
-                        )
-                      : widget.bodyBuilder,
+                  child: GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: () => !isOpen ? closeDrawer() : null,
+                    child: widget.bodyBuilder,
+                  ),
                 ),
               ],
             );
