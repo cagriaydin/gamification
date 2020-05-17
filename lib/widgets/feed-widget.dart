@@ -1,17 +1,16 @@
-import 'dart:convert';
-
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:yorglass_ik/models/feed-item.dart';
-import 'package:yorglass_ik/repositories/image-repository.dart';
+import 'package:yorglass_ik/repositories/feed-repository.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:yorglass_ik/widgets/image_widget.dart';
 
 class FeedContent extends StatefulWidget {
   final FeedItem feedItem;
   bool isLiked = false;
+  final Function deleteItem;
 
-  FeedContent({Key key, this.feedItem, this.isLiked}) : super(key: key);
+  FeedContent({Key key, this.feedItem, this.deleteItem, this.isLiked}) : super(key: key);
 
   @override
   _FeedContentState createState() => _FeedContentState();
@@ -39,8 +38,8 @@ class _FeedContentState extends State<FeedContent> {
                 child: FittedBox(
                   fit: BoxFit.fitWidth,
                   child: ImageWidget(
-                          id: widget.feedItem.imageId,
-                        ),
+                    id: widget.feedItem.imageId,
+                  ),
                 ),
               ),
             ),
@@ -121,7 +120,7 @@ class _FeedContentState extends State<FeedContent> {
                 color: Colors.white,
                 icon: Icon(Icons.close),
                 onPressed: () {
-                  print("CLOSE BUTTON IS CLICKED");
+                  FeedRepository.instance.deleteFeed(widget.feedItem.id).then((value) => widget.deleteItem());
                 },
               ),
             ),
@@ -134,10 +133,14 @@ class _FeedContentState extends State<FeedContent> {
                     color: Colors.pink,
                     icon: widget.isLiked ? Icon(Icons.favorite) : Icon(Icons.favorite_border),
                     onPressed: () {
-                      setState(() {
-                        !widget.isLiked ? widget.isLiked = true : widget.isLiked = false;
-                      });
-                      print("LIKE BUTTON IS CLICKED");
+                      FeedRepository.instance.changeLike(widget.feedItem.id).then(
+                            (value) => setState(
+                              () {
+                                !widget.isLiked ? widget.feedItem.likeCount++ : widget.feedItem.likeCount--;
+                                !widget.isLiked ? widget.isLiked = true : widget.isLiked = false;
+                              },
+                            ),
+                          );
                     },
                   ),
                   Padding(

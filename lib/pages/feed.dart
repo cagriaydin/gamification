@@ -91,6 +91,11 @@ class _FeedPageState extends State<FeedPage> {
                         .map((feedItem) => FeedContent(
                               feedItem: feedItem,
                               isLiked: AuthenticationService.verifiedUser.likedFeeds.contains(feedItem.id),
+                              deleteItem: () {
+                                setState(() {
+                                  feedItemList.remove(feedItem);
+                                });
+                              },
                             ))
                         .toList()
                     : [],

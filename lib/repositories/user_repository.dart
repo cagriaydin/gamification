@@ -36,9 +36,9 @@ class UserRepository {
       List<String> likedFeeds = [];
       results.forEach((element) {
         if (element["operation"] == 0) {
-          deletedFeeds.add(element["id"]);
+          deletedFeeds.add(element["feedid"]);
         } else {
-          likedFeeds.add(element["id"]);
+          likedFeeds.add(element["feedid"]);
         }
       });
       user.likedFeeds = likedFeeds;
