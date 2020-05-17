@@ -1,35 +1,31 @@
-
-
 import 'dart:convert';
-import 'package:flutter/cupertino.dart';
-import 'package:yorglass_ik/enums/feed-item-type.dart';
 
 FeedItem feedItemFromJson(String str) => FeedItem.fromJson(json.decode(str));
 
 String feedItemToJson(FeedItem data) => json.encode(data.toJson());
 
 class FeedItem {
-    final String id;
-    final String title;
-    final String description;
-    final DateTime date;
-    int likeCount;
-    final FeedItemType itemType;
-    final int imageId;
-    final String url;
+  final String id;
+  final String title;
+  final String description;
+  final DateTime date;
+  int likeCount;
+  final String itemType;
+  final String imageId;
+  final String url;
 
-    FeedItem({
-        this.id,
-        this.title,
-        this.description,
-        this.date,
-        this.likeCount,
-        this.itemType,
-        this.imageId,
-        this.url,
-    });
+  FeedItem({
+    this.id,
+    this.title,
+    this.description,
+    this.date,
+    this.likeCount,
+    this.itemType,
+    this.imageId,
+    this.url,
+  });
 
-    factory FeedItem.fromJson(Map<String, dynamic> json) => FeedItem(
+  factory FeedItem.fromJson(Map<String, dynamic> json) => FeedItem(
         id: json["id"],
         title: json["title"],
         description: json["description"],
@@ -38,9 +34,9 @@ class FeedItem {
         itemType: json["itemType"],
         imageId: json["imageId"],
         url: json["url"],
-    );
+      );
 
-    Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toJson() => {
         "id": id,
         "title": title,
         "description": description,
@@ -49,7 +45,7 @@ class FeedItem {
         "itemType": itemType,
         "imageId": imageId,
         "url": url,
-    };
+      };
 }
 
 // {

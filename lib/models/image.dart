@@ -12,7 +12,7 @@ String imageToJson(Image data) => json.encode(data.toMap());
 class Image {
   String id;
   String base64;
-  String code;
+  int code;
   String base64Prefix;
   String suffix;
   String alt;
