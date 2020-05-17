@@ -13,6 +13,7 @@ class ImageWidget extends StatefulWidget {
 
 class _ImageWidgetState extends State<ImageWidget> {
   String base64;
+
   @override
   void initState() {
     ImageRepository.instance.getImage(widget.id).then((value) => setState(() => base64 = value.base64));
@@ -20,9 +21,21 @@ class _ImageWidgetState extends State<ImageWidget> {
   }
 
   @override
+  void didUpdateWidget(ImageWidget oldWidget) {
+    ImageRepository.instance.getImage(widget.id).then((value) => setState(() => base64 = value.base64));
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return base64 == null
         ? Container(
+            padding: EdgeInsets.fromLTRB(
+              MediaQuery.of(context).size.width / 2 - 30,
+              0,
+              MediaQuery.of(context).size.width / 2 - 30,
+              50,
+            ),
             child: Center(
               child: CircularProgressIndicator(
                 backgroundColor: Colors.white70,

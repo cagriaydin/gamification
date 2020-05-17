@@ -1,17 +1,16 @@
-import 'dart:convert';
-
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:yorglass_ik/models/feed-item.dart';
 import 'package:yorglass_ik/repositories/feed-repository.dart';
-import 'package:yorglass_ik/repositories/image-repository.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:yorglass_ik/widgets/image_widget.dart';
 
 class FeedContent extends StatefulWidget {
-  FeedItem feedItem;
+  final FeedItem feedItem;
   bool isLiked = false;
+  final Function deleteItem;
 
-  FeedContent({Key key, this.feedItem, this.isLiked}) : super(key: key);
+  FeedContent({Key key, this.feedItem, this.deleteItem, this.isLiked}) : super(key: key);
 
   @override
   _FeedContentState createState() => _FeedContentState();
@@ -38,10 +37,8 @@ class _FeedContentState extends State<FeedContent> {
                 width: size.width,
                 child: FittedBox(
                   fit: BoxFit.fitWidth,
-                  child: Image.memory(
-                    Base64Codec().decode(
-                      getImage64(widget.feedItem.imageId),
-                    ),
+                  child: ImageWidget(
+                    id: widget.feedItem.imageId,
                   ),
                 ),
               ),
@@ -67,10 +64,7 @@ class _FeedContentState extends State<FeedContent> {
               bottom: 0,
               child: Container(
                 width: size.width,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(30),
-                    border: Border.all(color: Colors.white),
-                    color: Colors.white),
+                decoration: BoxDecoration(borderRadius: BorderRadius.circular(30), border: Border.all(color: Colors.white), color: Colors.white),
                 child: Padding(
                   padding: const EdgeInsets.all(4.0),
                   child: Column(
@@ -97,8 +91,7 @@ class _FeedContentState extends State<FeedContent> {
                         ),
                       ),
                       Visibility(
-                        visible: widget.feedItem.url != null &&
-                            widget.feedItem.url.isNotEmpty,
+                        visible: widget.feedItem.url != null && widget.feedItem.url.isNotEmpty,
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: RichText(
@@ -127,7 +120,7 @@ class _FeedContentState extends State<FeedContent> {
                 color: Colors.white,
                 icon: Icon(Icons.close),
                 onPressed: () {
-                  removeFeed(widget.feedItem.id);
+                  FeedRepository.instance.deleteFeed(widget.feedItem.id).then((value) => widget.deleteItem());
                 },
               ),
             ),
@@ -138,28 +131,22 @@ class _FeedContentState extends State<FeedContent> {
                 children: <Widget>[
                   IconButton(
                     color: Colors.pink,
-                    icon: widget.isLiked
-                        ? Icon(Icons.favorite)
-                        : Icon(Icons.favorite_border),
+                    icon: widget.isLiked ? Icon(Icons.favorite) : Icon(Icons.favorite_border),
                     onPressed: () {
-                      setState(() {
-                        if (!widget.isLiked) {
-                          likeFeed(widget.feedItem.id);
-                          widget.isLiked = true;
-                        } else {
-                          dislikeFeed(widget.feedItem.id);
-                          widget.isLiked = false;
-                        }
-                      });
-                      print("LIKE BUTTON IS CLICKED");
+                      FeedRepository.instance.changeLike(widget.feedItem.id).then(
+                            (value) => setState(
+                              () {
+                                !widget.isLiked ? widget.feedItem.likeCount++ : widget.feedItem.likeCount--;
+                                !widget.isLiked ? widget.isLiked = true : widget.isLiked = false;
+                              },
+                            ),
+                          );
                     },
                   ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(19.0, 36.0, 18, 0),
                     child: Text(
-                      widget.feedItem.likeCount != null
-                          ? widget.feedItem.likeCount.toString()
-                          : "0",
+                      widget.feedItem.likeCount != null ? widget.feedItem.likeCount.toString() : "0",
                       textAlign: TextAlign.center,
                       style: TextStyle(color: Colors.pink),
                     ),
