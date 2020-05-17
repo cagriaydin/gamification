@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:yorglass_ik/models/user.dart';
@@ -26,7 +28,9 @@ class BuildUserInfo extends StatelessWidget {
               padding: const EdgeInsets.all(16.0),
               child: CircleAvatar(
                 radius: radius ?? 70,
-                backgroundImage: NetworkImage(user.image),
+                backgroundImage: user.image == null
+                    ? AssetImage("assets/default-profile.png")
+                    : MemoryImage(base64.decode(user.image)),
               ),
             ),
             if (showPercentage)

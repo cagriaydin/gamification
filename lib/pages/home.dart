@@ -69,7 +69,6 @@ class _HomePageState extends State<HomePage> {
                           image: AuthenticationService.verifiedUser.image == null ? AssetImage("assets/default-profile.png") : MemoryImage(base64.decode(AuthenticationService.verifiedUser.image)),
                         ),
                         ),
-                      ),
                     ),
                     SizedBox(height: 16),
                     Text(

@@ -63,7 +63,7 @@ class ProfilePage extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      GradientText('%' + user.percentage.toString()),
+                      GradientText('%' + (user.percentage ?? 0).toString()),
                       BuildUserInfo(
                         showPercentage: true,
                         user: user,
@@ -72,7 +72,7 @@ class ProfilePage extends StatelessWidget {
                       Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          GradientText(user.point.toString()),
+                          GradientText((user.point ?? 0).toString()),
                           GradientText('puan'),
                         ],
                       ),
@@ -141,8 +141,6 @@ class ProfilePage extends StatelessWidget {
                             child: RewardCards(
                               reward: Reward(
                                 point: 25000,
-                                image:
-                                    'https://i.picsum.photos/id/0/5616/3744.jpg',
                               ),
                             ),
                           ),
