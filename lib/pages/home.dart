@@ -176,7 +176,7 @@ class MenuButton extends StatelessWidget {
         if (count != null)
           Positioned(
             right: 50,
-            top: 2,
+            top: 10,
             child: Container(
               width: 22,
               height: 22,
