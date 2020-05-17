@@ -17,12 +17,17 @@ class User {
   String phone;
   int code;
   String image;
+
+  int percentage;
+  int point;
   List<String> likedFeeds;
   List<String> deletedFeeds;
 
   User({
     this.id,
     @required this.name,
+    @required this.point,
+    @required this.percentage,
     @required this.branchName,
     @required this.phone,
     @required this.code,
@@ -34,6 +39,8 @@ class User {
   User copyWith({
     String id,
     String name,
+    int point,
+    int percentage,
     String branchName,
     String phone,
     int code,
@@ -44,6 +51,8 @@ class User {
       User(
         id: id ?? this.id,
         name: name ?? this.name,
+        point: point ?? this.point,
+        percentage: percentage ?? this.percentage,
         branchName: branchName ?? this.branchName,
         phone: phone ?? this.phone,
         code: code ?? this.code,
@@ -55,6 +64,8 @@ class User {
   factory User.fromMap(Map<String, dynamic> json) => User(
         id: json["id"] == null ? null : json["id"],
         name: json["name"] == null ? null : json["name"],
+        point: json["point"] == null ? null : json["point"],
+        percentage: json["percentage"] == null ? null : json["percentage"],
         branchName: json["branchName"] == null ? null : json["branchName"],
         phone: json["phone"] == null ? null : json["phone"],
         code: json["code"] == null ? null : json["code"],
@@ -66,6 +77,8 @@ class User {
   factory User.fromSnapshot(DocumentSnapshot snapshot) => User(
         id: snapshot.data["id"] == null ? null : snapshot.data["id"],
         name: snapshot.data["name"] == null ? null : snapshot.data["name"],
+        point: snapshot.data["point"] == null ? null : snapshot.data["point"],
+        percentage: snapshot.data["percentage"] == null ? null : snapshot.data["percentage"],
         branchName: snapshot.data["branchName"] == null ? null : snapshot.data["branchName"],
         phone: snapshot.data["phone"] == null ? null : snapshot.data["phone"],
         code: snapshot.data["code"] == null ? null : snapshot.data["code"],
@@ -77,6 +90,8 @@ class User {
   Map<String, dynamic> toMap() => {
         "id": id == null ? null : id,
         "name": name == null ? null : name,
+        "point": point == null ? null : point,
+        "percentage": percentage == null ? null : percentage,
         "branchName": branchName == null ? null : branchName,
         "phone": phone == null ? null : phone,
         "code": code == null ? null : code,
