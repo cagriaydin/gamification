@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:yorglass_ik/repositories/feed-repository.dart';
+import 'package:yorglass_ik/widgets/feed-widget.dart';
 import 'package:yorglass_ik/models/content_option.dart';
 import 'package:yorglass_ik/widgets/content_selector.dart';
 
@@ -6,12 +8,19 @@ class FeedPage extends StatefulWidget {
   final Function menuFunction;
 
   FeedPage({this.menuFunction});
+  List<FeedContent> feedList = new List<FeedContent>();
 
   @override
   _FeedPageState createState() => _FeedPageState();
 }
 
 class _FeedPageState extends State<FeedPage> {
+  var feedList = getFeed().map((feedItem) {
+    return new FeedContent(
+      feedItem: feedItem,
+      isLiked: false,
+    );
+  }).toList();
   var _options = [
     ContentOption(
       title: "Duyurular",
@@ -67,12 +76,17 @@ class _FeedPageState extends State<FeedPage> {
             Flexible(
               child: ContentSelector(
                 onChange: (ContentOption currentContentOption) {
-                  //TODO: Change list here
                   print(currentContentOption.title);
                 },
                 options: _options,
               ),
-            )
+            ),
+            Expanded(
+              flex: 10,
+              child: ListView(
+                children: feedList,
+              ),
+            ),
           ],
         ),
       ),

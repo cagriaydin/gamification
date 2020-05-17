@@ -20,4 +20,15 @@ class ImageRepository {
     }
     return storedImage[id];
   }
+  
+  Future<String> getImage64(String id) async {
+    if (!storedImage.containsKey(id)) {
+      Results res = await DbConnection.query('SELECT * FROM images WHERE id = ?', [id]);
+      if (res.length > 0) {
+        Image data = Image(id: res.single[0], base64: res.single[4], code: res.single[1], base64Prefix: res.single[3], suffix: res.single[2], alt: res.single[5]);
+        storedImage[data.id] = data;
+      }
+    }
+    return storedImage[id].base64;
+  }
 }
