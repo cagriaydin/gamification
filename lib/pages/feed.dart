@@ -76,13 +76,13 @@ class _FeedPageState extends State<FeedPage> {
             Flexible(
               child: ContentSelector(
                 onChange: (ContentOption currentContentOption) {
-                  //TODO: Change list here
                   print(currentContentOption.title);
                 },
                 options: _options,
               ),
             ),
             Expanded(
+              flex: 10,
               child: ListView(
                 children: feedList,
               ),
