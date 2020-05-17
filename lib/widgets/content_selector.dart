@@ -55,6 +55,7 @@ class _ContentSelectorState extends State<ContentSelector> {
             padding: EdgeInsets.fromLTRB(
                 widget.paddingHorizontal, 0, widget.paddingHorizontal, 0),
             child: Column(
+              
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(
