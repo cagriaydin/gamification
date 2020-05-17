@@ -5,7 +5,7 @@ import 'package:yorglass_ik/models/content_option.dart';
 import 'package:yorglass_ik/models/reward.dart';
 import 'package:yorglass_ik/models/user.dart';
 import 'package:yorglass_ik/pages/leader_board_page.dart';
-import 'package:yorglass_ik/pages/rewards_page.dart';
+import 'package:yorglass_ik/pages/task_list_page.dart';
 import 'package:yorglass_ik/widgets/blur_background_image.dart';
 import 'package:yorglass_ik/widgets/build_user_info.dart';
 import 'package:yorglass_ik/widgets/content_selector.dart';
@@ -197,7 +197,9 @@ class ProfilePage extends StatelessWidget {
       context,
       MaterialPageRoute(
         builder: (BuildContext context) {
-          return RewardsPage();
+          return TaskListBuilder(
+            length: 10,
+          );
         },
       ),
     );
