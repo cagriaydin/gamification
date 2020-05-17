@@ -32,6 +32,7 @@ class LeaderBoard extends StatelessWidget {
           tag: '2',
           child: FlagAvatar(
             imageUrl: users.elementAt(1).image,
+            name: users.elementAt(1).name,
             point: 160,
             rank: 2,
           ),
@@ -40,6 +41,7 @@ class LeaderBoard extends StatelessWidget {
           tag: '1',
           child: FlagAvatar(
             imageUrl: users.elementAt(0).image,
+            name: users.elementAt(1).name,
             point: 300,
             rank: 1,
           ),
@@ -48,6 +50,7 @@ class LeaderBoard extends StatelessWidget {
           tag: '3',
           child: FlagAvatar(
             imageUrl: users.elementAt(2).image,
+            name: users.elementAt(1).name,
             point: 110,
             rank: 3,
           ),

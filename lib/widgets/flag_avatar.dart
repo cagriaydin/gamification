@@ -5,8 +5,9 @@ class FlagAvatar extends StatelessWidget {
   final String imageUrl;
   final int point;
   final int rank;
+  final String name;
 
-  const FlagAvatar({Key key, this.imageUrl, this.point, this.rank})
+  const FlagAvatar({Key key, this.imageUrl, this.point, this.rank, this.name})
       : super(key: key);
 
   @override
@@ -20,8 +21,19 @@ class FlagAvatar extends StatelessWidget {
           FlagPoint(point: point),
           Stack(
             children: [
+              name.isNotEmpty
+                  ? Text(
+                      name,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                      ),
+                    )
+                  : Text(""),
               Padding(
-                padding: const EdgeInsets.fromLTRB(8, 8, 8, 64),
+                padding: name.isNotEmpty
+                    ? const EdgeInsets.fromLTRB(8, 38, 8, 64)
+                    : const EdgeInsets.fromLTRB(8, 8, 8, 64),
                 child: Material(
                   elevation: 5,
                   color: Colors.white,
@@ -37,14 +49,17 @@ class FlagAvatar extends StatelessWidget {
                 ),
               ),
               if (rank == 1)
-                Image.asset(
-                  'assets/crown.png',
-                  scale: 1.4,
+                Padding(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: Image.asset(
+                    'assets/crown.png',
+                    scale: 1,
+                  ),
                 ),
               if (rank != null)
                 Positioned(
-                  right: 8,
-                  top: 6,
+                  right: name.isNotEmpty ? 10 : 8,
+                  top: name.isNotEmpty ? 36 : 6,
                   child: Container(
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),

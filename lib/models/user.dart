@@ -14,6 +14,7 @@ class User {
   String id;
   String name;
   String branchName;
+  String branchId;
   String code;
   String image;
   int point;
@@ -29,6 +30,7 @@ class User {
     @required this.image,
     @required this.likedFeeds,
     @required this.deletedFeeds,
+    this.branchId,
   });
 
   User copyWith({
@@ -36,6 +38,7 @@ class User {
     String name,
     String point,
     String branchName,
+    String branchId,
     String code,
     String image,
     List<String> likedFeeds,
@@ -46,6 +49,7 @@ class User {
         name: name ?? this.name,
         point: point ?? this.point,
         branchName: branchName ?? this.branchName,
+        branchId: branchId ?? this.branchId,
         code: code ?? this.code,
         image: image ?? this.image,
         likedFeeds: likedFeeds ?? this.likedFeeds,
@@ -57,6 +61,7 @@ class User {
         name: json["name"] == null ? null : json["name"],
         point: json["point"] == null ? null : json["point"],
         branchName: json["branchName"] == null ? null : json["branchName"],
+        branchId: json["branchId"] == null ? null : json["branchId"],
         code: json["code"] == null ? null : json["code"],
         image: json["image"] == null ? null : json["image"],
         likedFeeds: List<String>.from(json["likedFeeds"].map((x) => x)),
@@ -68,6 +73,7 @@ class User {
         name: snapshot.data["name"] == null ? null : snapshot.data["name"],
         point: snapshot.data["point"] == null ? null : snapshot.data["point"],
         branchName: snapshot.data["branchName"] == null ? null : snapshot.data["branchName"],
+        branchId: snapshot.data["branchId"] == null ? null : snapshot.data["branchId"],
         code: snapshot.data["code"] == null ? null : snapshot.data["code"],
         image: snapshot.data["image"] == null ? null : snapshot.data["image"],
         likedFeeds: List<String>.from(snapshot.data["likedFeeds"].map((x) => x)),
@@ -79,6 +85,7 @@ class User {
         "name": name == null ? null : name,
         "point": point == null ? null : point,
         "branchName": branchName == null ? null : branchName,
+        "branchId": branchId == null ? null : branchId,
         "code": code == null ? null : code,
         "image": image == null ? null : image,
         "likedFeeds": List<dynamic>.from(likedFeeds.map((x) => x)),
@@ -90,6 +97,7 @@ class User {
 //"id": "id",
 //"name":"",
 //"branchName":"",
+//"branchId":"",
 //"extraInfo":{},
 //"model": "hex",
 //"brand":"",
