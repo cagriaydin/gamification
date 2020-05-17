@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:yorglass_ik/models/user.dart';
 import 'package:yorglass_ik/pages/feed.dart';
+import 'package:yorglass_ik/pages/profile.dart';
+import 'package:yorglass_ik/services/authentication-service.dart';
 import 'package:yorglass_ik/widgets/bottom.navi.bar.dart';
+import 'package:yorglass_ik/widgets/custom_drawer/custom_drawer.dart';
 
 class BottomNavigation extends StatefulWidget {
-  final Function openMenu;
-  BottomNavigation({this.openMenu});
+  final GlobalKey<CustomDrawerState> drawerController;
+
+  BottomNavigation({this.drawerController});
+
   @override
   _BottomNavigationState createState() => _BottomNavigationState();
 }
@@ -41,7 +47,8 @@ class _BottomNavigationState extends State<BottomNavigation> {
         // use this to remove appBar's elevation
         onItemSelected: (index) => setState(() {
           _selectedIndex = index;
-          _pageController.animateToPage(index, duration: Duration(milliseconds: 300), curve: Curves.ease);
+          _pageController.animateToPage(index,
+              duration: Duration(milliseconds: 300), curve: Curves.ease);
         }),
         items: [
           BottomNavyBarItem(
@@ -59,6 +66,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
         ],
       ),
       body: PageView(
+        physics: NeverScrollableScrollPhysics(),
         controller: _pageController,
         onPageChanged: (index) {
           setState(() => _selectedIndex = index);
@@ -68,11 +76,18 @@ class _BottomNavigationState extends State<BottomNavigation> {
         },
         children: <Widget>[
           FeedPage(
-            menuFunction: widget.openMenu,
+            menuFunction: toggleDrawer,
           ),
-          Container(),
+          ProfilePage(
+            menuFunction: toggleDrawer,
+            user: AuthenticationService.verifiedUser,
+          ),
         ],
       ),
     );
+  }
+
+  toggleDrawer() {
+    widget.drawerController.currentState.toggle();
   }
 }

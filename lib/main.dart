@@ -28,9 +28,9 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     // AuthenticationService().signOut();
     listenConnection();
-    AuthenticationService.instance.onAuthStateChanged.listen((event) {
+    AuthenticationService.firebaseAuthInstance.onAuthStateChanged.listen((event) {
       if (event != null) {
-        AuthenticationService().verifyUser().then((user) {
+        AuthenticationService.instance.verifyUser().then((user) {
           if (user != null) {
             setState(() {
               loggedIn = true;
