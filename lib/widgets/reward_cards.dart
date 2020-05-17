@@ -91,7 +91,7 @@ class RewardCards extends StatelessWidget {
                   children: [
                     FlagAvatar(
                       point: reward.point,
-                      imageUrl: reward.image,
+                      imageUrl: reward.imageId,
                     ),
                     Positioned(
                       child: Column(
