@@ -33,25 +33,6 @@ class _RewardsPageState extends State<RewardsPage> with AfterLayoutMixin {
     '',
     '',
     '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
   ];
 
   Size customPaintSize;
@@ -106,16 +87,40 @@ class _RewardsPageState extends State<RewardsPage> with AfterLayoutMixin {
         child: Container(
           key: customPaintKey,
           child: CustomPaint(
-            painter: MyCustomPainter(
+            foregroundPainter: MyCustomPainter(
                 list: myList,
                 getMaxLength: getMaxLength,
                 getOffsets: getOffsets),
-            size: customPaintSize ?? size,
+            size: getSize(size),
+            child: Container(
+              width: getSize(size).width,
+              height: getSize(size).height,
+              color: Colors.blue,
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: currentOffsets?.first?.dy ?? 10,
+                  ),
+                  ...myList.map(
+                        (e) => Flexible(
+                            child: Padding(
+                          padding: const EdgeInsets.only(
+                              left: 8, right: 8, bottom: 1),
+                          child: Container(
+                            color: Colors.black,
+                          ),
+                        )),
+                      )
+                ],
+              ),
+            ),
           ),
         ),
       ),
     );
   }
+
+  Size getSize(Size size) => customPaintSize ?? size;
 
   getMaxLength(maxLength) {
     RenderBox renderBox = customPaintKey.currentContext.findRenderObject();
@@ -197,7 +202,7 @@ class MyCustomPainter extends CustomPainter {
     path.lineTo(lastP, p);
     List<Offset> offsets = [];
     offsets.add(Offset(p, p));
-    for (int i = 0; i < list.length; i++) {
+    for (int i = 0; i < lengthOfList(); i++) {
       final index = i + 1;
       bool secondPart = i % 2 == 0;
       if (!secondPart) {
@@ -213,12 +218,14 @@ class MyCustomPainter extends CustomPainter {
       }
     }
 
-    getMaxLength((getP(list.length, p) + p));
+    getMaxLength((getP(lengthOfList(), p)));
     getOffsets(offsets);
 
     //buildPath(path, padding, archPadding, lineLength);
     canvas.drawPath(path, brush);
   }
+
+  int lengthOfList() => list.length;
 
   getP(index, p) {
     return p + (2 * p * index);
