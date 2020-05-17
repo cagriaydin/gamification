@@ -14,7 +14,8 @@ class User {
   String id;
   String name;
   String branchName;
-  String code;
+  String phone;
+  int code;
   String image;
 
   int percentage;
@@ -28,6 +29,7 @@ class User {
     @required this.point,
     @required this.percentage,
     @required this.branchName,
+    @required this.phone,
     @required this.code,
     @required this.image,
     @required this.likedFeeds,
@@ -40,7 +42,8 @@ class User {
     int point,
     int percentage,
     String branchName,
-    String code,
+    String phone,
+    int code,
     String image,
     List<String> likedFeeds,
     List<String> deletedFeeds,
@@ -51,6 +54,7 @@ class User {
         point: point ?? this.point,
         percentage: percentage ?? this.percentage,
         branchName: branchName ?? this.branchName,
+        phone: phone ?? this.phone,
         code: code ?? this.code,
         image: image ?? this.image,
         likedFeeds: likedFeeds ?? this.likedFeeds,
@@ -63,6 +67,7 @@ class User {
         point: json["point"] == null ? null : json["point"],
         percentage: json["percentage"] == null ? null : json["percentage"],
         branchName: json["branchName"] == null ? null : json["branchName"],
+        phone: json["phone"] == null ? null : json["phone"],
         code: json["code"] == null ? null : json["code"],
         image: json["image"] == null ? null : json["image"],
         likedFeeds: List<String>.from(json["likedFeeds"].map((x) => x)),
@@ -75,6 +80,7 @@ class User {
         point: snapshot.data["point"] == null ? null : snapshot.data["point"],
         percentage: snapshot.data["percentage"] == null ? null : snapshot.data["percentage"],
         branchName: snapshot.data["branchName"] == null ? null : snapshot.data["branchName"],
+        phone: snapshot.data["phone"] == null ? null : snapshot.data["phone"],
         code: snapshot.data["code"] == null ? null : snapshot.data["code"],
         image: snapshot.data["image"] == null ? null : snapshot.data["image"],
         likedFeeds: List<String>.from(snapshot.data["likedFeeds"].map((x) => x)),
@@ -87,6 +93,7 @@ class User {
         "point": point == null ? null : point,
         "percentage": percentage == null ? null : percentage,
         "branchName": branchName == null ? null : branchName,
+        "phone": phone == null ? null : phone,
         "code": code == null ? null : code,
         "image": image == null ? null : image,
         "likedFeeds": List<dynamic>.from(likedFeeds.map((x) => x)),
@@ -98,6 +105,7 @@ class User {
 //"id": "id",
 //"name":"",
 //"branchName":"",
+//"phone":"",
 //"extraInfo":{},
 //"model": "hex",
 //"brand":"",

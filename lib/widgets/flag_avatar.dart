@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:yorglass_ik/widgets/flag_point.dart';
 
@@ -33,7 +35,7 @@ class FlagAvatar extends StatelessWidget {
                     padding: const EdgeInsets.all(3.0),
                     child: CircleAvatar(
                       radius: getRadius(size),
-                      backgroundImage: NetworkImage(imageUrl),
+                      backgroundImage: backgroundImage(),
                     ),
                   ),
                 ),
@@ -72,6 +74,17 @@ class FlagAvatar extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  Object backgroundImage() {
+    try {
+      return imageUrl == null
+          ? AssetImage("assets/default-profile.png")
+          : MemoryImage(base64.decode(imageUrl));
+    } catch (e) {
+      print(e);
+      return AssetImage("assets/default-profile.png");
+    }
   }
 
   double getRadius(size) {

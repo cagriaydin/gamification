@@ -28,7 +28,7 @@ class FlagPoint extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(point.toString()),
+                Text((point ?? 0).toString()),
                 Text('puan'),
               ],
             ),
