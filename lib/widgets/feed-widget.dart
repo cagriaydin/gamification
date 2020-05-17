@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:yorglass_ik/models/feed-item.dart';
+import 'package:yorglass_ik/repositories/feed-repository.dart';
 import 'package:yorglass_ik/repositories/image-repository.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -126,7 +127,7 @@ class _FeedContentState extends State<FeedContent> {
                 color: Colors.white,
                 icon: Icon(Icons.close),
                 onPressed: () {
-                  print("CLOSE BUTTON IS CLICKED");
+                  removeFeed(widget.feedItem.id);
                 },
               ),
             ),
@@ -142,15 +143,19 @@ class _FeedContentState extends State<FeedContent> {
                         : Icon(Icons.favorite_border),
                     onPressed: () {
                       setState(() {
-                        !widget.isLiked
-                            ? widget.isLiked = true
-                            : widget.isLiked = false;
+                        if (!widget.isLiked) {
+                          likeFeed(widget.feedItem.id);
+                          widget.isLiked = true;
+                        } else {
+                          dislikeFeed(widget.feedItem.id);
+                          widget.isLiked = false;
+                        }
                       });
                       print("LIKE BUTTON IS CLICKED");
                     },
                   ),
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(19.0,36.0,18,0),
+                    padding: const EdgeInsets.fromLTRB(19.0, 36.0, 18, 0),
                     child: Text(
                       widget.feedItem.likeCount != null
                           ? widget.feedItem.likeCount.toString()
