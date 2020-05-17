@@ -37,6 +37,7 @@ class _FeedContentState extends State<FeedContent> {
                 width: size.width,
                 child: FittedBox(
                   fit: BoxFit.fitWidth,
+                  alignment: Alignment.topCenter,
                   child: ImageWidget(
                     id: widget.feedItem.imageId,
                   ),
