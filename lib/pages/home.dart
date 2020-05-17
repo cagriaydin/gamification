@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:yorglass_ik/pages/bottom_navigation.dart';
 import 'package:yorglass_ik/services/authentication-service.dart';
@@ -51,9 +53,7 @@ class _HomePageState extends State<HomePage> {
                                       borderRadius: new BorderRadius.all(new Radius.circular(constraints.maxWidth * .2)),
                                       image: DecorationImage(
                                         fit: BoxFit.fill,
-                                        image: NetworkImage(
-                                          AuthenticationService.verifiedUser.image,
-                                        ),
+                                        image: AuthenticationService.verifiedUser.image == null ? AssetImage("assets/default-profile.png") : MemoryImage(base64.decode(AuthenticationService.verifiedUser.image)),
                                       ),
                                     ),
                                   ),

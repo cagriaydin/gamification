@@ -1,8 +1,13 @@
-import 'package:excel/excel.dart';
-import 'package:flutter/services.dart' show ByteData, rootBundle;
+import 'package:mysql1/mysql1.dart';
+import 'package:yorglass_ik/services/db-connection.dart';
 
 class DocumentHelper {
   Future<String> getPhoneWithRegNumber(String regNumber) async {
+    Results res = await DbConnection.query("SELECT phone FROM user WHERE code = ?", [int.parse(regNumber)]);
+    if (res.toList().length > 0) {
+      String phone = res.toList().first[0];
+      return phone;
+    }
     // ByteData data = await rootBundle.load("documents/yorglass.xlsx");
     // var decoder = Excel.decodeBytes(
     //     data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes));
@@ -13,7 +18,6 @@ class DocumentHelper {
     //     return row[3].toString();
     //   }
     // }
-    // return "";
-    return regNumber;
+    //return "5415435019";
   }
 }
