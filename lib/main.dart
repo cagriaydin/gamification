@@ -30,8 +30,16 @@ class _MyAppState extends State<MyApp> {
     listenConnection();
     AuthenticationService.instance.onAuthStateChanged.listen((event) {
       if (event != null) {
-        setState(() {
-          loggedIn = true;
+        AuthenticationService().verifyUser().then((user) {
+          if (user != null) {
+            setState(() {
+              loggedIn = true;
+            });
+          } else {
+            setState(() {
+              loggedIn = false;
+            });
+          }
         });
       } else {
         setState(() {
@@ -39,8 +47,7 @@ class _MyAppState extends State<MyApp> {
         });
       }
     });
-    Future.delayed(Duration(seconds: 5)).then((val) =>
-        setState(() => loggedIn = loggedIn == null ? false : loggedIn));
+    Future.delayed(Duration(seconds: 5)).then((val) => setState(() => loggedIn = loggedIn == null ? false : loggedIn));
     super.initState();
   }
 

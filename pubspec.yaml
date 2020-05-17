@@ -20,6 +20,8 @@ dependencies:
   path_provider: ^1.6.7
   url_launcher: ^5.4.7
 
+  mysql1: 0.17.1
+  uuid: 2.0.4
 
 dev_dependencies:
   flutter_test:
