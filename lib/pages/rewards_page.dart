@@ -4,6 +4,7 @@ import 'package:after_layout/after_layout.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:yorglass_ik/services/authentication-service.dart';
 
 //
 //class RewardsPage extends StatelessWidget {
@@ -73,14 +74,7 @@ class _RewardsPageState extends State<RewardsPage> with AfterLayoutMixin {
     return Scaffold(
       appBar: AppBar(),
       floatingActionButton: FloatingActionButton(onPressed: () {
-        setState(() {
-          //final offset = currentOffsets.elementAt(currentOffsets.length - 1);
-          if (position < currentOffsets.length) {
-            final offset = currentOffsets.elementAt(position);
-            offsetNotifier.value = offset ?? Offset.zero;
-            position++;
-          }
-        });
+        animateToIndex(6);
       }),
       body: SingleChildScrollView(
         controller: controller,
@@ -95,22 +89,26 @@ class _RewardsPageState extends State<RewardsPage> with AfterLayoutMixin {
             child: Container(
               width: getSize(size).width,
               height: getSize(size).height,
-              color: Colors.blue,
               child: Column(
                 children: [
                   SizedBox(
-                    height: currentOffsets?.first?.dy ?? 10,
+                    height: currentOffsets.isNotEmpty
+                        ? currentOffsets.first.dy
+                        : 10,
                   ),
-                  ...myList.map(
-                        (e) => Flexible(
-                            child: Padding(
+                  for (int i = 0; i < myList.length; i++)
+                    Flexible(
+                      child: GestureDetector(
+                        onTap: () => animateToIndex(i),
+                        child: Padding(
                           padding: const EdgeInsets.only(
                               left: 8, right: 8, bottom: 1),
                           child: Container(
-                            color: Colors.black,
+                            color: Colors.white,
                           ),
-                        )),
-                      )
+                        ),
+                      ),
+                    ),
                 ],
               ),
             ),
@@ -118,6 +116,20 @@ class _RewardsPageState extends State<RewardsPage> with AfterLayoutMixin {
         ),
       ),
     );
+  }
+
+  void animateToIndex(int animateIndex) {
+    if (mounted) {
+      setState(() {
+        position = animateIndex;
+        if (position < currentOffsets.length) {
+          final offset = currentOffsets.elementAt(position);
+          offsetNotifier.value = offset ?? Offset.zero;
+          controller.animateTo(offset.dy,
+              duration: Duration(milliseconds: 600), curve: Curves.easeOut);
+        }
+      });
+    }
   }
 
   Size getSize(Size size) => customPaintSize ?? size;
@@ -160,10 +172,8 @@ class _RewardsPageState extends State<RewardsPage> with AfterLayoutMixin {
               return Positioned(
                 top: pos.dy - 25,
                 left: pos.dx,
-                child: Container(
-                  width: 50,
-                  height: 50,
-                  color: Colors.black,
+                child: ShadowAvatar(
+                  imageUrl: AuthenticationService.verifiedUser.image,
                 ),
               );
             },
@@ -188,10 +198,10 @@ class MyCustomPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     Paint brush = new Paint()
-      ..color = Colors.red
+      ..color = Color(0xff3FC1C9)
       ..strokeCap = StrokeCap.round
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 10;
+      ..strokeWidth = 4;
 
     final p = size.width / 5;
     final lastP = size.width - p;
@@ -234,5 +244,47 @@ class MyCustomPainter extends CustomPainter {
   @override
   bool shouldRepaint(CustomPainter oldDelegate) {
     return (oldDelegate as MyCustomPainter).list.length != this.list.length;
+  }
+}
+
+class ShadowAvatar extends StatelessWidget {
+  final String imageUrl;
+
+  const ShadowAvatar({Key key, this.imageUrl}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    return SizedBox(
+      height: size.width / 5,
+      width: size.width / 5,
+      child: Container(
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.all(Radius.circular(90)),
+            color: Color(0xff3FC1C9),
+            boxShadow: [
+              BoxShadow(
+                  color: Color(0xff3FC1C9),
+                  offset: Offset(0, 3),
+                  blurRadius: 4,
+                  spreadRadius: 1.2),
+              BoxShadow(
+                  color: Color(0xff3FC1C9),
+                  offset: Offset(0, -3),
+                  blurRadius: 4,
+                  spreadRadius: 1.2),
+            ]),
+        child: Padding(
+          padding: const EdgeInsets.all(2.0),
+          child: ClipOval(
+            clipBehavior: Clip.antiAlias,
+            child: Image.network(
+              imageUrl,
+              fit: BoxFit.fitHeight,
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }

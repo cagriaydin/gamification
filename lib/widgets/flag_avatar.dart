@@ -17,11 +17,13 @@ class FlagAvatar extends StatelessWidget {
       child: Stack(
         alignment: Alignment.bottomCenter,
         children: [
-          FlagPoint(point: point),
+          if (point != null) FlagPoint(point: point),
           Stack(
             children: [
               Padding(
-                padding: const EdgeInsets.fromLTRB(8, 8, 8, 64),
+                padding: point != null
+                    ? const EdgeInsets.fromLTRB(8, 8, 8, 64)
+                    : const EdgeInsets.all(8),
                 child: Material(
                   elevation: 5,
                   color: Colors.white,
