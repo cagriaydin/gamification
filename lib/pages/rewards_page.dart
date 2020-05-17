@@ -66,6 +66,8 @@ class _RewardsPageState extends State<RewardsPage> with AfterLayoutMixin {
 
   ScrollController controller = ScrollController();
 
+  int position = 0;
+
   @override
   void initState() {
     if (overlayEntry != null) {
@@ -92,8 +94,11 @@ class _RewardsPageState extends State<RewardsPage> with AfterLayoutMixin {
       floatingActionButton: FloatingActionButton(onPressed: () {
         setState(() {
           //final offset = currentOffsets.elementAt(currentOffsets.length - 1);
-          final offset = currentOffsets.elementAt(4);
-          offsetNotifier.value = offset ?? Offset.zero;
+          if (position < currentOffsets.length) {
+            final offset = currentOffsets.elementAt(position);
+            offsetNotifier.value = offset ?? Offset.zero;
+            position++;
+          }
         });
       }),
       body: SingleChildScrollView(
@@ -191,6 +196,7 @@ class MyCustomPainter extends CustomPainter {
     path.moveTo(p, p);
     path.lineTo(lastP, p);
     List<Offset> offsets = [];
+    offsets.add(Offset(p, p));
     for (int i = 0; i < list.length; i++) {
       final index = i + 1;
       bool secondPart = i % 2 == 0;
