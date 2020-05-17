@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:after_layout/after_layout.dart';
@@ -13,6 +15,34 @@ import 'package:yorglass_ik/widgets/gradient_text.dart';
 class TaskListPage extends StatelessWidget {
   final User user;
   final List<Task> tasks = [
+    Task(
+      name: 'Lıkır Lıkır 2 lt su içtim',
+      point: 5,
+      count: 1,
+      id: '1233123',
+      interval: 5,
+    ),
+    Task(
+      name: 'Egzersiz yaptım',
+      point: 5,
+      count: 1,
+      id: 'idd01234',
+      interval: 1,
+    ),
+    Task(
+      name: 'Lıkır Lıkır 2 lt su içtim',
+      point: 5,
+      count: 1,
+      id: '1233123',
+      interval: 5,
+    ),
+    Task(
+      name: 'Egzersiz yaptım',
+      point: 5,
+      count: 1,
+      id: 'idd01234',
+      interval: 1,
+    ),
     Task(
       name: 'Lıkır Lıkır 2 lt su içtim',
       point: 5,
@@ -48,11 +78,20 @@ class TaskListPage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               GradientText('%' + (user.percentage ?? 0).toString()),
               BuildUserInfo(
                 user: user,
               ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  GradientText((user.point ?? 0).toString()),
+                  GradientText('puan'),
+                ],
+              )
             ],
           ),
           Image.asset(
@@ -98,7 +137,7 @@ class _BuildTaskState extends State<BuildTask> {
         children: [
           //TODO: add and show how much point task
           Text(widget.task.name),
-          Text('#günlük'),
+          Text('#günlük',style: TextStyle(fontStyle: FontStyle.italic,color: Colors.black54),),
           GestureDetector(
             onLongPress: () => setState(() => currentCount++),
             behavior: HitTestBehavior.opaque,
@@ -199,8 +238,11 @@ class _TaskListBuilderState extends State<TaskListBuilder>
 
   int position = 0;
 
+  var decodedImage;
+
   @override
   void initState() {
+    decodedImage = base64.decode(AuthenticationService.verifiedUser.image);
     if (overlayEntry != null) {
       overlayEntry.remove();
     }
@@ -315,7 +357,7 @@ class _TaskListBuilderState extends State<TaskListBuilder>
                 top: pos.dy - 40,
                 left: pos.dx - 50,
                 child: ShadowAvatar(
-                  imageUrl: AuthenticationService.verifiedUser.image,
+                  imageUrl: decodedImage,
                 ),
               );
             },
@@ -390,7 +432,7 @@ class MyCustomPainter extends CustomPainter {
 }
 
 class ShadowAvatar extends StatelessWidget {
-  final String imageUrl;
+  final Uint8List imageUrl;
 
   const ShadowAvatar({Key key, this.imageUrl}) : super(key: key);
 
@@ -420,9 +462,9 @@ class ShadowAvatar extends StatelessWidget {
           padding: const EdgeInsets.all(2.0),
           child: ClipOval(
             clipBehavior: Clip.antiAlias,
-            child: Image.network(
+            child: Image.memory(
               imageUrl,
-              fit: BoxFit.fitHeight,
+              fit: BoxFit.fitWidth,
             ),
           ),
         ),

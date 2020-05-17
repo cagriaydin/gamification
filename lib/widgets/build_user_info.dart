@@ -39,7 +39,7 @@ class BuildUserInfo extends StatelessWidget {
                   radius: (radius + 70) ?? 160.0,
                   lineWidth: 10.0,
                   animation: true,
-                  percent: (user.percentage ?? 0)* 1/100,
+                  percent: (user.percentage ?? 0) * 1 / 100,
                   circularStrokeCap: CircularStrokeCap.round,
                   backgroundColor: Colors.white,
                   progressColor: Color(0xff2DB3C1),
