@@ -83,6 +83,7 @@ class TaskRepository {
         createNewUserTask(task, userTaskList);
       }
     });
+    return userTaskList;
   }
 
   void createNewUserTask(Task task, List<UserTask> userTaskList) {
