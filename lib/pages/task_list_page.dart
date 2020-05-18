@@ -152,7 +152,7 @@ class _BuildTaskState extends State<BuildTask> {
                   angle: -math.pi / 6,
                   child: GradientText(
                     '+' + widget.userTask.point.toString() + '\n puan',
-                    disabled: TaskRepository.instance.canUpdate(widget.userTask),
+                    disabled: widget.userTask.complete == 0,
                     fontSize: 20,
                   ),
                 ),
