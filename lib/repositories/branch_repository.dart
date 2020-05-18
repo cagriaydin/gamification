@@ -13,7 +13,7 @@ class BranchRepository {
   static BranchRepository get instance => _instance;
 
   Future<List<BranchLeaderBoard>> getBoardPointList() async {
-    Results res = await DbConnection.query("SELECT * FROM branchleaderboard where enddate IS NULL ORDER BY point");
+    Results res = await DbConnection.query("SELECT * FROM branchleaderboard where enddate IS NULL ORDER BY point DESC");
     List<BranchLeaderBoard> list = [];
     if (res.length > 0) {
       forEach(res, (element) {
