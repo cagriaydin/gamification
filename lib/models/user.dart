@@ -14,6 +14,7 @@ class User {
   String id;
   String name;
   String branchName;
+  String branchId;
   String phone;
   int code;
   String image;
@@ -34,6 +35,7 @@ class User {
     @required this.image,
     @required this.likedFeeds,
     @required this.deletedFeeds,
+    this.branchId,
   });
 
   User copyWith({
@@ -42,6 +44,7 @@ class User {
     int point,
     int percentage,
     String branchName,
+    String branchId,
     String phone,
     int code,
     String image,
@@ -54,6 +57,7 @@ class User {
         point: point ?? this.point,
         percentage: percentage ?? this.percentage,
         branchName: branchName ?? this.branchName,
+        branchId: branchId ?? this.branchId,
         phone: phone ?? this.phone,
         code: code ?? this.code,
         image: image ?? this.image,
@@ -67,6 +71,7 @@ class User {
         point: json["point"] == null ? null : json["point"],
         percentage: json["percentage"] == null ? null : json["percentage"],
         branchName: json["branchName"] == null ? null : json["branchName"],
+        branchId: json["branchId"] == null ? null : json["branchId"],
         phone: json["phone"] == null ? null : json["phone"],
         code: json["code"] == null ? null : json["code"],
         image: json["image"] == null ? null : json["image"],
@@ -80,6 +85,7 @@ class User {
         point: snapshot.data["point"] == null ? null : snapshot.data["point"],
         percentage: snapshot.data["percentage"] == null ? null : snapshot.data["percentage"],
         branchName: snapshot.data["branchName"] == null ? null : snapshot.data["branchName"],
+        branchId: snapshot.data["branchId"] == null ? null : snapshot.data["branchId"],
         phone: snapshot.data["phone"] == null ? null : snapshot.data["phone"],
         code: snapshot.data["code"] == null ? null : snapshot.data["code"],
         image: snapshot.data["image"] == null ? null : snapshot.data["image"],
@@ -93,6 +99,7 @@ class User {
         "point": point == null ? null : point,
         "percentage": percentage == null ? null : percentage,
         "branchName": branchName == null ? null : branchName,
+        "branchId": branchId == null ? null : branchId,
         "phone": phone == null ? null : phone,
         "code": code == null ? null : code,
         "image": image == null ? null : image,
@@ -105,6 +112,7 @@ class User {
 //"id": "id",
 //"name":"",
 //"branchName":"",
+//"branchId":"",
 //"phone":"",
 //"extraInfo":{},
 //"model": "hex",

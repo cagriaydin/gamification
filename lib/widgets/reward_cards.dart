@@ -90,6 +90,7 @@ class RewardCards extends StatelessWidget {
                   alignment: Alignment.center,
                   children: [
                     FlagAvatar(
+                      name: "",
                       point: reward.point,
                       imageUrl: reward.image,
                     ),

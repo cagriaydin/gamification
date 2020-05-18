@@ -20,9 +20,15 @@ class BlurBackgroundImage extends StatelessWidget {
       children: [
         Opacity(
             opacity: .3,
-            child: imageUrl == null
-                ? Image.asset("assets/default-profile.png")
-                : MemoryImage(base64.decode(imageUrl))),
+            child: FittedBox(
+              alignment: Alignment.topCenter,
+              fit: BoxFit.fitWidth,
+              child: imageUrl == null
+                  ? Image.asset("assets/default-profile.png")
+                  : Image.memory(
+                      base64.decode(imageUrl),
+                    ),
+            )),
         BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
           child: Container(
