@@ -1,48 +1,65 @@
+import 'package:mysql1/mysql1.dart';
 import 'package:yorglass_ik/models/branch.dart';
 import 'package:yorglass_ik/models/branch_leader_board.dart';
-import 'package:yorglass_ik/services/authentication-service.dart';
+import 'package:yorglass_ik/repositories/image-repository.dart';
+import 'package:yorglass_ik/repositories/task-repository.dart';
+import 'package:yorglass_ik/services/db-connection.dart';
 
 class BranchRepository {
-  static final BranchRepository _instance =
-      BranchRepository._privateConstructor();
+  static final BranchRepository _instance = BranchRepository._privateConstructor();
 
   BranchRepository._privateConstructor();
 
   static BranchRepository get instance => _instance;
 
-  List<BranchLeaderBoard> getBoardPointList() {
-    List<BranchLeaderBoard> list = List<BranchLeaderBoard>();
-    list.add(BranchLeaderBoard(id: "1", branchId: "1", point: 150));
-    list.add(BranchLeaderBoard(id: "2", branchId: "2", point: 300));
-    list.add(BranchLeaderBoard(id: "3", branchId: "3", point: 250));
-    list.add(BranchLeaderBoard(id: "4", branchId: "4", point: 110));
-    list.add(BranchLeaderBoard(id: "5", branchId: "5", point: 140));
-    list.add(BranchLeaderBoard(id: "6", branchId: "6", point: 145));
-    list.sort((a, b) => b.point.compareTo(a.point));
-    return list;
-  }
-
-  List<Branch> getBranchList() {
-    List<Branch> list = List<Branch>();
-    list.add(Branch(id: "1", name: "Manisa", employeeCount: 150, point: 150, image: AuthenticationService.verifiedUser.image));
-    list.add(Branch(id: "2", name: "Gebze", employeeCount: 120, point:300, image: AuthenticationService.verifiedUser.image));
-    list.add(Branch(id: "3", name: "Eskişehir", employeeCount: 130, point: 250, image: AuthenticationService.verifiedUser.image));
-    list.add(Branch(id: "4", name: "Kemal Paşa", employeeCount: 110, point:110, image: AuthenticationService.verifiedUser.image));
-    list.add(Branch(id: "5", name: "Bolu", employeeCount: 180, point: 140, image: AuthenticationService.verifiedUser.image));
-    list.add(Branch(id: "6", name: "Ataşehir", employeeCount: 145, image: AuthenticationService.verifiedUser.image));
-    return list;
-  }
-
-  List<Branch> getTopBranchPointList(){
-    var branchList = new List<Branch>();
-    var branchPointList = getBoardPointList().take(3).toList();
-    for (var branch in branchPointList) {
-      branchList.add(getBranch(branch.id));
+  Future<List<BranchLeaderBoard>> getBoardPointList() async {
+    Results res = await DbConnection.query("SELECT * FROM branchleaderboard where enddate IS NULL ORDER BY point");
+    List<BranchLeaderBoard> list = [];
+    if (res.length > 0) {
+      forEach(res, (element) {
+        list.add(BranchLeaderBoard(branchId: element[0], point: element[1]));
+      });
     }
+    return list;
+  }
+
+  Future<List<Branch>> getBranchList() async {
+    Results res = await DbConnection.query("SELECT branch.*, bl.point FROM branch, branchleaderboard as bl WHERE branch.id = bl.branchid AND bl.enddate IS NULL");
+    List<Branch> list = [];
+    if (res.length > 0) {
+      for (Row element in res) {
+        list.add(Branch(
+          id: element[0],
+          name: element[1],
+          image: element[2] != null ? (await ImageRepository.instance.getImage64(element[2])) : element[2],
+          employeeCount: element[3],
+          color: element[4],
+          point: element[5],
+        ));
+      }
+    }
+    return list;
+  }
+
+  Future<List<Branch>> getTopBranchPointList() async {
+    var branchList = await getBranchList();
+    branchList.sort((a, b) => a.point.compareTo(b.point));
+    branchList = branchList.take(3).toList();
     return branchList;
   }
 
-  Branch getBranch(String id){
-    return getBranchList().singleWhere((element) => element.id == id);
+  Future<Branch> getBranch(String id) async {
+    Results res = await DbConnection.query(
+      "SELECT branch.*, bl.point FROM branch, branchleaderboard as bl WHERE branch.id = bl.branchid AND bl.enddate IS NULL AND branch.id = ?",
+      [id],
+    );
+    return Branch(
+      id: res.single[0],
+      name: res.single[1],
+      image: res.single[2] != null ? (await ImageRepository.instance.getImage64(res.single[2])) : res.single[2],
+      employeeCount: res.single[3],
+      color: res.single[4],
+      point: res.single[5],
+    );
   }
 }
