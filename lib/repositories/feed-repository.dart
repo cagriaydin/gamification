@@ -1,6 +1,7 @@
 import 'package:mysql1/mysql1.dart';
 import 'package:yorglass_ik/models/feed-item.dart';
 import 'package:yorglass_ik/models/feed-type.dart';
+import 'package:yorglass_ik/repositories/task-repository.dart';
 import 'package:yorglass_ik/services/authentication-service.dart';
 import 'package:yorglass_ik/services/db-connection.dart';
 
@@ -14,7 +15,7 @@ class FeedRepository {
     Results res = await DbConnection.query("SELECT * FROM feed WHERE id NOT IN (?) ORDER BY date, likecount", [AuthenticationService.verifiedUser.deletedFeeds]);
     List<FeedItem> feedItemList = [];
     if (res.length > 0) {
-      res.forEach((element) {
+      forEach(res, (element) {
         feedItemList.add(
           FeedItem(
             id: element[0],
@@ -54,7 +55,7 @@ class FeedRepository {
     Results res = await DbConnection.query("SELECT * FROM feedtype");
     List<FeedType> feedTypeList = [];
     if (res.length > 0) {
-      res.forEach((element) {
+      forEach(res, (element) {
         feedTypeList.add(
           FeedType(
             id: element[0],

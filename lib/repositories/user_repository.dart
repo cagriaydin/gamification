@@ -4,6 +4,7 @@ import 'package:mysql1/mysql1.dart';
 import 'package:yorglass_ik/models/user.dart';
 import 'package:yorglass_ik/repositories/image-repository.dart';
 import 'package:yorglass_ik/models/image.dart';
+import 'package:yorglass_ik/repositories/task-repository.dart';
 import 'package:yorglass_ik/services/authentication-service.dart';
 import 'package:yorglass_ik/services/db-connection.dart';
 
@@ -115,7 +116,7 @@ class UserRepository {
           'SELECT * FROM feedaction WHERE userid = ?', [user.id]);
       List<String> deletedFeeds = [];
       List<String> likedFeeds = [];
-      results.forEach((element) {
+      forEach(results, (element) {
         if (element["operation"] == 0) {
           deletedFeeds.add(element["feedid"]);
         } else {
