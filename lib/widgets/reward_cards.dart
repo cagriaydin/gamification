@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:yorglass_ik/models/reward.dart';
-import 'package:yorglass_ik/pages/task_list_page.dart';
-import 'package:yorglass_ik/services/authentication-service.dart';
+import 'package:yorglass_ik/pages/rewards_page.dart';
 import 'package:yorglass_ik/widgets/blur_widget.dart';
 import 'package:yorglass_ik/widgets/flag_avatar.dart';
 
@@ -91,6 +90,7 @@ class RewardCards extends StatelessWidget {
                   alignment: Alignment.center,
                   children: [
                     FlagAvatar(
+                      name: "",
                       point: reward.point,
                       imageUrl: reward.image,
                     ),
@@ -125,7 +125,7 @@ class RewardCards extends StatelessWidget {
       context,
       MaterialPageRoute(
         builder: (BuildContext context) {
-          return TaskListPage(user: AuthenticationService.verifiedUser,);
+          return RewardsPage();
         },
       ),
     );

@@ -130,6 +130,7 @@ class _BuildTaskState extends State<BuildTask> {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     return Container(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -137,12 +138,16 @@ class _BuildTaskState extends State<BuildTask> {
         children: [
           //TODO: add and show how much point task
           Text(widget.task.name),
-          Text('#günlük',style: TextStyle(fontStyle: FontStyle.italic,color: Colors.black54),),
+          Text(
+            '#günlük',
+            style:
+                TextStyle(fontStyle: FontStyle.italic, color: Colors.black54),
+          ),
           GestureDetector(
-            onLongPress: () => setState(() => currentCount++),
+            onLongPress: () => stepComplete(),
             behavior: HitTestBehavior.opaque,
             child: StepperLinearIndicator(
-              width: 200,
+              width: size.width / 2,
               height: 20,
               stepCount: widget.task.interval,
               currentCount: currentCount,
@@ -152,6 +157,16 @@ class _BuildTaskState extends State<BuildTask> {
       ),
     );
   }
+
+  void stepComplete() {
+    if (widget.task.interval > currentCount) {
+      setState(() => currentCount++);
+    } else if (widget.task.interval <= currentCount) {
+      taskComplete();
+    }
+  }
+
+  void taskComplete() {}
 }
 
 class StepperLinearIndicator extends StatelessWidget {
@@ -166,12 +181,14 @@ class StepperLinearIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    num paddingNodeWidth = 10;
-    final stepWidth = (width) / stepCount;
+    num paddingNodeWidth = (width / stepCount) / 3;
+    final lose = (stepCount - 2) * paddingNodeWidth;
+    num stepWidth = (width + lose) / stepCount;
 
     return Container(
       width: width,
       height: height,
+//      padding: EdgeInsets.all(5),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(90)),
         border: Border.all(
@@ -185,13 +202,14 @@ class StepperLinearIndicator extends StatelessWidget {
             Positioned(
               top: 0,
               bottom: 0,
-              left: i * stepWidth - (i * paddingNodeWidth),
+              left: left(i, stepWidth, paddingNodeWidth),
               child: Container(
                 width: stepWidth + paddingNodeWidth,
                 height: height,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(90)),
                   border: Border.all(
+                    width: .5,
                     color: Color(0xff54B4BA),
                   ),
                   gradient: LinearGradient(
@@ -204,6 +222,9 @@ class StepperLinearIndicator extends StatelessWidget {
       ),
     );
   }
+
+  double left(int i, double stepWidth, num paddingNodeWidth) =>
+      i * stepWidth - (i * paddingNodeWidth);
 }
 
 typedef Widget TaskBuilder(context, index);
@@ -230,7 +251,8 @@ class _TaskListBuilderState extends State<TaskListBuilder>
 
   OverlayEntry overlayEntry;
 
-  ValueNotifier<Offset> offsetNotifier = ValueNotifier<Offset>(Offset.zero);
+  ValueNotifier<AnimateOffset> offsetNotifier =
+      ValueNotifier<AnimateOffset>(AnimateOffset(Offset.zero, false));
 
   List<Offset> currentOffsets = [];
 
@@ -239,6 +261,8 @@ class _TaskListBuilderState extends State<TaskListBuilder>
   int position = 0;
 
   var decodedImage;
+
+  Offset initialPos = Offset.zero;
 
   @override
   void initState() {
@@ -266,13 +290,22 @@ class _TaskListBuilderState extends State<TaskListBuilder>
       controller: controller,
       child: Container(
         key: customPaintKey,
-        child: CustomPaint(
-          foregroundPainter: MyCustomPainter(
-            length: widget.length,
-            getMaxLength: getMaxLength,
-            getOffsets: getOffsets,
-          ),
-          size: getSize(size),
+        child: AnimatedBuilder(
+          builder: (context, child) {
+            final offset = controller.offset;
+            return CustomPaint(
+              foregroundPainter: MyCustomPainter(
+                scrollPosition: offset,
+                taskListBuilderSize: size / 1.2,
+                length: widget.length,
+                getMaxLength: getMaxLength,
+                getOffsets: getOffsets,
+              ),
+              size: getSize(size),
+              child: child,
+            );
+          },
+          animation: controller,
           child: Container(
             width: getSize(size).width,
             height: getSize(size).height,
@@ -285,10 +318,13 @@ class _TaskListBuilderState extends State<TaskListBuilder>
                 for (int i = 0; i < widget.length; i++)
                   Expanded(
                     child: GestureDetector(
+                      behavior: HitTestBehavior.opaque,
                       onTap: () => animateToIndex(i),
                       child: Padding(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 36, vertical: 8),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 36,
+                          vertical: 8,
+                        ),
                         child: widget.taskBuilder(context, i),
                       ),
                     ),
@@ -301,35 +337,34 @@ class _TaskListBuilderState extends State<TaskListBuilder>
     );
   }
 
-  void animateToIndex(int animateIndex) {
+  Future<void> animateToIndex(int animateIndex) async {
     if (mounted) {
-      setState(() {
+      if (position < currentOffsets.length) {
+        Offset offset = currentOffsets.elementAt(position);
+        offsetNotifier.value = AnimateOffset(offset ?? Offset.zero, true);
         position = animateIndex;
-        if (position < currentOffsets.length) {
-          final offset = currentOffsets.elementAt(position);
-          offsetNotifier.value = offset ?? Offset.zero;
-          controller.animateTo(
-            offset.dy,
-            duration: Duration(milliseconds: 600),
-            curve: Curves.easeOut,
-          );
-        }
-      });
+        offset = currentOffsets.elementAt(position);
+        await Future.delayed(Duration(milliseconds: 600));
+        offsetNotifier.value = AnimateOffset(offset ?? Offset.zero, false);
+        controller.animateTo(
+          offset.dy,
+          duration: Duration(milliseconds: 600),
+          curve: Curves.easeOut,
+        );
+      }
     }
   }
 
   Size getSize(Size size) => customPaintSize ?? size;
 
   getMaxLength(maxLength) {
-    RenderBox renderBox = customPaintKey.currentContext.findRenderObject();
-    var global = renderBox.localToGlobal(Offset.zero);
-    print(global.dx);
-    print(global.dy);
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      setState(() {
-        customPaintSize = Size(customPaintSize.width, maxLength);
+    if (maxLength != customPaintSize.height) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        setState(() {
+          customPaintSize = Size(customPaintSize.width, maxLength);
+        });
       });
-    });
+    }
 //    if (maxLength > customPaintSize.height) {}
   }
 
@@ -337,6 +372,8 @@ class _TaskListBuilderState extends State<TaskListBuilder>
   void afterFirstLayout(BuildContext context) {
     final size = MediaQuery.of(context).size;
     customPaintSize = size;
+    final box = customPaintKey.currentContext.findRenderObject() as RenderBox;
+    initialPos = box.localToGlobal(Offset.zero);
   }
 
   overlayBuilder(BuildContext context) {
@@ -346,21 +383,27 @@ class _TaskListBuilderState extends State<TaskListBuilder>
       //overlayOffset = pos;
       return ValueListenableBuilder(
         valueListenable: offsetNotifier,
-        builder: (BuildContext context, Offset value, Widget child) {
+        builder: (BuildContext context, AnimateOffset value, Widget child) {
           return AnimatedBuilder(
             animation: controller,
             builder: (BuildContext context, Widget child) {
               final box = keyContext.findRenderObject() as RenderBox;
-              final Offset pos = box.localToGlobal(value);
+              final Offset pos = box.localToGlobal(value.offset);
+              var bool = (initialPos.dy > (pos.dy) || value.animate);
               //final top = box.size.height - 2000;
               return Positioned(
                 top: pos.dy - 40,
                 left: pos.dx - 50,
-                child: ShadowAvatar(
-                  imageUrl: decodedImage,
+                child: AnimatedOpacity(
+                  duration: Duration(milliseconds: 300),
+                  opacity: bool ? 0 : 1,
+                  child: child,
                 ),
               );
             },
+            child: ShadowAvatar(
+              imageUrl: decodedImage,
+            ),
           );
         },
       );
@@ -372,20 +415,49 @@ class _TaskListBuilderState extends State<TaskListBuilder>
   }
 }
 
+class AnimateOffset {
+  final Offset offset;
+  final bool animate;
+
+  AnimateOffset(this.offset, this.animate);
+}
+
 class MyCustomPainter extends CustomPainter {
   final int length;
   final Function getMaxLength;
   final Function getOffsets;
 
-  MyCustomPainter({this.getMaxLength, this.getOffsets, @required this.length});
+  final Size taskListBuilderSize;
+
+  final double scrollPosition;
+
+  MyCustomPainter({
+    this.scrollPosition,
+    this.getMaxLength,
+    this.getOffsets,
+    @required this.length,
+    this.taskListBuilderSize,
+  });
 
   @override
   void paint(Canvas canvas, Size size) {
     Paint brush = new Paint()
-      ..color = Color(0xff3FC1C9)
+      ..color = Color(0xff3FC1C9).withOpacity(.5)
       ..strokeCap = StrokeCap.round
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 4;
+      ..shader = LinearGradient(colors: <Color>[
+        Colors.white,
+//        Color(0xff26315F),
+        Color(0xff2FB4C2),
+        Colors.white
+      ], begin: Alignment.topCenter, end: Alignment.bottomCenter)
+          .createShader(Rect.fromLTWH(
+        0.0,
+        scrollPosition,
+        taskListBuilderSize.width,
+        taskListBuilderSize.height,
+      ))
+      ..strokeWidth = 15;
 
     final p = size.width / 5;
     final lastP = size.width - p;
