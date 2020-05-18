@@ -380,7 +380,7 @@ class _TaskListBuilderState extends State<TaskListBuilder>
             builder: (BuildContext context, Widget child) {
               final box = keyContext.findRenderObject() as RenderBox;
               final Offset pos = box.localToGlobal(value.offset);
-              var bool = (initialPos.dy > (pos.dy) || value.animate);
+              var bool = (initialPos.dy + 50 > (pos.dy) || value.animate);
               //final top = box.size.height - 2000;
               return Positioned(
                 top: pos.dy - 40,
