@@ -181,6 +181,9 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
                                             )
                                           : BoxDecoration(),
                                       child: RankContent(
+                                        selfContent: item.userId ==
+                                            AuthenticationService
+                                                .verifiedUser.id,
                                         title: userList
                                             .singleWhere((element) =>
                                                 element.id == item.userId)
@@ -242,6 +245,9 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
                                           18, 0, 18, 0),
                                       child: Container(
                                         child: RankContent(
+                                            selfContent: item.branchId ==
+                                                AuthenticationService
+                                                    .verifiedUser.branchId,
                                             point: item.point,
                                             subTitle: branchList
                                                 .singleWhere((element) =>
