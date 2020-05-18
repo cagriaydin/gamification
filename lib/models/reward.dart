@@ -1,11 +1,21 @@
-enum RewardType {forPeople, forAnimals, forSelf}
+enum RewardType { forPeople, forAnimals, forSelf }
 
 class Reward {
+  final String id;
+  final String title;
+
   final String imageId;
   final int point;
-  RewardType type;
+  final String itemType;
 
   final int likeCount;
 
-  Reward({this.imageId, this.point, this.likeCount = 112, this.type});
+  Reward({
+    this.id,
+    this.title,
+    this.imageId,
+    this.point,
+    this.likeCount = 112,
+    this.itemType,
+  });
 }

@@ -23,6 +23,7 @@ dependencies:
   excel: ^1.0.2
   path_provider: ^1.6.7
   url_launcher: ^5.4.7
+  flutter_swiper: ^1.1.6
 
   mysql1: 0.17.1
   uuid: 2.0.4
