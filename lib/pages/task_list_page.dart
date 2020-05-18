@@ -46,7 +46,15 @@ class _TaskListPageState extends State<TaskListPage> {
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              GradientText('%' + (widget.user.percentage ?? 0).toString()),
+              Row(
+                children: [
+                  GradientText(
+                    '%',
+                    fontWeight: FontWeight.w300,
+                  ),
+                  GradientText((widget.user.percentage ?? 0).toString()),
+                ],
+              ),
               BuildUserInfo(
                 user: widget.user,
               ),
@@ -54,7 +62,10 @@ class _TaskListPageState extends State<TaskListPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   GradientText((widget.user.point ?? 0).toString()),
-                  GradientText('puan'),
+                  GradientText(
+                    'puan',
+                    fontWeight: FontWeight.w300,
+                  ),
                 ],
               )
             ],
@@ -99,14 +110,20 @@ class _TaskListPageState extends State<TaskListPage> {
   ) {
     return BuildTask(
       userTask: userTasks.elementAt(index),
+      isLeft: index % 2 == 0,
     );
   }
 }
 
 class BuildTask extends StatefulWidget {
   final UserTask userTask;
+  final bool isLeft;
 
-  const BuildTask({Key key, this.userTask}) : super(key: key);
+  const BuildTask({
+    Key key,
+    this.userTask,
+    this.isLeft = true,
+  }) : super(key: key);
 
   @override
   _BuildTaskState createState() => _BuildTaskState();
@@ -123,11 +140,15 @@ class _BuildTaskState extends State<BuildTask> {
           child: Stack(
             children: [
               Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: widget.isLeft
+                    ? CrossAxisAlignment.start
+                    : CrossAxisAlignment.end,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  //TODO: add and show how much point task
-                  Text(widget.userTask.task.name),
+                  Text(
+                    widget.userTask.task.name,
+                    textAlign: widget.isLeft ? TextAlign.left : TextAlign.right,
+                  ),
                   Text(
                     getIntervalText(),
                     style: TextStyle(
@@ -145,18 +166,32 @@ class _BuildTaskState extends State<BuildTask> {
                   ),
                 ],
               ),
-              Positioned(
-                bottom: 8,
-                right: 8,
-                child: Transform.rotate(
-                  angle: -math.pi / 6,
-                  child: GradientText(
-                    '+' + widget.userTask.point.toString() + '\n puan',
-                    disabled: widget.userTask.complete == 0,
-                    fontSize: 20,
+              if (!widget.isLeft)
+                Positioned(
+                  bottom: 2,
+                  left: 8,
+                  child: Transform.rotate(
+                    angle: -math.pi / 6,
+                    child: GradientText(
+                      '+' + widget.userTask.point.toString() + '\n puan',
+                      disabled: widget.userTask.complete == 0,
+                      fontSize: 20,
+                    ),
                   ),
                 ),
-              )
+              if (widget.isLeft)
+                Positioned(
+                  bottom: 2,
+                  right: 8,
+                  child: Transform.rotate(
+                    angle: -math.pi / 6,
+                    child: GradientText(
+                      '+' + widget.userTask.point.toString() + '\n puan',
+                      disabled: widget.userTask.complete == 0,
+                      fontSize: 20,
+                    ),
+                  ),
+                )
             ],
           ),
         ),

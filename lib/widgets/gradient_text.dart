@@ -4,12 +4,14 @@ class GradientText extends StatelessWidget {
   final String text;
   final double fontSize;
   final bool disabled;
+  final FontWeight fontWeight;
 
   const GradientText(
     this.text, {
     Key key,
     this.fontSize = 35,
     this.disabled = false,
+    this.fontWeight,
   }) : super(key: key);
 
   @override
@@ -32,7 +34,7 @@ class GradientText extends StatelessWidget {
         style: TextStyle(
           color: Colors.white,
           fontSize: fontSize,
-          fontWeight: FontWeight.bold,
+          fontWeight: fontWeight ?? FontWeight.w500,
           shadows: <Shadow>[
             Shadow(
               blurRadius: 5.0,
