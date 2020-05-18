@@ -2,9 +2,12 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:yorglass_ik/models/content_option.dart';
+import 'package:yorglass_ik/models/leader_board_item.dart';
 import 'package:yorglass_ik/models/reward.dart';
 import 'package:yorglass_ik/models/user.dart';
 import 'package:yorglass_ik/pages/leader_board_page.dart';
+import 'package:yorglass_ik/pages/rewards_page.dart';
+import 'package:yorglass_ik/repositories/user_repository.dart';
 import 'package:yorglass_ik/pages/task_list_page.dart';
 import 'package:yorglass_ik/widgets/blur_background_image.dart';
 import 'package:yorglass_ik/widgets/build_user_info.dart';
@@ -25,6 +28,8 @@ class ProfilePage extends StatelessWidget {
 
   ProfilePage({Key key, @required this.menuFunction, @required this.user})
       : super(key: key);
+
+  List<User> userTopList = UserRepository.instance.getTopUserPointList();
 
   @override
   Widget build(BuildContext context) {
@@ -113,7 +118,23 @@ class ProfilePage extends StatelessWidget {
                             child: GestureDetector(
                               onTap: () => pushLeaderBoardPage(context),
                               child: LeaderBoard(
-                                users: [user, user, user],
+                                list: [
+                                  LeaderBoardItem(
+                                    image: userTopList[0].image,
+                                    point: userTopList[0].point,
+                                    name: userTopList[0].name,
+                                  ),
+                                  LeaderBoardItem(
+                                    image: userTopList[1].image,
+                                    point: userTopList[1].point,
+                                    name: userTopList[1].name,
+                                  ),
+                                  LeaderBoardItem(
+                                    image: userTopList[2].image,
+                                    point: userTopList[2].point,
+                                    name: userTopList[2].name,
+                                  ),
+                                ],
                               ),
                             ),
                           ),
@@ -182,7 +203,23 @@ class ProfilePage extends StatelessWidget {
         builder: (BuildContext context) {
           return LeaderBoardPage(
             leaderBoard: LeaderBoard(
-              users: [user, user, user],
+              list: [
+                LeaderBoardItem(
+                  image: userTopList[0].image,
+                  point: userTopList[0].point,
+                  name: userTopList[0].name,
+                ),
+                LeaderBoardItem(
+                  image: userTopList[1].image,
+                  point: userTopList[1].point,
+                  name: userTopList[1].name,
+                ),
+                LeaderBoardItem(
+                  image: userTopList[2].image,
+                  point: userTopList[2].point,
+                  name: userTopList[2].name,
+                ),
+              ],
             ),
           );
         },
