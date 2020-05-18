@@ -26,9 +26,27 @@ class TaskListPage extends StatefulWidget {
 class _TaskListPageState extends State<TaskListPage> {
   List<UserTask> userTasks;
 
+  ScrollController controller;
+
+  final double kEffectHeight = 100;
+
+  @override
+  void initState() {
+    controller = ScrollController();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
+    final padding = MediaQuery.of(context).padding;
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         leading: GestureDetector(
@@ -42,37 +60,83 @@ class _TaskListPageState extends State<TaskListPage> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              Row(
-                children: [
-                  GradientText(
-                    '%',
-                    fontWeight: FontWeight.w300,
+          AnimatedBuilder(
+            animation: controller,
+            builder: (BuildContext context, Widget child) {
+              final val = (kEffectHeight - controller.offset * 0.3)
+                  .clamp(0.0, kEffectHeight);
+              if (val < 100) {
+                return Container(
+                  height: controller.hasClients
+                      ? val < 125 ? 125 : val
+                      : kEffectHeight,
+                  padding: EdgeInsets.only(top: padding.top, bottom: 12),
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.all(Radius.circular(16)),
+                      boxShadow: [
+                        BoxShadow(
+                            color: Color(0xff54B4BA),
+                            offset: Offset(2, 3),
+                            blurRadius: 4,
+                            spreadRadius: 2)
+                      ]),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      Column(
+                        children: [
+                          GradientText((widget.user.point ?? 0).toString()),
+                          GradientText(
+                            'puan',
+                            fontWeight: FontWeight.w300,
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
-                  GradientText((widget.user.percentage ?? 0).toString()),
-                ],
-              ),
-              BuildUserInfo(
-                user: widget.user,
-              ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  GradientText((widget.user.point ?? 0).toString()),
-                  GradientText(
-                    'puan',
-                    fontWeight: FontWeight.w300,
-                  ),
-                ],
-              )
-            ],
-          ),
-          Image.asset(
-            'assets/task_divider.png',
-            fit: BoxFit.fitWidth,
+                );
+              } else
+                return child;
+            },
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Row(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    Row(
+                      children: [
+                        GradientText(
+                          '%',
+                          fontWeight: FontWeight.w300,
+                        ),
+                        GradientText((widget.user.percentage ?? 0).toString()),
+                      ],
+                    ),
+                    BuildUserInfo(
+                      user: widget.user,
+                    ),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        GradientText((widget.user.point ?? 0).toString()),
+                        GradientText(
+                          'puan',
+                          fontWeight: FontWeight.w300,
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+                Image.asset(
+                  'assets/task_divider.png',
+                  fit: BoxFit.fitWidth,
+                ),
+              ],
+            ),
           ),
           Expanded(
             child: FutureBuilder<List<UserTask>>(
@@ -88,6 +152,7 @@ class _TaskListPageState extends State<TaskListPage> {
                   userTasks = snapshot.data;
                   if (userTasks != null && userTasks.isNotEmpty) {
                     return TaskListBuilder(
+                      controller: controller,
                       length: snapshot.data.length,
                       taskBuilder: taskBuilder,
                     );
@@ -110,7 +175,7 @@ class _TaskListPageState extends State<TaskListPage> {
   ) {
     return BuildTask(
       userTask: userTasks.elementAt(index),
-      isLeft: index % 2 == 0,
+      isLeft: index % 2 != 0,
     );
   }
 }
@@ -149,10 +214,16 @@ class _BuildTaskState extends State<BuildTask> {
                     widget.userTask.task.name,
                     textAlign: widget.isLeft ? TextAlign.left : TextAlign.right,
                   ),
+                  SizedBox(
+                    height: 8,
+                  ),
                   Text(
                     getIntervalText(),
                     style: TextStyle(
                         fontStyle: FontStyle.italic, color: Colors.black54),
+                  ),
+                  SizedBox(
+                    height: 8,
                   ),
                   GestureDetector(
                     onLongPress: () => stepComplete(),
@@ -284,11 +355,13 @@ typedef Widget TaskBuilder(context, index);
 class TaskListBuilder extends StatefulWidget {
   final int length;
   final TaskBuilder taskBuilder;
+  final ScrollController controller;
 
   const TaskListBuilder({
     Key key,
     @required this.length,
     @required this.taskBuilder,
+    @required this.controller,
   }) : super(key: key);
 
   @override
@@ -308,7 +381,7 @@ class _TaskListBuilderState extends State<TaskListBuilder>
 
   List<Offset> currentOffsets = [];
 
-  ScrollController controller = ScrollController();
+  ScrollController get controller => widget.controller;
 
   int position = 0;
 
