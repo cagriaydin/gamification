@@ -70,7 +70,7 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
                 options: options,
                 contentSelectorType: ContentSelectorType.tab,
                 activeColor: Colors.white,
-                isLeaderBoard: true, 
+                isLeaderBoard: true,
                 disabledColor: Colors.white.withOpacity(.6),
               ),
             ),
@@ -162,21 +162,41 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
                                   return Padding(
                                     padding:
                                         const EdgeInsets.fromLTRB(18, 0, 18, 0),
-                                    child: RankContent(
-                                      title: userList
-                                          .singleWhere((element) =>
-                                              element.id == item.userId)
-                                          .name,
-                                      subTitle: branchList
-                                          .singleWhere((element) =>
-                                              element.id ==
-                                              (userList
-                                                  .singleWhere((element) =>
-                                                      element.id == item.userId)
-                                                  .branchId))
-                                          .name,
-                                      rank: index + 4,
-                                      point: item.point,
+                                    child: Container(
+                                      decoration: item.userId ==
+                                              AuthenticationService
+                                                  .verifiedUser.id
+                                          ? BoxDecoration(
+                                              color: Colors.white,
+                                              borderRadius:
+                                                  BorderRadius.circular(12),
+                                              boxShadow: <BoxShadow>[
+                                                BoxShadow(
+                                                  color: Color(0xFFC2F6FC),
+                                                  spreadRadius: 0,
+                                                  blurRadius: 5,
+                                                  offset: Offset(0, 4),
+                                                ),
+                                              ],
+                                            )
+                                          : BoxDecoration(),
+                                      child: RankContent(
+                                        title: userList
+                                            .singleWhere((element) =>
+                                                element.id == item.userId)
+                                            .name,
+                                        subTitle: branchList
+                                            .singleWhere((element) =>
+                                                element.id ==
+                                                (userList
+                                                    .singleWhere((element) =>
+                                                        element.id ==
+                                                        item.userId)
+                                                    .branchId))
+                                            .name,
+                                        rank: index + 4,
+                                        point: item.point,
+                                      ),
                                     ),
                                   );
                                 }),
@@ -218,42 +238,34 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
                                   BranchLeaderBoard item =
                                       branchLeaderList.skip(3).elementAt(index);
                                   return Padding(
-                                    padding:
-                                        const EdgeInsets.fromLTRB(18, 0, 18, 0),
-                                    child: item.branchId ==
-                                            AuthenticationService
-                                                .verifiedUser.branchId
-                                        ? Container(
-                                            child: RankContent(
-                                                point: item.point,
-                                                subTitle: branchList
-                                                    .singleWhere((element) =>
-                                                        element.id ==
-                                                        item.branchId)
-                                                    .name,
-                                                rank: index + 4),
-                                            decoration: BoxDecoration(
-                                              color: Colors.white,
-                                              borderRadius:
-                                                  BorderRadius.circular(12),
-                                              boxShadow: <BoxShadow>[
-                                                BoxShadow(
-                                                  color: Color(0xFFC2F6FC),
-                                                  spreadRadius: 0,
-                                                  blurRadius: 5,
-                                                  offset: Offset(0, 4),
-                                                ),
-                                              ],
-                                            ),
-                                          )
-                                        : RankContent(
+                                      padding: const EdgeInsets.fromLTRB(
+                                          18, 0, 18, 0),
+                                      child: Container(
+                                        child: RankContent(
                                             point: item.point,
                                             subTitle: branchList
                                                 .singleWhere((element) =>
                                                     element.id == item.branchId)
                                                 .name,
                                             rank: index + 4),
-                                  );
+                                        decoration: item.branchId ==
+                                                AuthenticationService
+                                                    .verifiedUser.branchId
+                                            ? BoxDecoration(
+                                                color: Colors.white,
+                                                borderRadius:
+                                                    BorderRadius.circular(12),
+                                                boxShadow: <BoxShadow>[
+                                                  BoxShadow(
+                                                    color: Color(0xFFC2F6FC),
+                                                    spreadRadius: 0,
+                                                    blurRadius: 5,
+                                                    offset: Offset(0, 4),
+                                                  ),
+                                                ],
+                                              )
+                                            : BoxDecoration(),
+                                      ));
                                 }),
                           )
                         ],
