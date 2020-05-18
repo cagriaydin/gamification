@@ -210,7 +210,7 @@ class TaskRepository {
     if (res != null && res.affectedRows > 0) {
       if (task.complete == 1) {
         await DbConnection.query(
-          "UPDATE leaderboard SET point = point + ? WHERE userid = ?",
+          "UPDATE leaderboard SET point = point + ? WHERE userid = ? AND enddate IS NULL",
           [
             task.point,
             AuthenticationService.verifiedUser.id,
