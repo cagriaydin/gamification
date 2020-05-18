@@ -18,10 +18,10 @@ class GradientText extends StatelessWidget {
       shaderCallback: (Rect bounds) {
         return LinearGradient(
           colors: <Color>[
-            Color(0xff2FB4C2),
-            Color(0xff2FB4C2),
-            Color(0xff26315F),
-            Color(0xff26315F),
+            disabled ? Color(0xff2FB4C2).withOpacity(.2) : Color(0xff2FB4C2),
+            disabled ? Color(0xff2FB4C2).withOpacity(.2) : Color(0xff2FB4C2),
+            disabled ? Color(0xff26315F).withOpacity(.2) : Color(0xff26315F),
+            disabled ? Color(0xff26315F).withOpacity(.2) : Color(0xff26315F),
           ],
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,

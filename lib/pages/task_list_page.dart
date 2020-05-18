@@ -152,6 +152,7 @@ class _BuildTaskState extends State<BuildTask> {
                   angle: -math.pi / 6,
                   child: GradientText(
                     '+' + widget.userTask.point.toString() + '\n puan',
+                    disabled: TaskRepository.instance.canUpdate(widget.userTask),
                     fontSize: 20,
                   ),
                 ),
@@ -535,18 +536,18 @@ class ShadowAvatar extends StatelessWidget {
             color: Color(0xff3FC1C9),
             boxShadow: [
               BoxShadow(
-                  color: Color(0xff3FC1C9),
+                  color: Color(0xff3FC1C9).withOpacity(.8),
                   offset: Offset(0, 3),
-                  blurRadius: 4,
-                  spreadRadius: 1.2),
+                  blurRadius: 10,
+                  spreadRadius: 1.5),
               BoxShadow(
-                  color: Color(0xff3FC1C9),
+                  color: Color(0xff3FC1C9).withOpacity(.5),
                   offset: Offset(0, -3),
-                  blurRadius: 4,
-                  spreadRadius: 1.2),
+                  blurRadius: 10,
+                  spreadRadius: 1.5),
             ]),
         child: Padding(
-          padding: const EdgeInsets.all(2.0),
+          padding: const EdgeInsets.all(4.0),
           child: ClipOval(
             clipBehavior: Clip.antiAlias,
             child: Image.memory(
