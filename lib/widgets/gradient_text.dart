@@ -32,12 +32,12 @@ class GradientText extends StatelessWidget {
         style: TextStyle(
           color: Colors.white,
           fontSize: fontSize,
-          fontWeight: FontWeight.bold,
+          fontWeight: FontWeight.w500,
           shadows: <Shadow>[
             Shadow(
               blurRadius: 5.0,
               offset: Offset(1, 1),
-              color: Color(0xff2FB4C2).withOpacity(.8),
+              color: Color(0xff2FB4C2),
             ),
           ],
         ),

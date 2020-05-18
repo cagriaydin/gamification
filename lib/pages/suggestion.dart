@@ -1,4 +1,8 @@
+import 'dart:convert';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:yorglass_ik/helpers/popup_helper.dart';
 import 'package:yorglass_ik/models/suggestion.dart';
 import 'package:yorglass_ik/repositories/suggestion_repository.dart';
 import 'package:yorglass_ik/services/authentication-service.dart';
@@ -12,7 +16,7 @@ class SuggestionPage extends StatefulWidget {
 }
 
 class _SuggestionPageState extends State<SuggestionPage> {
-  Suggestion suggestion;
+  Suggestion suggestion = new Suggestion();
 
   final TextEditingController titleController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
@@ -94,9 +98,14 @@ class _SuggestionPageState extends State<SuggestionPage> {
                                 width: 100,
                                 height: 100,
                                 child: CircleAvatar(
-                                  backgroundImage: NetworkImage(
-                                    AuthenticationService.verifiedUser.image,
-                                  ),
+                                  backgroundImage: AuthenticationService
+                                              .verifiedUser.image ==
+                                          null
+                                      ? AssetImage("assets/default-profile.png")
+                                      : MemoryImage(
+                                          base64.decode(AuthenticationService
+                                              .verifiedUser.image),
+                                        ),
                                 ),
                               ),
                               SizedBox(height: 10),
@@ -108,13 +117,7 @@ class _SuggestionPageState extends State<SuggestionPage> {
                               ),
                               SizedBox(height: 5),
                               Text(
-                                AuthenticationService.verifiedUser.branchName[0]
-                                        .toUpperCase() +
-                                    AuthenticationService
-                                        .verifiedUser.branchName
-                                        .substring(1)
-                                        .toLowerCase() +
-                                    ' İşletmesi',
+                                "das",
                                 style: TextStyle(
                                   fontSize: 12,
                                   color: Color(0xff4BADBB).withOpacity(.6),
@@ -138,6 +141,7 @@ class _SuggestionPageState extends State<SuggestionPage> {
                     Padding(
                       padding: const EdgeInsets.fromLTRB(20, 10, 0, 0),
                       child: TextField(
+                        onChanged: (a) => setState(() {}),
                         maxLength: 28,
                         cursorColor: Colors.black,
                         keyboardType: TextInputType.text,
@@ -166,6 +170,7 @@ class _SuggestionPageState extends State<SuggestionPage> {
                     Padding(
                       padding: const EdgeInsets.fromLTRB(25, 10, 20, 0),
                       child: TextField(
+                        onChanged: (a) => setState(() {}),
                         keyboardType: TextInputType.text,
                         maxLengthEnforced: false,
                         maxLength: 500,
@@ -195,8 +200,14 @@ class _SuggestionPageState extends State<SuggestionPage> {
             ),
             OutcomeButton(
               text: "Önerimi Paylaş",
-              action: () => sendSuggestion(),
-              color: Color(0xFF3FC1C9),
+              action: () => titleController.text.isNotEmpty &&
+                      descriptionController.text.isNotEmpty
+                  ? sendSuggestion()
+                  : null,
+              color: titleController.text.isNotEmpty &&
+                      descriptionController.text.isNotEmpty
+                  ? Color(0xFF3FC1C9)
+                  : Color(0xFF3FC1C9).withOpacity(.2),
             )
           ],
         )),
@@ -205,13 +216,22 @@ class _SuggestionPageState extends State<SuggestionPage> {
   }
 
   sendSuggestion() {
-    if (titleController.text.isNotEmpty &&
-        descriptionController.text.isNotEmpty &&
-        descriptionController.text.length >= 10) {
+    if (descriptionController.text.length >= 10) {
       suggestion.title = titleController.text;
       suggestion.description = descriptionController.text;
       SuggestionRepository.instance.sendSuggestion(suggestion);
+      return PopupHelper().showPopup(
+        context,
+        Text(
+          "Önerini bizimle paylaştığın için teşekkür ederiz !",
+        ),
+      );
     }
-    return;
+    return PopupHelper().showPopup(
+      context,
+      Text(
+        "Önerin çok kısa, biraz daha detaylandırır mısın?",
+      ),
+    );
   }
 }
