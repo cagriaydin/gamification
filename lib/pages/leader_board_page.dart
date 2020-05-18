@@ -33,14 +33,15 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
   List<BranchLeaderBoard> branchLeaderList = [];
   List<Branch> branchList = [];
   List<Branch> branchTopList = [];
-
-  List<UserLeaderBoard> userLeaderList = UserRepository.instance.getUserPointList();
-  List<User> userList = UserRepository.instance.getUserList();
+  List<UserLeaderBoard> userLeaderList = [];
+  List<User> userList = [];
   @override
   void initState() {
     BranchRepository.instance.getBoardPointList().then((value) => setState(() => branchLeaderList = value));
     BranchRepository.instance.getTopBranchPointList().then((value) => setState(() => branchTopList = value));
     BranchRepository.instance.getBranchList().then((value) => setState(() => branchList = value));
+    UserRepository.instance.getUserPointList().then((value) => setState(() => userLeaderList = value));
+    UserRepository.instance.getUserList().then((value) => setState(() => userList = value));
     super.initState();
   }
 
@@ -181,17 +182,17 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
                                 LeaderBoardItem(
                                   image: branchTopList[0].image,
                                   point: branchTopList[0].point,
-                                  name: branchTopList[0].name + " İşletmesi",
+                                  name: branchTopList[0].name,
                                 ),
                                 LeaderBoardItem(
                                   image: branchTopList[1].image,
                                   point: branchTopList[1].point,
-                                  name: branchTopList[1].name + " İşletmesi",
+                                  name: branchTopList[1].name,
                                 ),
                                 LeaderBoardItem(
                                   image: branchTopList[2].image,
                                   point: branchTopList[2].point,
-                                  name: branchTopList[2].name + " İşletmesi",
+                                  name: branchTopList[2].name,
                                 ),
                               ],
                             ),

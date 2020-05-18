@@ -82,7 +82,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                     SizedBox(height: 16),
                     Text(
-                      AuthenticationService.verifiedUser.branchName[0].toUpperCase() + AuthenticationService.verifiedUser.branchName.substring(1).toLowerCase() + ' İşletmesi',
+                      AuthenticationService.verifiedUser.branchName,
                       style: TextStyle(fontSize: 18, color: Color(0xff4BADBB)),
                     ),
                     SizedBox(

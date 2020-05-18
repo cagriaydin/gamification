@@ -102,7 +102,7 @@ class _RankContentState extends State<RankContent> {
                           ),
                           Flexible(
                             child: Text(
-                              widget.subTitle + " İşletmesi",
+                              widget.subTitle,
                               textAlign: TextAlign.left,
                               style: TextStyle(
                                 color: Color(0xFF4BADBB).withOpacity(.6),
@@ -119,7 +119,7 @@ class _RankContentState extends State<RankContent> {
                     children: [
                       Flexible(
                         child: Text(
-                          widget.subTitle + " İşletmesi",
+                          widget.subTitle,
                           style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.w300,
