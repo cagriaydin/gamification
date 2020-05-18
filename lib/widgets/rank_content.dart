@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:yorglass_ik/services/authentication-service.dart';
 
@@ -62,7 +64,12 @@ class _RankContentState extends State<RankContent> {
                   child: CircleAvatar(
                     radius: getRadius(size),
                     backgroundImage:
-                        NetworkImage(AuthenticationService.verifiedUser.image),
+                        AuthenticationService.verifiedUser.image == null
+                            ? AssetImage("assets/default-profile.png")
+                            : MemoryImage(
+                                base64.decode(
+                                    AuthenticationService.verifiedUser.image),
+                              ),
                   ),
                 ),
               ),

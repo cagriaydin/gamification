@@ -4,8 +4,6 @@
 
 import 'dart:convert';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
-
 Branch branchFromJson(String str) => Branch.fromJson(json.decode(str));
 
 String branchToJson(Branch data) => json.encode(data.toJson());
@@ -13,7 +11,8 @@ String branchToJson(Branch data) => json.encode(data.toJson());
 class Branch {
   String id;
   String name;
-  Blob image;
+  String image;
+  int point;
   // LatLng location;
   int employeeCount;
   String color;
@@ -21,6 +20,8 @@ class Branch {
   Branch({
     this.id,
     this.name,
+    this.point,
+    this.image,
     // this.location,
     this.employeeCount,
     this.color,
@@ -29,6 +30,8 @@ class Branch {
   factory Branch.fromJson(Map<String, dynamic> json) => Branch(
         id: json["id"],
         name: json["name"],
+        point: json["point"],
+        image: json["image"],
         // location: json["location"],
         employeeCount: json["employeeCount"],
         color: json["color"],
@@ -37,6 +40,8 @@ class Branch {
   Map<String, dynamic> toJson() => {
         "id": id,
         "name": name,
+        "point": point,
+        "image": image,
         // "location": location,
         "employeeCount": employeeCount,
         "color": color,
@@ -46,6 +51,8 @@ class Branch {
 // {
 //   "id":"",
 //   "name":"",
+//   "point":0,
+//   "image":"",
 //   "location":"",
 //   "color",
 //   "image",

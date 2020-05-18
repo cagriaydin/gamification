@@ -13,6 +13,7 @@ class ContentSelector extends StatefulWidget {
   final Function(ContentOption) onChange;
   final double fontSize;
   final CustomWidgetBuilder customWidgetBuilder;
+  final bool isLeaderBoard;
 
   final ContentSelectorType contentSelectorType;
 
@@ -24,6 +25,7 @@ class ContentSelector extends StatefulWidget {
     this.activeColor = const Color(0xff2FB4C2),
     this.disabledColor = Colors.black26,
     this.onChange,
+    this.isLeaderBoard = false,
     this.paddingHorizontal = 24,
     this.customWidgetBuilder,
     this.contentSelectorType = ContentSelectorType.feed,
@@ -115,14 +117,18 @@ class _ContentSelectorState extends State<ContentSelector>
                           )
                         : Container(
                             height: 1,
-                            width: 100,
+                            width: widget.isLeaderBoard ? 60 : 100,
                             decoration: BoxDecoration(
                               gradient: LinearGradient(
                                 colors: [
                                   contentOption.isActive
-                                      ? Colors.blue
+                                      ? (widget.isLeaderBoard
+                                          ? Colors.white
+                                          : Colors.blue)
                                       : Colors.transparent,
-                                  Colors.transparent,
+                                  widget.isLeaderBoard || contentOption.isActive
+                                      ? Colors.white10
+                                      : Colors.transparent,
                                 ],
                               ),
                             ),
@@ -193,14 +199,18 @@ class _ContentSelectorState extends State<ContentSelector>
                           )
                         : Container(
                             height: 1,
-                            width: 100,
+                            width: widget.isLeaderBoard ? 60 : 100,
                             decoration: BoxDecoration(
                               gradient: LinearGradient(
                                 colors: [
                                   contentOption.isActive
-                                      ? Colors.blue
+                                      ? (widget.isLeaderBoard
+                                          ? Colors.white
+                                          : Colors.blue)
                                       : Colors.transparent,
-                                  Colors.transparent,
+                                  widget.isLeaderBoard || contentOption.isActive
+                                      ? Colors.white10
+                                      : Colors.transparent,
                                 ],
                               ),
                             ),

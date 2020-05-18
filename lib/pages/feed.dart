@@ -1,34 +1,44 @@
 import 'package:flutter/material.dart';
+import 'package:yorglass_ik/models/feed-item.dart';
+import 'package:yorglass_ik/models/feed-type.dart';
+import 'package:yorglass_ik/repositories/feed-repository.dart';
+import 'package:yorglass_ik/services/authentication-service.dart';
+import 'package:yorglass_ik/widgets/feed-widget.dart';
 import 'package:yorglass_ik/models/content_option.dart';
 import 'package:yorglass_ik/widgets/content_selector.dart';
 
 class FeedPage extends StatefulWidget {
   final Function menuFunction;
-
   FeedPage({this.menuFunction});
-
   @override
   _FeedPageState createState() => _FeedPageState();
 }
 
 class _FeedPageState extends State<FeedPage> {
-  var _options = [
-    ContentOption(
-      title: "Duyurular",
-      count: 15,
-      isActive: true,
-    ),
-    ContentOption(
-      title: "Webinar",
-      count: 10,
-      isActive: false,
-    ),
-    ContentOption(
-      title: "B2B",
-      count: 10,
-      isActive: false,
-    ),
-  ];
+  List<ContentOption> _options = [];
+  List<FeedType> feedTypes;
+  List<FeedItem> feedItemList;
+  String selectedId;
+  @override
+  void initState() {
+    FeedRepository.instance.getFeed().then((value) {
+      feedItemList = value;
+      FeedRepository.instance.getFeedTypes().then((types) {
+        setState(() {
+          feedTypes = types;
+          types.forEach((element) {
+            if (types.indexOf(element) == 0) {
+              selectedId = element.id;
+            }
+            _options.add(
+              ContentOption(title: element.title, isActive: types.indexOf(element) == 0, count: value.where((e) => e.itemType == element.id).length),
+            );
+          });
+        });
+      });
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -67,12 +77,25 @@ class _FeedPageState extends State<FeedPage> {
             Flexible(
               child: ContentSelector(
                 onChange: (ContentOption currentContentOption) {
-                  //TODO: Change list here
-                  print(currentContentOption.title);
+                  setState(() => selectedId = feedTypes.firstWhere((element) => element.title == currentContentOption.title).id);
                 },
                 options: _options,
               ),
-            )
+            ),
+            Expanded(
+              flex: 10,
+              child: ListView(
+                children: feedItemList != null
+                    ? feedItemList
+                        .where((element) => element.itemType == selectedId)
+                        .map((feedItem) => FeedContent(
+                              feedItem: feedItem,
+                              isLiked: AuthenticationService.verifiedUser.likedFeeds.contains(feedItem.id),
+                            ))
+                        .toList()
+                    : [],
+              ),
+            ),
           ],
         ),
       ),

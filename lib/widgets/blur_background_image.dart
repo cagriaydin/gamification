@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -18,12 +19,16 @@ class BlurBackgroundImage extends StatelessWidget {
       fit: StackFit.expand,
       children: [
         Opacity(
-          opacity: .3,
-          child: Image.network(
-            imageUrl,
-            fit: BoxFit.fill,
-          ),
-        ),
+            opacity: .3,
+            child: FittedBox(
+              alignment: Alignment.topCenter,
+              fit: BoxFit.fitWidth,
+              child: imageUrl == null
+                  ? Image.asset("assets/default-profile.png")
+                  : Image.memory(
+                      base64.decode(imageUrl),
+                    ),
+            )),
         BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
           child: Container(

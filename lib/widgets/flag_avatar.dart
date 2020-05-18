@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:yorglass_ik/widgets/flag_point.dart';
 
@@ -20,6 +22,7 @@ class FlagAvatar extends StatelessWidget {
         children: [
           FlagPoint(point: point),
           Stack(
+            alignment: Alignment.topCenter,
             children: [
               name.isNotEmpty
                   ? Text(
@@ -32,7 +35,7 @@ class FlagAvatar extends StatelessWidget {
                   : Text(""),
               Padding(
                 padding: name.isNotEmpty
-                    ? const EdgeInsets.fromLTRB(8, 38, 8, 64)
+                    ? const EdgeInsets.fromLTRB(8, 48, 8, 64)
                     : const EdgeInsets.fromLTRB(8, 8, 8, 64),
                 child: Material(
                   elevation: 5,
@@ -43,14 +46,17 @@ class FlagAvatar extends StatelessWidget {
                     padding: const EdgeInsets.all(3.0),
                     child: CircleAvatar(
                       radius: getRadius(size),
-                      backgroundImage: NetworkImage(imageUrl),
+                      backgroundImage: backgroundImage(),
                     ),
                   ),
                 ),
               ),
               if (rank == 1)
                 Padding(
-                  padding: const EdgeInsets.only(top: 8.0),
+                  padding: const EdgeInsets.only(
+                    top: 18.0,
+                    right: 85,
+                  ),
                   child: Image.asset(
                     'assets/crown.png',
                     scale: 1,
@@ -59,7 +65,7 @@ class FlagAvatar extends StatelessWidget {
               if (rank != null)
                 Positioned(
                   right: name.isNotEmpty ? 10 : 8,
-                  top: name.isNotEmpty ? 36 : 6,
+                  top: name.isNotEmpty ? 46 : 6,
                   child: Container(
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
@@ -85,6 +91,17 @@ class FlagAvatar extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  Object backgroundImage() {
+    try {
+      return imageUrl == null
+          ? AssetImage("assets/default-profile.png")
+          : MemoryImage(base64.decode(imageUrl));
+    } catch (e) {
+      print(e);
+      return AssetImage("assets/default-profile.png");
+    }
   }
 
   double getRadius(size) {

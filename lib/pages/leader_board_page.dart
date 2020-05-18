@@ -2,16 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:yorglass_ik/models/branch.dart';
 import 'package:yorglass_ik/models/branch_leader_board.dart';
 import 'package:yorglass_ik/models/content_option.dart';
+import 'package:yorglass_ik/models/leader_board_item.dart';
 import 'package:yorglass_ik/models/user.dart';
 import 'package:yorglass_ik/models/user_leader_board.dart';
 import 'package:yorglass_ik/repositories/branch_repository.dart';
 import 'package:yorglass_ik/repositories/user_repository.dart';
+import 'package:yorglass_ik/services/authentication-service.dart';
 import 'package:yorglass_ik/widgets/content_selector.dart';
 import 'package:yorglass_ik/widgets/leader_board.dart';
 import 'package:yorglass_ik/widgets/rank_content.dart';
 
 class LeaderBoardPage extends StatefulWidget {
   final LeaderBoard leaderBoard;
+  bool isSelfCardVisible = true;
 
   LeaderBoardPage({Key key, this.leaderBoard}) : super(key: key);
 
@@ -35,6 +38,9 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
   List<UserLeaderBoard> userLeaderList =
       UserRepository.instance.getUserPointList();
   List<User> userList = UserRepository.instance.getUserList();
+
+  List<Branch> branchTopList =
+      BranchRepository.instance.getTopBranchPointList();
 
   @override
   Widget build(BuildContext context) {
@@ -64,6 +70,7 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
                 options: options,
                 contentSelectorType: ContentSelectorType.tab,
                 activeColor: Colors.white,
+                isLeaderBoard: true, 
                 disabledColor: Colors.white.withOpacity(.6),
               ),
             ),
@@ -79,6 +86,7 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
                 Expanded(
                   flex: 19,
                   child: PageView(
+                    physics: NeverScrollableScrollPhysics(),
                     controller: pageController,
                     children: [
                       Column(
@@ -89,43 +97,60 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
                           SizedBox(
                             height: size.height / 18,
                           ),
-                          Container(
-                            margin: EdgeInsets.all(11),
-                            child: RankContent(
-                              selfContent: true,
-                              title: userList
-                                  .singleWhere((element) => element.id == "1")
-                                  .name,
-                              rank: userLeaderList
-                                  .singleWhere(
-                                      (element) => element.userId == "1")
-                                  .point,
-                              point: userLeaderList
-                                  .singleWhere(
-                                      (element) => element.userId == "1")
-                                  .point,
-                              subTitle: branchList
-                                  .singleWhere((element) =>
-                                      element.id ==
-                                      (userList
-                                          .singleWhere(
-                                              (element) => element.id == "1")
-                                          .branchId))
-                                  .name,
-                            ),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(12),
-                              boxShadow: <BoxShadow>[
-                                BoxShadow(
-                                  color: Color(0xFFC2F6FC),
-                                  spreadRadius: 0,
-                                  blurRadius: 5,
-                                  offset: Offset(0, 4),
+                          if (widget.isSelfCardVisible)
+                            GestureDetector(
+                              onTap: () {
+                                scrollController.animateTo(
+                                  75 *
+                                      double.tryParse(
+                                          (getMyRank() - 3).toString()),
+                                  duration: Duration(seconds: 1),
+                                  curve: Curves.fastOutSlowIn,
+                                );
+                                setState(() {
+                                  widget.isSelfCardVisible = false;
+                                });
+                              },
+                              child: Container(
+                                margin: EdgeInsets.all(11),
+                                child: RankContent(
+                                  selfContent: true,
+                                  title: userList
+                                      .singleWhere((element) =>
+                                          element.id ==
+                                          AuthenticationService.verifiedUser.id)
+                                      .name,
+                                  rank: getMyRank(),
+                                  point: userLeaderList
+                                      .singleWhere((element) =>
+                                          element.userId ==
+                                          AuthenticationService.verifiedUser.id)
+                                      .point,
+                                  subTitle: branchList
+                                      .singleWhere((element) =>
+                                          element.id ==
+                                          (userList
+                                              .singleWhere((element) =>
+                                                  element.id ==
+                                                  AuthenticationService
+                                                      .verifiedUser.id)
+                                              .branchId))
+                                      .name,
                                 ),
-                              ],
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(12),
+                                  boxShadow: <BoxShadow>[
+                                    BoxShadow(
+                                      color: Color(0xFFC2F6FC),
+                                      spreadRadius: 0,
+                                      blurRadius: 5,
+                                      offset: Offset(0, 4),
+                                    ),
+                                  ],
+                                ),
+                              ),
                             ),
-                          ),
                           Flexible(
                             child: ListView.builder(
                                 controller: scrollController,
@@ -161,7 +186,25 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
                       Column(
                         children: [
                           Container(
-                            child: widget.leaderBoard,
+                            child: LeaderBoard(
+                              list: [
+                                LeaderBoardItem(
+                                  image: branchTopList[0].image,
+                                  point: branchTopList[0].point,
+                                  name: branchTopList[0].name + " İşletmesi",
+                                ),
+                                LeaderBoardItem(
+                                  image: branchTopList[1].image,
+                                  point: branchTopList[1].point,
+                                  name: branchTopList[1].name + " İşletmesi",
+                                ),
+                                LeaderBoardItem(
+                                  image: branchTopList[2].image,
+                                  point: branchTopList[2].point,
+                                  name: branchTopList[2].name + " İşletmesi",
+                                ),
+                              ],
+                            ),
                           ),
                           SizedBox(
                             height: size.height / 15,
@@ -177,13 +220,39 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
                                   return Padding(
                                     padding:
                                         const EdgeInsets.fromLTRB(18, 0, 18, 0),
-                                    child: RankContent(
-                                        point: item.point,
-                                        subTitle: branchList
-                                            .singleWhere((element) =>
-                                                element.id == item.branchId)
-                                            .name,
-                                        rank: index + 4),
+                                    child: item.branchId ==
+                                            AuthenticationService
+                                                .verifiedUser.branchId
+                                        ? Container(
+                                            child: RankContent(
+                                                point: item.point,
+                                                subTitle: branchList
+                                                    .singleWhere((element) =>
+                                                        element.id ==
+                                                        item.branchId)
+                                                    .name,
+                                                rank: index + 4),
+                                            decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              borderRadius:
+                                                  BorderRadius.circular(12),
+                                              boxShadow: <BoxShadow>[
+                                                BoxShadow(
+                                                  color: Color(0xFFC2F6FC),
+                                                  spreadRadius: 0,
+                                                  blurRadius: 5,
+                                                  offset: Offset(0, 4),
+                                                ),
+                                              ],
+                                            ),
+                                          )
+                                        : RankContent(
+                                            point: item.point,
+                                            subTitle: branchList
+                                                .singleWhere((element) =>
+                                                    element.id == item.branchId)
+                                                .name,
+                                            rank: index + 4),
                                   );
                                 }),
                           )
@@ -198,6 +267,12 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
         ),
       ],
     );
+  }
+
+  getMyRank() {
+    return userLeaderList.indexOf(userLeaderList.singleWhere((element) =>
+            element.userId == AuthenticationService.verifiedUser.id)) +
+        1;
   }
 
   onContentSelectorChange(ContentOption contentOption) {

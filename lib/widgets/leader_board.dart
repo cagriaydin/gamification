@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:yorglass_ik/models/user.dart';
+import 'package:yorglass_ik/models/leader_board_item.dart';
 import 'package:yorglass_ik/widgets/flag_avatar.dart';
 
 class LeaderBoard extends StatelessWidget {
-  final List<User> users;
+  final List<LeaderBoardItem> list;
 
   const LeaderBoard({
     Key key,
-    this.users,
+    this.list,
   }) : super(key: key);
 
   @override
@@ -31,27 +31,27 @@ class LeaderBoard extends StatelessWidget {
         Hero(
           tag: '2',
           child: FlagAvatar(
-            imageUrl: users.elementAt(1).image,
-            name: users.elementAt(1).name,
-            point: 160,
+            imageUrl: list.elementAt(1).image,
+            name: list.elementAt(1).name,
+            point: list.elementAt(1).point ?? 0,
             rank: 2,
           ),
         ),
         Hero(
           tag: '1',
           child: FlagAvatar(
-            imageUrl: users.elementAt(0).image,
-            name: users.elementAt(1).name,
-            point: 300,
+            imageUrl: list.elementAt(0).image,
+            name: list.elementAt(0).name,
+            point: list.elementAt(0).point ?? 0,
             rank: 1,
           ),
         ),
         Hero(
           tag: '3',
           child: FlagAvatar(
-            imageUrl: users.elementAt(2).image,
-            name: users.elementAt(1).name,
-            point: 110,
+            imageUrl: list.elementAt(2).image,
+            name: list.elementAt(2).name,
+            point: list.elementAt(2).point ?? 0,
             rank: 3,
           ),
         ),

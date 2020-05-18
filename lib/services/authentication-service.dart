@@ -5,6 +5,7 @@ import 'package:yorglass_ik/enums/authentication-enum.dart';
 import 'package:yorglass_ik/enums/verification-status-enum.dart';
 import 'package:yorglass_ik/models/authentication-status.dart';
 import 'package:yorglass_ik/models/user.dart';
+import 'package:yorglass_ik/repositories/user_repository.dart';
 
 class AuthenticationService {
   static final firebaseAuthInstance = FirebaseAuth.instance;
@@ -16,20 +17,35 @@ class AuthenticationService {
 
   static AuthenticationService get instance => _instance;
 
-  static User verifiedUser = User(
-    code: '20407',
-    name: 'ANIL ÇELEBİ',
-    branchName: 'ATAŞEHİR',
-    image:
-        'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTvweLJdoaNaEthMNJKQhDgqGbad9FT-qiXiqAMTgcAbWgyLuJO&usqp=CAU',
-  );
+  static User verifiedUser;
+
+  Future<User> verifyUser() async {
+    FirebaseUser result = await firebaseAuthInstance.currentUser();
+    User user = await UserRepository.instance.getUserByAuthId(result.uid);
+    if (user == null) {
+      user = await UserRepository.instance.getUserByPhoneNumber(result.phoneNumber);
+      if (user != null) {
+        verifiedUser = user;
+        await UserRepository.instance.addAuthIdToUser(user.id, result.uid);
+      }
+    } else {
+      verifiedUser = user;
+    }
+    return user;
+  }
 
   Future<VerificationStatusEnum> signIn(AuthCredential credential) async {
     AuthResult result;
     try {
       result = await firebaseAuthInstance.signInWithCredential(credential);
       if (result != null) {
-        return VerificationStatusEnum.ok;
+        User user = await verifyUser();
+        if (user != null) {
+          return VerificationStatusEnum.ok;
+        } else {
+          signOut();
+          return VerificationStatusEnum.wrongCode;
+        }
       }
     } on PlatformException catch (e) {
       switch (e.code) {

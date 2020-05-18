@@ -1,18 +1,18 @@
 import 'dart:ui';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:yorglass_ik/models/content_option.dart';
+import 'package:yorglass_ik/models/leader_board_item.dart';
+import 'package:yorglass_ik/models/reward.dart';
 import 'package:yorglass_ik/models/user.dart';
 import 'package:yorglass_ik/pages/leader_board_page.dart';
 import 'package:yorglass_ik/pages/rewards_page.dart';
+import 'package:yorglass_ik/repositories/user_repository.dart';
 import 'package:yorglass_ik/widgets/blur_background_image.dart';
-import 'package:yorglass_ik/widgets/blur_widget.dart';
+import 'package:yorglass_ik/widgets/build_user_info.dart';
 import 'package:yorglass_ik/widgets/content_selector.dart';
-import 'package:yorglass_ik/widgets/flag_avatar.dart';
 import 'package:yorglass_ik/widgets/gradient_text.dart';
 import 'package:yorglass_ik/widgets/leader_board.dart';
-import 'package:yorglass_ik/widgets/build_user_info.dart';
 import 'package:yorglass_ik/widgets/reward_cards.dart';
 
 class ProfilePage extends StatelessWidget {
@@ -27,6 +27,8 @@ class ProfilePage extends StatelessWidget {
 
   ProfilePage({Key key, @required this.menuFunction, @required this.user})
       : super(key: key);
+
+  List<User> userTopList = UserRepository.instance.getTopUserPointList();
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +67,7 @@ class ProfilePage extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      GradientText('%75'),
+                      GradientText('%' + (user.percentage ?? 0).toString()),
                       BuildUserInfo(
                         showPercentage: true,
                         user: user,
@@ -74,7 +76,7 @@ class ProfilePage extends StatelessWidget {
                       Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          GradientText(user.point.toString()),
+                          GradientText((user.point ?? 0).toString()),
                           GradientText('puan'),
                         ],
                       ),
@@ -115,7 +117,23 @@ class ProfilePage extends StatelessWidget {
                             child: GestureDetector(
                               onTap: () => pushLeaderBoardPage(context),
                               child: LeaderBoard(
-                                users: [user, user, user],
+                                list: [
+                                  LeaderBoardItem(
+                                    image: userTopList[0].image,
+                                    point: userTopList[0].point,
+                                    name: userTopList[0].name,
+                                  ),
+                                  LeaderBoardItem(
+                                    image: userTopList[1].image,
+                                    point: userTopList[1].point,
+                                    name: userTopList[1].name,
+                                  ),
+                                  LeaderBoardItem(
+                                    image: userTopList[2].image,
+                                    point: userTopList[2].point,
+                                    name: userTopList[2].name,
+                                  ),
+                                ],
                               ),
                             ),
                           ),
@@ -139,7 +157,13 @@ class ProfilePage extends StatelessWidget {
                       ),
                       Column(
                         children: [
-                          Flexible(child: RewardCards()),
+                          Flexible(
+                            child: RewardCards(
+                              reward: Reward(
+                                point: 25000,
+                              ),
+                            ),
+                          ),
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: OutlineButton(
@@ -178,7 +202,23 @@ class ProfilePage extends StatelessWidget {
         builder: (BuildContext context) {
           return LeaderBoardPage(
             leaderBoard: LeaderBoard(
-              users: [user, user, user],
+              list: [
+                LeaderBoardItem(
+                  image: userTopList[0].image,
+                  point: userTopList[0].point,
+                  name: userTopList[0].name,
+                ),
+                LeaderBoardItem(
+                  image: userTopList[1].image,
+                  point: userTopList[1].point,
+                  name: userTopList[1].name,
+                ),
+                LeaderBoardItem(
+                  image: userTopList[2].image,
+                  point: userTopList[2].point,
+                  name: userTopList[2].name,
+                ),
+              ],
             ),
           );
         },
