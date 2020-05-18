@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math' as math;
 import 'dart:typed_data';
 import 'dart:ui';
 
@@ -6,7 +7,6 @@ import 'package:after_layout/after_layout.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:yorglass_ik/models/task.dart';
 import 'package:yorglass_ik/models/user-task.dart';
 import 'package:yorglass_ik/models/user.dart';
 import 'package:yorglass_ik/repositories/task-repository.dart';
@@ -14,10 +14,17 @@ import 'package:yorglass_ik/services/authentication-service.dart';
 import 'package:yorglass_ik/widgets/build_user_info.dart';
 import 'package:yorglass_ik/widgets/gradient_text.dart';
 
-class TaskListPage extends StatelessWidget {
+class TaskListPage extends StatefulWidget {
   final User user;
 
   TaskListPage({Key key, this.user}) : super(key: key);
+
+  @override
+  _TaskListPageState createState() => _TaskListPageState();
+}
+
+class _TaskListPageState extends State<TaskListPage> {
+  List<UserTask> userTasks;
 
   @override
   Widget build(BuildContext context) {
@@ -39,14 +46,14 @@ class TaskListPage extends StatelessWidget {
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              GradientText('%' + (user.percentage ?? 0).toString()),
+              GradientText('%' + (widget.user.percentage ?? 0).toString()),
               BuildUserInfo(
-                user: user,
+                user: widget.user,
               ),
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  GradientText((user.point ?? 0).toString()),
+                  GradientText((widget.user.point ?? 0).toString()),
                   GradientText('puan'),
                 ],
               )
@@ -59,17 +66,24 @@ class TaskListPage extends StatelessWidget {
           Expanded(
             child: FutureBuilder<List<UserTask>>(
               future: TaskRepository.instance.getUserTasks(),
-              builder: (BuildContext context, AsyncSnapshot<List<UserTask>> snapshot) {
+              builder: (BuildContext context,
+                  AsyncSnapshot<List<UserTask>> snapshot) {
+                final loader = Center(
+                  child: CircularProgressIndicator(),
+                );
+
                 if (snapshot.hasData) {
-                  return Text('asdasdsfa');
-//                  return TaskListBuilder(
-//                    length: snapshot.data.length,
-//                    taskBuilder: taskBuilder,
-//                  );
+//                  return Text('asdasdsfa');
+                  userTasks = snapshot.data;
+                  if (userTasks != null && userTasks.isNotEmpty) {
+                    return TaskListBuilder(
+                      length: snapshot.data.length,
+                      taskBuilder: taskBuilder,
+                    );
+                  } else
+                    return loader;
                 } else {
-                  return Center(
-                    child: CircularProgressIndicator(),
-                  );
+                  return loader;
                 }
               },
             ),
@@ -79,62 +93,93 @@ class TaskListPage extends StatelessWidget {
     );
   }
 
-  Widget taskBuilder(context, index, [usersTasks]) {
+  Widget taskBuilder(
+    context,
+    index,
+  ) {
     return BuildTask(
-      task: usersTasks.elementAt(index),
+      userTask: userTasks.elementAt(index),
     );
   }
 }
 
 class BuildTask extends StatefulWidget {
-  final Task task;
+  final UserTask userTask;
 
-  const BuildTask({Key key, this.task}) : super(key: key);
+  const BuildTask({Key key, this.userTask}) : super(key: key);
 
   @override
   _BuildTaskState createState() => _BuildTaskState();
 }
 
 class _BuildTaskState extends State<BuildTask> {
-  int currentCount = 0;
-
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return Container(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          //TODO: add and show how much point task
-          Text(widget.task.name),
-          Text(
-            '#günlük',
-            style:
-                TextStyle(fontStyle: FontStyle.italic, color: Colors.black54),
+      padding: EdgeInsets.all(16),
+      child: Center(
+        child: SingleChildScrollView(
+          child: Stack(
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  //TODO: add and show how much point task
+                  Text(widget.userTask.task.name),
+                  Text(
+                    getIntervalText(),
+                    style: TextStyle(
+                        fontStyle: FontStyle.italic, color: Colors.black54),
+                  ),
+                  GestureDetector(
+                    onLongPress: () => stepComplete(),
+                    behavior: HitTestBehavior.opaque,
+                    child: StepperLinearIndicator(
+                      width: size.width / 2,
+                      height: 20,
+                      stepCount: widget.userTask.task.count,
+                      currentCount: widget.userTask.count,
+                    ),
+                  ),
+                ],
+              ),
+              Positioned(
+                bottom: 8,
+                right: 8,
+                child: Transform.rotate(
+                  angle: -math.pi / 6,
+                  child: GradientText(
+                    '+' + widget.userTask.point.toString() + '\n puan',
+                    disabled: TaskRepository.instance.canUpdate(widget.userTask),
+                    fontSize: 20,
+                  ),
+                ),
+              )
+            ],
           ),
-          GestureDetector(
-            onLongPress: () => stepComplete(),
-            behavior: HitTestBehavior.opaque,
-            child: StepperLinearIndicator(
-              width: size.width / 2,
-              height: 20,
-              stepCount: widget.task.interval,
-              currentCount: currentCount,
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
 
-  void stepComplete() {
-    if (widget.task.interval > currentCount) {
-      setState(() => currentCount++);
-    } else if (widget.task.interval <= currentCount) {
-      taskComplete();
+  String getIntervalText() {
+    switch (widget.userTask.task.interval) {
+      case 1:
+        return '#günlük';
+      case 2:
+        return '#haftalık';
+      case 3:
+        return '#aylık';
+      default:
+        return '#' +
+            (widget.userTask.task.count - widget.userTask.count).toString() +
+            ' adım kaldı';
     }
   }
+
+  void stepComplete() {}
 
   void taskComplete() {}
 }
@@ -328,13 +373,13 @@ class _TaskListBuilderState extends State<TaskListBuilder>
   Size getSize(Size size) => customPaintSize ?? size;
 
   getMaxLength(maxLength) {
-    if (maxLength != customPaintSize.height) {
-      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      if (maxLength != customPaintSize.height) {
         setState(() {
           customPaintSize = Size(customPaintSize.width, maxLength);
         });
-      });
-    }
+      }
+    });
 //    if (maxLength > customPaintSize.height) {}
   }
 
@@ -344,6 +389,7 @@ class _TaskListBuilderState extends State<TaskListBuilder>
     customPaintSize = size;
     final box = customPaintKey.currentContext.findRenderObject() as RenderBox;
     initialPos = box.localToGlobal(Offset.zero);
+    animateToIndex(0);
   }
 
   overlayBuilder(BuildContext context) {
@@ -490,18 +536,18 @@ class ShadowAvatar extends StatelessWidget {
             color: Color(0xff3FC1C9),
             boxShadow: [
               BoxShadow(
-                  color: Color(0xff3FC1C9),
+                  color: Color(0xff3FC1C9).withOpacity(.8),
                   offset: Offset(0, 3),
-                  blurRadius: 4,
-                  spreadRadius: 1.2),
+                  blurRadius: 10,
+                  spreadRadius: 1.5),
               BoxShadow(
-                  color: Color(0xff3FC1C9),
+                  color: Color(0xff3FC1C9).withOpacity(.5),
                   offset: Offset(0, -3),
-                  blurRadius: 4,
-                  spreadRadius: 1.2),
+                  blurRadius: 10,
+                  spreadRadius: 1.5),
             ]),
         child: Padding(
-          padding: const EdgeInsets.all(2.0),
+          padding: const EdgeInsets.all(4.0),
           child: ClipOval(
             clipBehavior: Clip.antiAlias,
             child: Image.memory(
