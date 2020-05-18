@@ -6,7 +6,6 @@ import 'package:after_layout/after_layout.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:yorglass_ik/models/task.dart';
 import 'package:yorglass_ik/models/user-task.dart';
 import 'package:yorglass_ik/models/user.dart';
 import 'package:yorglass_ik/repositories/task-repository.dart';
@@ -14,10 +13,17 @@ import 'package:yorglass_ik/services/authentication-service.dart';
 import 'package:yorglass_ik/widgets/build_user_info.dart';
 import 'package:yorglass_ik/widgets/gradient_text.dart';
 
-class TaskListPage extends StatelessWidget {
+class TaskListPage extends StatefulWidget {
   final User user;
 
   TaskListPage({Key key, this.user}) : super(key: key);
+
+  @override
+  _TaskListPageState createState() => _TaskListPageState();
+}
+
+class _TaskListPageState extends State<TaskListPage> {
+  List<UserTask> userTasks;
 
   @override
   Widget build(BuildContext context) {
@@ -39,14 +45,14 @@ class TaskListPage extends StatelessWidget {
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              GradientText('%' + (user.percentage ?? 0).toString()),
+              GradientText('%' + (widget.user.percentage ?? 0).toString()),
               BuildUserInfo(
-                user: user,
+                user: widget.user,
               ),
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  GradientText((user.point ?? 0).toString()),
+                  GradientText((widget.user.point ?? 0).toString()),
                   GradientText('puan'),
                 ],
               )
@@ -59,17 +65,24 @@ class TaskListPage extends StatelessWidget {
           Expanded(
             child: FutureBuilder<List<UserTask>>(
               future: TaskRepository.instance.getUserTasks(),
-              builder: (BuildContext context, AsyncSnapshot<List<UserTask>> snapshot) {
+              builder: (BuildContext context,
+                  AsyncSnapshot<List<UserTask>> snapshot) {
+                final loader = Center(
+                  child: CircularProgressIndicator(),
+                );
+
                 if (snapshot.hasData) {
-                  return Text('asdasdsfa');
-//                  return TaskListBuilder(
-//                    length: snapshot.data.length,
-//                    taskBuilder: taskBuilder,
-//                  );
+//                  return Text('asdasdsfa');
+                  userTasks = snapshot.data;
+                  if (userTasks != null && userTasks.isNotEmpty) {
+                    return TaskListBuilder(
+                      length: snapshot.data.length,
+                      taskBuilder: taskBuilder,
+                    );
+                  } else
+                    return loader;
                 } else {
-                  return Center(
-                    child: CircularProgressIndicator(),
-                  );
+                  return loader;
                 }
               },
             ),
@@ -79,39 +92,42 @@ class TaskListPage extends StatelessWidget {
     );
   }
 
-  Widget taskBuilder(context, index, [usersTasks]) {
+  Widget taskBuilder(context,
+      index,) {
     return BuildTask(
-      task: usersTasks.elementAt(index),
+      userTask: userTasks.elementAt(index),
     );
   }
 }
 
 class BuildTask extends StatefulWidget {
-  final Task task;
+  final UserTask userTask;
 
-  const BuildTask({Key key, this.task}) : super(key: key);
+  const BuildTask({Key key, this.userTask}) : super(key: key);
 
   @override
   _BuildTaskState createState() => _BuildTaskState();
 }
 
 class _BuildTaskState extends State<BuildTask> {
-  int currentCount = 0;
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
+    final size = MediaQuery
+        .of(context)
+        .size;
     return Container(
+      padding: EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           //TODO: add and show how much point task
-          Text(widget.task.name),
+          Text(widget.userTask.task.name),
           Text(
-            '#günlük',
+            getIntervalText(),
             style:
-                TextStyle(fontStyle: FontStyle.italic, color: Colors.black54),
+            TextStyle(fontStyle: FontStyle.italic, color: Colors.black54),
           ),
           GestureDetector(
             onLongPress: () => stepComplete(),
@@ -119,8 +135,8 @@ class _BuildTaskState extends State<BuildTask> {
             child: StepperLinearIndicator(
               width: size.width / 2,
               height: 20,
-              stepCount: widget.task.interval,
-              currentCount: currentCount,
+              stepCount: widget.userTask.task.count,
+              currentCount: widget.userTask.count,
             ),
           ),
         ],
@@ -128,13 +144,22 @@ class _BuildTaskState extends State<BuildTask> {
     );
   }
 
-  void stepComplete() {
-    if (widget.task.interval > currentCount) {
-      setState(() => currentCount++);
-    } else if (widget.task.interval <= currentCount) {
-      taskComplete();
+  String getIntervalText() {
+    switch (widget.userTask.task.interval) {
+      case 1:
+        return '#günlük';
+      case 2:
+        return '#haftalık';
+      case 3:
+        return '#aylık';
+      default:
+        return '#' +
+            (widget.userTask.task.count - widget.userTask.count).toString() + ' adım kaldı';
+
     }
   }
+
+  void stepComplete() {}
 
   void taskComplete() {}
 }
@@ -222,7 +247,7 @@ class _TaskListBuilderState extends State<TaskListBuilder>
   OverlayEntry overlayEntry;
 
   ValueNotifier<AnimateOffset> offsetNotifier =
-      ValueNotifier<AnimateOffset>(AnimateOffset(Offset.zero, false));
+  ValueNotifier<AnimateOffset>(AnimateOffset(Offset.zero, false));
 
   List<Offset> currentOffsets = [];
 
@@ -255,7 +280,9 @@ class _TaskListBuilderState extends State<TaskListBuilder>
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
+    final size = MediaQuery
+        .of(context)
+        .size;
     return SingleChildScrollView(
       controller: controller,
       child: Container(
@@ -283,7 +310,7 @@ class _TaskListBuilderState extends State<TaskListBuilder>
               children: [
                 SizedBox(
                   height:
-                      currentOffsets.isNotEmpty ? currentOffsets.first.dy : 10,
+                  currentOffsets.isNotEmpty ? currentOffsets.first.dy : 10,
                 ),
                 for (int i = 0; i < widget.length; i++)
                   Expanded(
@@ -340,7 +367,9 @@ class _TaskListBuilderState extends State<TaskListBuilder>
 
   @override
   void afterFirstLayout(BuildContext context) {
-    final size = MediaQuery.of(context).size;
+    final size = MediaQuery
+        .of(context)
+        .size;
     customPaintSize = size;
     final box = customPaintKey.currentContext.findRenderObject() as RenderBox;
     initialPos = box.localToGlobal(Offset.zero);
@@ -480,7 +509,9 @@ class ShadowAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
+    final size = MediaQuery
+        .of(context)
+        .size;
     return SizedBox(
       height: size.width / 6,
       width: size.width / 6,
