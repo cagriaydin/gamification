@@ -64,11 +64,11 @@ class _RankContentState extends State<RankContent> {
                   child: CircleAvatar(
                     radius: getRadius(size),
                     backgroundImage:
-                        AuthenticationService.verifiedUser.image == null
+                        widget.image == null
                             ? AssetImage("assets/default-profile.png")
                             : MemoryImage(
                                 base64.decode(
-                                    AuthenticationService.verifiedUser.image),
+                                    widget.image),
                               ),
                   ),
                 ),
@@ -102,7 +102,7 @@ class _RankContentState extends State<RankContent> {
                           ),
                           Flexible(
                             child: Text(
-                              widget.subTitle + " İşletmesi",
+                              widget.subTitle,
                               textAlign: TextAlign.left,
                               style: TextStyle(
                                 color: Color(0xFF4BADBB).withOpacity(.6),
@@ -119,7 +119,7 @@ class _RankContentState extends State<RankContent> {
                     children: [
                       Flexible(
                         child: Text(
-                          widget.subTitle + " İşletmesi",
+                          widget.subTitle,
                           style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.w300,

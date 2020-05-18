@@ -34,13 +34,20 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
   List<Branch> branchList = [];
   List<Branch> branchTopList = [];
 
-  List<UserLeaderBoard> userLeaderList = UserRepository.instance.getUserPointList();
+  List<UserLeaderBoard> userLeaderList =
+      UserRepository.instance.getUserPointList();
   List<User> userList = UserRepository.instance.getUserList();
   @override
   void initState() {
-    BranchRepository.instance.getBoardPointList().then((value) => setState(() => branchLeaderList = value));
-    BranchRepository.instance.getTopBranchPointList().then((value) => setState(() => branchTopList = value));
-    BranchRepository.instance.getBranchList().then((value) => setState(() => branchList = value));
+    Future.wait([
+      BranchRepository.instance.getBoardPointList(),
+      BranchRepository.instance.getTopBranchPointList(),
+      BranchRepository.instance.getBranchList()
+    ]).then((value) {
+      setState(() => branchLeaderList = value[0]);
+      setState(() => branchTopList = value[1]);
+      setState(() => branchList = value[2]);
+    });
     super.initState();
   }
 
@@ -118,9 +125,10 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
                                   title: userList.singleWhere((element) => element.id == AuthenticationService.verifiedUser.id).name,
                                   rank: getMyRank(),
                                   point: userLeaderList.singleWhere((element) => element.userId == AuthenticationService.verifiedUser.id).point,
-                                  subTitle: branchList
-                                      .singleWhere((element) => element.id == (userList.singleWhere((element) => element.id == AuthenticationService.verifiedUser.id).branchId))
-                                      .name,
+                                  subTitle: "İşletme",
+                                  // subTitle: branchList
+                                  //     .singleWhere((element) => element.id == (userList.singleWhere((element) => element.id == AuthenticationService.verifiedUser.id).branchId))
+                                  //     .name,
                                 ),
                                 decoration: BoxDecoration(
                                   color: Colors.white,
@@ -163,7 +171,8 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
                                       child: RankContent(
                                         selfContent: item.userId == AuthenticationService.verifiedUser.id,
                                         title: userList.singleWhere((element) => element.id == item.userId).name,
-                                        subTitle: branchList.singleWhere((element) => element.id == (userList.singleWhere((element) => element.id == item.userId).branchId)).name,
+                                        subTitle: "İşletme",
+                                        // subTitle: branchList.singleWhere((element) => element.id == (userList.singleWhere((element) => element.id == item.userId).branchId)).name,
                                         rank: index + 4,
                                         point: item.point,
                                       ),
@@ -181,17 +190,17 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
                                 LeaderBoardItem(
                                   image: branchTopList[0].image,
                                   point: branchTopList[0].point,
-                                  name: branchTopList[0].name + " İşletmesi",
+                                  name: branchTopList[0].name,
                                 ),
                                 LeaderBoardItem(
                                   image: branchTopList[1].image,
                                   point: branchTopList[1].point,
-                                  name: branchTopList[1].name + " İşletmesi",
+                                  name: branchTopList[1].name,
                                 ),
                                 LeaderBoardItem(
                                   image: branchTopList[2].image,
                                   point: branchTopList[2].point,
-                                  name: branchTopList[2].name + " İşletmesi",
+                                  name: branchTopList[2].name,
                                 ),
                               ],
                             ),
@@ -205,19 +214,32 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
                                 scrollDirection: Axis.vertical,
                                 itemCount: branchLeaderList.length - 3,
                                 itemBuilder: (BuildContext context, int index) {
-                                  BranchLeaderBoard item = branchLeaderList.skip(3).elementAt(index);
+                                  BranchLeaderBoard item =
+                                      branchLeaderList.skip(3).elementAt(index);
                                   return Padding(
-                                      padding: const EdgeInsets.fromLTRB(18, 0, 18, 0),
+                                      padding: const EdgeInsets.fromLTRB(
+                                          18, 0, 18, 0),
                                       child: Container(
                                         child: RankContent(
-                                            selfContent: item.branchId == AuthenticationService.verifiedUser.branchId,
+                                          image: branchList
+                                                .singleWhere((element) =>
+                                                    element.id == item.branchId).image,
+                                            selfContent: item.branchId ==
+                                                AuthenticationService
+                                                    .verifiedUser.branchId,
                                             point: item.point,
-                                            subTitle: branchList.singleWhere((element) => element.id == item.branchId).name,
+                                            subTitle: branchList
+                                                .singleWhere((element) =>
+                                                    element.id == item.branchId)
+                                                .name,
                                             rank: index + 4),
-                                        decoration: item.branchId == AuthenticationService.verifiedUser.branchId
+                                        decoration: item.branchId ==
+                                                AuthenticationService
+                                                    .verifiedUser.branchId
                                             ? BoxDecoration(
                                                 color: Colors.white,
-                                                borderRadius: BorderRadius.circular(12),
+                                                borderRadius:
+                                                    BorderRadius.circular(12),
                                                 boxShadow: <BoxShadow>[
                                                   BoxShadow(
                                                     color: Color(0xFFC2F6FC),
@@ -245,14 +267,17 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
   }
 
   getMyRank() {
-    return userLeaderList.indexOf(userLeaderList.singleWhere((element) => element.userId == AuthenticationService.verifiedUser.id)) + 1;
+    return userLeaderList.indexOf(userLeaderList.singleWhere((element) =>
+            element.userId == AuthenticationService.verifiedUser.id)) +
+        1;
   }
 
   onContentSelectorChange(ContentOption contentOption) {
-    WidgetsBinding.instance.addPostFrameCallback((_) => pageController.animateToPage(
-          contentOption.title == 'Bireysel' ? 0 : 1,
-          duration: Duration(milliseconds: 300),
-          curve: Curves.easeOut,
-        ));
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) => pageController.animateToPage(
+              contentOption.title == 'Bireysel' ? 0 : 1,
+              duration: Duration(milliseconds: 300),
+              curve: Curves.easeOut,
+            ));
   }
 }
