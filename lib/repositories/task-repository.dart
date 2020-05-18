@@ -1,4 +1,5 @@
 import 'package:mysql1/mysql1.dart';
+import 'package:uuid/uuid.dart';
 import 'package:yorglass_ik/models/task.dart';
 import 'package:yorglass_ik/models/user-task.dart';
 import 'package:yorglass_ik/services/authentication-service.dart';
@@ -19,8 +20,7 @@ class TaskRepository {
 
   Future<List<UserTask>> getUserTasks() async {
     try {
-      Results res =
-          await DbConnection.query("SELECT * FROM task WHERE active = 1");
+      Results res = await DbConnection.query("SELECT * FROM task WHERE active = 1");
       List<Task> taskList = [];
       if (res.length > 0) {
         forEach(res, (element) {
@@ -135,23 +135,110 @@ class TaskRepository {
     if (userTask.complete == 1) {
       return false;
     } else {
-      if (userTask.nextActive != null &&
-          userTask.nextActive.compareTo(DateTime.now()) > 0) {
+      if (userTask.nextActive != null && userTask.nextActive.compareTo(DateTime.now()) > 0) {
         return false;
       }
-      if (userTask.nextdeadline != null &&
-          userTask.nextdeadline.compareTo(DateTime.now()) < 0) {
+      if (userTask.nextdeadline != null && userTask.nextdeadline.compareTo(DateTime.now()) < 0) {
         return false;
       }
     }
     return true;
   }
 
-  updateUserTask(UserTask task) {
+  Future<UserTask> updateUserTask(UserTask task) async {
     if (canUpdate(task)) {
       task.count = task.count + 1;
+      if (task.count == task.task.count) {
+        task.complete = 1;
+        task.point = task.task.point;
+      }
+      task.lastUpdate = DateTime.now();
+      if (task.task.renewableTime != null) {
+        int days = task.task.renewableTime.toInt();
+        int hours = 0;
+        int minutes = 0;
+        if (task.task.renewableTime > days) {
+          double totalHours = 24 * (task.task.renewableTime - days);
+          hours = totalHours.toInt();
+          if (totalHours > hours) {
+            double totalMins = 60 * (totalHours - hours);
+            minutes = totalMins.toInt();
+          }
+        }
+        DateTime next = calculateNextDate(minutes, hours, days, DateTime.now());
+        DateTime nextDeadline = calculateNextDate(minutes, hours, days, next);
+        task.nextActive = next;
+        task.nextdeadline = nextDeadline;
+      }
+      return _updateUserTaskData(task);
     } else {
-      return -1;
+      return task;
+    }
+  }
+
+  Future<UserTask> _updateUserTaskData(UserTask task) async {
+    Results res;
+    if (task.id != null) {
+      res = await DbConnection.query(
+        "UPDATE usertask SET lastupdate = ?, nextactive = ?, nextdeadline = ?, count = ?, complete = ?, point = ? WHERE id = ?",
+        [
+          task.lastUpdate,
+          task.nextActive,
+          task.nextdeadline,
+          task.count,
+          task.complete,
+          task.point,
+          task.id,
+        ],
+      );
+    } else {
+      task.id = Uuid().toString();
+      res = await DbConnection.query(
+        "INSERT INTO usertask (id, taskid, userid, lastupdate, nextactive, nextdeadline, count, complete, point) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        [
+          task.id,
+          task.taskId,
+          task.userId,
+          task.lastUpdate,
+          task.nextActive,
+          task.nextdeadline,
+          task.count,
+          task.complete,
+          task.point,
+        ],
+      );
+    }
+    if (res != null && res.affectedRows > 0) {
+      if (task.complete == 1) {
+        await DbConnection.query(
+          "UPDATE leaderboar SET point = point + ? WHERE userid = ?",
+          [
+            task.point,
+            AuthenticationService.verifiedUser.id,
+          ],
+        );
+      }
+    }
+    return task;
+  }
+
+  DateTime calculateNextDate(int minutes, int hours, int days, DateTime start) {
+    if (minutes > 0 || hours > 0) {
+      DateTime nextTime = start;
+      if (days > 0) {
+        nextTime.add(new Duration(days: days));
+      }
+      if (hours > 0) {
+        nextTime.add(new Duration(hours: hours));
+      }
+      if (minutes > 0) {
+        nextTime.add(new Duration(minutes: minutes));
+      }
+      return nextTime;
+    } else {
+      DateTime nextTime = _getBeginingOfDay(DateTime.now());
+      nextTime.add(new Duration(days: days));
+      return nextTime;
     }
   }
 
@@ -160,9 +247,7 @@ class TaskRepository {
   }
 
   DateTime _getEndOfDay(DateTime date) {
-    return _getBeginingOfDay(date)
-        .add(new Duration(days: 1))
-        .subtract(new Duration(milliseconds: 1));
+    return _getBeginingOfDay(date).add(new Duration(days: 1)).subtract(new Duration(milliseconds: 1));
   }
 
   DateTime _getBeginingOfWeek(DateTime date) {
@@ -172,9 +257,7 @@ class TaskRepository {
 
   DateTime _getEndOfWeek(DateTime date) {
     date = _getBeginingOfDay(date);
-    return date
-        .add(new Duration(days: 7 - date.weekday))
-        .subtract(new Duration(milliseconds: 1));
+    return date.add(new Duration(days: 7 - date.weekday)).subtract(new Duration(milliseconds: 1));
   }
 
   DateTime _getBeginingOfMonth(DateTime date) {
