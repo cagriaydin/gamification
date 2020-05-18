@@ -7,57 +7,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:yorglass_ik/models/task.dart';
+import 'package:yorglass_ik/models/user-task.dart';
 import 'package:yorglass_ik/models/user.dart';
+import 'package:yorglass_ik/repositories/task-repository.dart';
 import 'package:yorglass_ik/services/authentication-service.dart';
 import 'package:yorglass_ik/widgets/build_user_info.dart';
 import 'package:yorglass_ik/widgets/gradient_text.dart';
 
 class TaskListPage extends StatelessWidget {
   final User user;
-  final List<Task> tasks = [
-    Task(
-      name: 'Lıkır Lıkır 2 lt su içtim',
-      point: 5,
-      count: 1,
-      id: '1233123',
-      interval: 5,
-    ),
-    Task(
-      name: 'Egzersiz yaptım',
-      point: 5,
-      count: 1,
-      id: 'idd01234',
-      interval: 1,
-    ),
-    Task(
-      name: 'Lıkır Lıkır 2 lt su içtim',
-      point: 5,
-      count: 1,
-      id: '1233123',
-      interval: 5,
-    ),
-    Task(
-      name: 'Egzersiz yaptım',
-      point: 5,
-      count: 1,
-      id: 'idd01234',
-      interval: 1,
-    ),
-    Task(
-      name: 'Lıkır Lıkır 2 lt su içtim',
-      point: 5,
-      count: 1,
-      id: '1233123',
-      interval: 5,
-    ),
-    Task(
-      name: 'Egzersiz yaptım',
-      point: 5,
-      count: 1,
-      id: 'idd01234',
-      interval: 1,
-    ),
-  ];
 
   TaskListPage({Key key, this.user}) : super(key: key);
 
@@ -99,9 +57,21 @@ class TaskListPage extends StatelessWidget {
             fit: BoxFit.fitWidth,
           ),
           Expanded(
-            child: TaskListBuilder(
-              length: tasks.length,
-              taskBuilder: taskBuilder,
+            child: FutureBuilder<List<UserTask>>(
+              future: TaskRepository.instance.getUserTasks(),
+              builder: (BuildContext context, AsyncSnapshot<List<UserTask>> snapshot) {
+                if (snapshot.hasData) {
+                  return Text('asdasdsfa');
+//                  return TaskListBuilder(
+//                    length: snapshot.data.length,
+//                    taskBuilder: taskBuilder,
+//                  );
+                } else {
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+              },
             ),
           ),
         ],
@@ -109,9 +79,9 @@ class TaskListPage extends StatelessWidget {
     );
   }
 
-  Widget taskBuilder(context, index) {
+  Widget taskBuilder(context, index, [usersTasks]) {
     return BuildTask(
-      task: tasks.elementAt(index),
+      task: usersTasks.elementAt(index),
     );
   }
 }
