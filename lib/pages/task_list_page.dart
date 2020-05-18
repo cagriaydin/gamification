@@ -137,7 +137,11 @@ class _BuildTaskState extends State<BuildTask> {
         children: [
           //TODO: add and show how much point task
           Text(widget.task.name),
-          Text('#günlük',style: TextStyle(fontStyle: FontStyle.italic,color: Colors.black54),),
+          Text(
+            '#günlük',
+            style:
+                TextStyle(fontStyle: FontStyle.italic, color: Colors.black54),
+          ),
           GestureDetector(
             onLongPress: () => setState(() => currentCount++),
             behavior: HitTestBehavior.opaque,
@@ -240,6 +244,8 @@ class _TaskListBuilderState extends State<TaskListBuilder>
 
   var decodedImage;
 
+  Offset initialPos = Offset.zero;
+
   @override
   void initState() {
     decodedImage = base64.decode(AuthenticationService.verifiedUser.image);
@@ -266,13 +272,22 @@ class _TaskListBuilderState extends State<TaskListBuilder>
       controller: controller,
       child: Container(
         key: customPaintKey,
-        child: CustomPaint(
-          foregroundPainter: MyCustomPainter(
-            length: widget.length,
-            getMaxLength: getMaxLength,
-            getOffsets: getOffsets,
-          ),
-          size: getSize(size),
+        child: AnimatedBuilder(
+          builder: (context, child) {
+            final offset = controller.offset;
+            return CustomPaint(
+              foregroundPainter: MyCustomPainter(
+                scrollPosition: offset,
+                taskListBuilderSize: size / 2,
+                length: widget.length,
+                getMaxLength: getMaxLength,
+                getOffsets: getOffsets,
+              ),
+              size: getSize(size),
+              child: child,
+            );
+          },
+          animation: controller,
           child: Container(
             width: getSize(size).width,
             height: getSize(size).height,
@@ -321,15 +336,17 @@ class _TaskListBuilderState extends State<TaskListBuilder>
   Size getSize(Size size) => customPaintSize ?? size;
 
   getMaxLength(maxLength) {
-    RenderBox renderBox = customPaintKey.currentContext.findRenderObject();
-    var global = renderBox.localToGlobal(Offset.zero);
-    print(global.dx);
-    print(global.dy);
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      setState(() {
-        customPaintSize = Size(customPaintSize.width, maxLength);
+    if (maxLength != customPaintSize.height) {
+      RenderBox renderBox = customPaintKey.currentContext.findRenderObject();
+      var global = renderBox.localToGlobal(Offset.zero);
+//    print(global.dx);
+//    print(global.dy);
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        setState(() {
+          customPaintSize = Size(customPaintSize.width, maxLength);
+        });
       });
-    });
+    }
 //    if (maxLength > customPaintSize.height) {}
   }
 
@@ -337,6 +354,8 @@ class _TaskListBuilderState extends State<TaskListBuilder>
   void afterFirstLayout(BuildContext context) {
     final size = MediaQuery.of(context).size;
     customPaintSize = size;
+    final box = customPaintKey.currentContext.findRenderObject() as RenderBox;
+    initialPos = box.localToGlobal(Offset.zero);
   }
 
   overlayBuilder(BuildContext context) {
@@ -352,15 +371,21 @@ class _TaskListBuilderState extends State<TaskListBuilder>
             builder: (BuildContext context, Widget child) {
               final box = keyContext.findRenderObject() as RenderBox;
               final Offset pos = box.localToGlobal(value);
+              var bool = (initialPos.dy > (pos.dy));
               //final top = box.size.height - 2000;
               return Positioned(
                 top: pos.dy - 40,
                 left: pos.dx - 50,
-                child: ShadowAvatar(
-                  imageUrl: decodedImage,
+                child: AnimatedOpacity(
+                  duration: Duration(milliseconds: 300),
+                  opacity: bool ? 0 : 1,
+                  child: child,
                 ),
               );
             },
+            child: ShadowAvatar(
+              imageUrl: decodedImage,
+            ),
           );
         },
       );
@@ -377,15 +402,37 @@ class MyCustomPainter extends CustomPainter {
   final Function getMaxLength;
   final Function getOffsets;
 
-  MyCustomPainter({this.getMaxLength, this.getOffsets, @required this.length});
+  final Size taskListBuilderSize;
+
+  final double scrollPosition;
+
+  MyCustomPainter({
+    this.scrollPosition,
+    this.getMaxLength,
+    this.getOffsets,
+    @required this.length,
+    this.taskListBuilderSize,
+  });
 
   @override
   void paint(Canvas canvas, Size size) {
     Paint brush = new Paint()
-      ..color = Color(0xff3FC1C9)
+      ..color = Color(0xff3FC1C9).withOpacity(.5)
       ..strokeCap = StrokeCap.round
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 4;
+      ..shader = LinearGradient(colors: <Color>[
+        Colors.white,
+//        Color(0xff26315F),
+        Color(0xff2FB4C2),
+        Colors.white
+      ], begin: Alignment.topCenter, end: Alignment.bottomCenter)
+          .createShader(Rect.fromLTWH(
+        0.0,
+        scrollPosition,
+        taskListBuilderSize.width,
+        taskListBuilderSize.height,
+      ))
+      ..strokeWidth = 15;
 
     final p = size.width / 5;
     final lastP = size.width - p;
