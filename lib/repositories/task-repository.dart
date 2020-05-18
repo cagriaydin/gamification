@@ -20,7 +20,8 @@ class TaskRepository {
 
   Future<List<UserTask>> getUserTasks() async {
     try {
-      Results res = await DbConnection.query("SELECT * FROM task WHERE active = 1");
+      Results res =
+          await DbConnection.query("SELECT * FROM task WHERE active = 1");
       List<Task> taskList = [];
       if (res.length > 0) {
         forEach(res, (element) {
@@ -135,10 +136,12 @@ class TaskRepository {
     if (userTask.complete == 1) {
       return false;
     } else {
-      if (userTask.nextActive != null && userTask.nextActive.compareTo(DateTime.now()) > 0) {
+      if (userTask.nextActive != null &&
+          userTask.nextActive.compareTo(DateTime.now()) > 0) {
         return false;
       }
-      if (userTask.nextdeadline != null && userTask.nextdeadline.compareTo(DateTime.now()) < 0) {
+      if (userTask.nextdeadline != null &&
+          userTask.nextdeadline.compareTo(DateTime.now()) < 0) {
         return false;
       }
     }
@@ -170,7 +173,7 @@ class TaskRepository {
         task.nextActive = next;
         task.nextdeadline = nextDeadline;
       }
-      return _updateUserTaskData(task);
+      return await _updateUserTaskData(task);
     } else {
       return task;
     }
@@ -182,9 +185,9 @@ class TaskRepository {
       res = await DbConnection.query(
         "UPDATE usertask SET lastupdate = ?, nextactive = ?, nextdeadline = ?, count = ?, complete = ?, point = ? WHERE id = ?",
         [
-          task.lastUpdate,
-          task.nextActive,
-          task.nextdeadline,
+          task.lastUpdate.toUtc(),
+          task.nextActive.toUtc(),
+          task.nextdeadline.toUtc(),
           task.count,
           task.complete,
           task.point,
@@ -192,16 +195,16 @@ class TaskRepository {
         ],
       );
     } else {
-      task.id = Uuid().toString();
+      task.id = Uuid().v4();
       res = await DbConnection.query(
         "INSERT INTO usertask (id, taskid, userid, lastupdate, nextactive, nextdeadline, count, complete, point) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
         [
           task.id,
           task.taskId,
           task.userId,
-          task.lastUpdate,
-          task.nextActive,
-          task.nextdeadline,
+          task.lastUpdate.toUtc(),
+          task.nextActive.toUtc(),
+          task.nextdeadline.toUtc(),
           task.count,
           task.complete,
           task.point,
@@ -211,7 +214,7 @@ class TaskRepository {
     if (res != null && res.affectedRows > 0) {
       if (task.complete == 1) {
         await DbConnection.query(
-          "UPDATE leaderboar SET point = point + ? WHERE userid = ?",
+          "UPDATE leaderboard SET point = point + ? WHERE userid = ?",
           [
             task.point,
             AuthenticationService.verifiedUser.id,
@@ -247,7 +250,9 @@ class TaskRepository {
   }
 
   DateTime _getEndOfDay(DateTime date) {
-    return _getBeginingOfDay(date).add(new Duration(days: 1)).subtract(new Duration(milliseconds: 1));
+    return _getBeginingOfDay(date)
+        .add(new Duration(days: 1))
+        .subtract(new Duration(milliseconds: 1));
   }
 
   DateTime _getBeginingOfWeek(DateTime date) {
@@ -257,7 +262,9 @@ class TaskRepository {
 
   DateTime _getEndOfWeek(DateTime date) {
     date = _getBeginingOfDay(date);
-    return date.add(new Duration(days: 7 - date.weekday)).subtract(new Duration(milliseconds: 1));
+    return date
+        .add(new Duration(days: 7 - date.weekday))
+        .subtract(new Duration(milliseconds: 1));
   }
 
   DateTime _getBeginingOfMonth(DateTime date) {

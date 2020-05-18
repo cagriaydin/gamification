@@ -179,7 +179,9 @@ class _BuildTaskState extends State<BuildTask> {
     }
   }
 
-  void stepComplete() {}
+  void stepComplete() {
+    TaskRepository.instance.updateUserTask(widget.userTask);
+  }
 
   void taskComplete() {}
 }

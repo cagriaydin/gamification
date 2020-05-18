@@ -11,7 +11,7 @@ class SuggestionRepository {
   static SuggestionRepository get instance => _instance;
 
   sendSuggestion(Suggestion suggestion) async {
-    suggestion.id = Uuid().toString();
+    suggestion.id = Uuid().v4();
     suggestion.uid = AuthenticationService.verifiedUser.id;
     suggestion.status = 0;
     suggestion.type = 0;
