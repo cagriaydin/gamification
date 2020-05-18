@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:yorglass_ik/pages/bottom_navigation.dart';
 import 'package:yorglass_ik/pages/suggestion.dart';
+import 'package:yorglass_ik/pages/task_list_page.dart';
 import 'package:yorglass_ik/services/authentication-service.dart';
 import 'package:yorglass_ik/widgets/custom_drawer/custom_drawer.dart';
 
@@ -95,7 +96,16 @@ class _HomePageState extends State<HomePage> {
                           text: "Görevlerim",
                           icon: Icons.assistant_photo,
                           count: 3,
-                          click: () => AuthenticationService.instance.signOut(),
+                          click: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (BuildContext context) {
+                                return TaskListPage(
+                                  user: AuthenticationService.verifiedUser,
+                                );
+                              },
+                            ),
+                          ),
                         ),
                         MenuButton(
                             text: "Önerilerim",
@@ -120,7 +130,10 @@ class _HomePageState extends State<HomePage> {
                     )
                   ],
                 ),
-                MenuButton(text: "Çıkış", icon: Icons.power_settings_new, click: () => AuthenticationService.instance.signOut()),
+                MenuButton(
+                    text: "Çıkış",
+                    icon: Icons.power_settings_new,
+                    click: () => AuthenticationService.instance.signOut()),
               ],
             ),
           ),
@@ -135,6 +148,7 @@ class MenuButton extends StatelessWidget {
   final IconData icon;
   final Function click;
   final int count;
+
   const MenuButton({
     this.text,
     this.icon,

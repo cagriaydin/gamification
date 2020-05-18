@@ -296,7 +296,7 @@ class _TaskListBuilderState extends State<TaskListBuilder>
             return CustomPaint(
               foregroundPainter: MyCustomPainter(
                 scrollPosition: offset,
-                taskListBuilderSize: size / 2,
+                taskListBuilderSize: size / 1.2,
                 length: widget.length,
                 getMaxLength: getMaxLength,
                 getOffsets: getOffsets,
@@ -318,10 +318,13 @@ class _TaskListBuilderState extends State<TaskListBuilder>
                 for (int i = 0; i < widget.length; i++)
                   Expanded(
                     child: GestureDetector(
+                      behavior: HitTestBehavior.opaque,
                       onTap: () => animateToIndex(i),
                       child: Padding(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 36, vertical: 8),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 36,
+                          vertical: 8,
+                        ),
                         child: widget.taskBuilder(context, i),
                       ),
                     ),
@@ -356,10 +359,6 @@ class _TaskListBuilderState extends State<TaskListBuilder>
 
   getMaxLength(maxLength) {
     if (maxLength != customPaintSize.height) {
-      RenderBox renderBox = customPaintKey.currentContext.findRenderObject();
-      var global = renderBox.localToGlobal(Offset.zero);
-//    print(global.dx);
-//    print(global.dy);
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         setState(() {
           customPaintSize = Size(customPaintSize.width, maxLength);
@@ -390,7 +389,7 @@ class _TaskListBuilderState extends State<TaskListBuilder>
             builder: (BuildContext context, Widget child) {
               final box = keyContext.findRenderObject() as RenderBox;
               final Offset pos = box.localToGlobal(value.offset);
-              var bool = (initialPos.dy + 50 > (pos.dy) || value.animate);
+              var bool = (initialPos.dy > (pos.dy) || value.animate);
               //final top = box.size.height - 2000;
               return Positioned(
                 top: pos.dy - 40,
