@@ -130,6 +130,7 @@ class _BuildTaskState extends State<BuildTask> {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     return Container(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -143,10 +144,10 @@ class _BuildTaskState extends State<BuildTask> {
                 TextStyle(fontStyle: FontStyle.italic, color: Colors.black54),
           ),
           GestureDetector(
-            onLongPress: () => setState(() => currentCount++),
+            onLongPress: () => stepComplete(),
             behavior: HitTestBehavior.opaque,
             child: StepperLinearIndicator(
-              width: 200,
+              width: size.width / 2,
               height: 20,
               stepCount: widget.task.interval,
               currentCount: currentCount,
@@ -155,6 +156,12 @@ class _BuildTaskState extends State<BuildTask> {
         ],
       ),
     );
+  }
+
+  void stepComplete() {
+    if (widget.task.interval > currentCount) {
+      setState(() => currentCount++);
+    }
   }
 }
 
@@ -234,7 +241,8 @@ class _TaskListBuilderState extends State<TaskListBuilder>
 
   OverlayEntry overlayEntry;
 
-  ValueNotifier<Offset> offsetNotifier = ValueNotifier<Offset>(Offset.zero);
+  ValueNotifier<AnimateOffset> offsetNotifier =
+      ValueNotifier<AnimateOffset>(AnimateOffset(Offset.zero, false));
 
   List<Offset> currentOffsets = [];
 
@@ -316,20 +324,21 @@ class _TaskListBuilderState extends State<TaskListBuilder>
     );
   }
 
-  void animateToIndex(int animateIndex) {
+  Future<void> animateToIndex(int animateIndex) async {
     if (mounted) {
-      setState(() {
+      if (position < currentOffsets.length) {
+        Offset offset = currentOffsets.elementAt(position);
+        offsetNotifier.value = AnimateOffset(offset ?? Offset.zero, true);
         position = animateIndex;
-        if (position < currentOffsets.length) {
-          final offset = currentOffsets.elementAt(position);
-          offsetNotifier.value = offset ?? Offset.zero;
-          controller.animateTo(
-            offset.dy,
-            duration: Duration(milliseconds: 600),
-            curve: Curves.easeOut,
-          );
-        }
-      });
+        offset = currentOffsets.elementAt(position);
+        await Future.delayed(Duration(milliseconds: 600));
+        offsetNotifier.value = AnimateOffset(offset ?? Offset.zero, false);
+        controller.animateTo(
+          offset.dy,
+          duration: Duration(milliseconds: 600),
+          curve: Curves.easeOut,
+        );
+      }
     }
   }
 
@@ -365,13 +374,13 @@ class _TaskListBuilderState extends State<TaskListBuilder>
       //overlayOffset = pos;
       return ValueListenableBuilder(
         valueListenable: offsetNotifier,
-        builder: (BuildContext context, Offset value, Widget child) {
+        builder: (BuildContext context, AnimateOffset value, Widget child) {
           return AnimatedBuilder(
             animation: controller,
             builder: (BuildContext context, Widget child) {
               final box = keyContext.findRenderObject() as RenderBox;
-              final Offset pos = box.localToGlobal(value);
-              var bool = (initialPos.dy > (pos.dy));
+              final Offset pos = box.localToGlobal(value.offset);
+              var bool = (initialPos.dy > (pos.dy) || value.animate);
               //final top = box.size.height - 2000;
               return Positioned(
                 top: pos.dy - 40,
@@ -395,6 +404,13 @@ class _TaskListBuilderState extends State<TaskListBuilder>
   getOffsets(List<Offset> offsets) {
     currentOffsets = offsets;
   }
+}
+
+class AnimateOffset {
+  final Offset offset;
+  final bool animate;
+
+  AnimateOffset(this.offset, this.animate);
 }
 
 class MyCustomPainter extends CustomPainter {
