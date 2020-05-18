@@ -100,14 +100,16 @@ class _RankContentState extends State<RankContent> {
                           SizedBox(
                             width: 8,
                           ),
-                          Text(
-                            widget.subTitle + " İşletmesi",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: Color(0xFF4BADBB).withOpacity(.6),
-                              fontSize: widget.selfContent ? 12 : 10,
+                          Flexible(
+                            child: Text(
+                              widget.subTitle + " İşletmesi",
+                              textAlign: TextAlign.left,
+                              style: TextStyle(
+                                color: Color(0xFF4BADBB).withOpacity(.6),
+                                fontSize: widget.selfContent ? 12 : 10,
+                              ),
+                              overflow: TextOverflow.ellipsis,
                             ),
-                            overflow: TextOverflow.ellipsis,
                           ),
                         ],
                       )
