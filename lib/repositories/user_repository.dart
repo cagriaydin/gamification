@@ -41,6 +41,7 @@ class UserRepository {
           phone: element[2],
           code: element[4],
           image: element[5],
+          point: element[7],
         );
         if (user.image != null) {
           Image userImage = await ImageRepository.instance.getImage(element[5]);
@@ -102,6 +103,8 @@ class UserRepository {
         });
         user.likedFeeds = likedFeeds;
         user.deletedFeeds = deletedFeeds;
+
+
       }
       return user;
     } else {

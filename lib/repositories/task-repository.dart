@@ -218,6 +218,7 @@ class TaskRepository {
         );
       }
     }
+    await updateUserInfo();
     return task;
   }
 
@@ -273,5 +274,19 @@ class TaskRepository {
       month++;
     }
     return new DateTime(year, month, 1).subtract(new Duration(milliseconds: 1));
+  }
+
+  Future updateUserInfo() async {
+    Results res = await DbConnection.query("SELECT * FROM leaderboard WHERE enddate IS NULL AND userid = ?", [AuthenticationService.verifiedUser.id]);
+    if (res.length > 0) {
+      AuthenticationService.verifiedUser.point = res.single[1];
+    }
+    List<UserTask> tasks = await TaskRepository.instance.getUserTasks();
+    int count = 0;
+    for (UserTask t in tasks) {
+      if (!TaskRepository.instance.canUpdate(t)) count++;
+    }
+    AuthenticationService.verifiedUser.percentage = (count / tasks.length * 100).round();
+    AuthenticationService.verifiedUser.taskCount = tasks.length - count;
   }
 }

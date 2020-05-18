@@ -95,7 +95,7 @@ class _HomePageState extends State<HomePage> {
                         MenuButton(
                           text: "Görevlerim",
                           icon: Icons.assistant_photo,
-                          count: 3,
+                          count: AuthenticationService.verifiedUser.taskCount,
                           click: () => Navigator.push(
                             context,
                             MaterialPageRoute(
