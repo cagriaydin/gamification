@@ -30,7 +30,12 @@ class TaskRepository {
     }
 
     Results userTasks = await DbConnection.query(
-        "SELECT * FROM usertask WHERE userid = ? AND (lastupdate, taskid) IN (SELECT MAX(lastupdate), taskid FROM usertask WHERE userid = ? GROUP BY taskid)");
+      "SELECT * FROM usertask WHERE userid = ? AND (lastupdate, taskid) IN (SELECT MAX(lastupdate), taskid FROM usertask WHERE userid = ? GROUP BY taskid)",
+      [
+        AuthenticationService.verifiedUser.id,
+        AuthenticationService.verifiedUser.id,
+      ],
+    );
     List<UserTask> userTaskList = [];
     if (userTasks.length > 0) {
       userTasks.forEach((element) {
@@ -127,7 +132,13 @@ class TaskRepository {
     return true;
   }
 
-  updateUserTask(UserTask task) {}
+  updateUserTask(UserTask task) {
+    if (canUpdate(task)) {
+      task.count = task.count + 1;
+    } else {
+      return -1;
+    }
+  }
 
   DateTime _getBeginingOfDay(DateTime date) {
     return new DateTime(date.year, date.month, date.day);
