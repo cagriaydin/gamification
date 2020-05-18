@@ -92,8 +92,10 @@ class _TaskListPageState extends State<TaskListPage> {
     );
   }
 
-  Widget taskBuilder(context,
-      index,) {
+  Widget taskBuilder(
+    context,
+    index,
+  ) {
     return BuildTask(
       userTask: userTasks.elementAt(index),
     );
@@ -110,36 +112,40 @@ class BuildTask extends StatefulWidget {
 }
 
 class _BuildTaskState extends State<BuildTask> {
-
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery
-        .of(context)
-        .size;
+    final size = MediaQuery.of(context).size;
     return Container(
       padding: EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          //TODO: add and show how much point task
-          Text(widget.userTask.task.name),
-          Text(
-            getIntervalText(),
-            style:
-            TextStyle(fontStyle: FontStyle.italic, color: Colors.black54),
-          ),
-          GestureDetector(
-            onLongPress: () => stepComplete(),
-            behavior: HitTestBehavior.opaque,
-            child: StepperLinearIndicator(
-              width: size.width / 2,
-              height: 20,
-              stepCount: widget.userTask.task.count,
-              currentCount: widget.userTask.count,
+      child: Center(
+        child: SingleChildScrollView(
+          child: Align(
+            alignment: Alignment.bottomCenter,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                //TODO: add and show how much point task
+                Text(widget.userTask.task.name),
+                Text(
+                  getIntervalText(),
+                  style: TextStyle(
+                      fontStyle: FontStyle.italic, color: Colors.black54),
+                ),
+                GestureDetector(
+                  onLongPress: () => stepComplete(),
+                  behavior: HitTestBehavior.opaque,
+                  child: StepperLinearIndicator(
+                    width: size.width / 2,
+                    height: 20,
+                    stepCount: widget.userTask.task.count,
+                    currentCount: widget.userTask.count,
+                  ),
+                ),
+              ],
             ),
           ),
-        ],
+        ),
       ),
     );
   }
@@ -154,8 +160,8 @@ class _BuildTaskState extends State<BuildTask> {
         return '#aylık';
       default:
         return '#' +
-            (widget.userTask.task.count - widget.userTask.count).toString() + ' adım kaldı';
-
+            (widget.userTask.task.count - widget.userTask.count).toString() +
+            ' adım kaldı';
     }
   }
 
@@ -247,7 +253,7 @@ class _TaskListBuilderState extends State<TaskListBuilder>
   OverlayEntry overlayEntry;
 
   ValueNotifier<AnimateOffset> offsetNotifier =
-  ValueNotifier<AnimateOffset>(AnimateOffset(Offset.zero, false));
+      ValueNotifier<AnimateOffset>(AnimateOffset(Offset.zero, false));
 
   List<Offset> currentOffsets = [];
 
@@ -280,9 +286,7 @@ class _TaskListBuilderState extends State<TaskListBuilder>
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery
-        .of(context)
-        .size;
+    final size = MediaQuery.of(context).size;
     return SingleChildScrollView(
       controller: controller,
       child: Container(
@@ -310,7 +314,7 @@ class _TaskListBuilderState extends State<TaskListBuilder>
               children: [
                 SizedBox(
                   height:
-                  currentOffsets.isNotEmpty ? currentOffsets.first.dy : 10,
+                      currentOffsets.isNotEmpty ? currentOffsets.first.dy : 10,
                 ),
                 for (int i = 0; i < widget.length; i++)
                   Expanded(
@@ -355,24 +359,23 @@ class _TaskListBuilderState extends State<TaskListBuilder>
   Size getSize(Size size) => customPaintSize ?? size;
 
   getMaxLength(maxLength) {
-    if (maxLength != customPaintSize.height) {
-      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      if (maxLength != customPaintSize.height) {
         setState(() {
           customPaintSize = Size(customPaintSize.width, maxLength);
         });
-      });
-    }
+      }
+    });
 //    if (maxLength > customPaintSize.height) {}
   }
 
   @override
   void afterFirstLayout(BuildContext context) {
-    final size = MediaQuery
-        .of(context)
-        .size;
+    final size = MediaQuery.of(context).size;
     customPaintSize = size;
     final box = customPaintKey.currentContext.findRenderObject() as RenderBox;
     initialPos = box.localToGlobal(Offset.zero);
+    animateToIndex(0);
   }
 
   overlayBuilder(BuildContext context) {
@@ -509,9 +512,7 @@ class ShadowAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery
-        .of(context)
-        .size;
+    final size = MediaQuery.of(context).size;
     return SizedBox(
       height: size.width / 6,
       width: size.width / 6,
