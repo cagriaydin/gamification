@@ -161,8 +161,12 @@ class _BuildTaskState extends State<BuildTask> {
   void stepComplete() {
     if (widget.task.interval > currentCount) {
       setState(() => currentCount++);
+    } else if (widget.task.interval <= currentCount) {
+      taskComplete();
     }
   }
+
+  void taskComplete() {}
 }
 
 class StepperLinearIndicator extends StatelessWidget {
@@ -177,12 +181,14 @@ class StepperLinearIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    num paddingNodeWidth = 10;
-    final stepWidth = (width) / stepCount;
+    num paddingNodeWidth = (width / stepCount) / 3;
+    final lose = (stepCount - 2) * paddingNodeWidth;
+    num stepWidth = (width + lose) / stepCount;
 
     return Container(
       width: width,
       height: height,
+//      padding: EdgeInsets.all(5),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(90)),
         border: Border.all(
@@ -196,13 +202,14 @@ class StepperLinearIndicator extends StatelessWidget {
             Positioned(
               top: 0,
               bottom: 0,
-              left: i * stepWidth - (i * paddingNodeWidth),
+              left: left(i, stepWidth, paddingNodeWidth),
               child: Container(
                 width: stepWidth + paddingNodeWidth,
                 height: height,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(90)),
                   border: Border.all(
+                    width: .5,
                     color: Color(0xff54B4BA),
                   ),
                   gradient: LinearGradient(
@@ -215,6 +222,9 @@ class StepperLinearIndicator extends StatelessWidget {
       ),
     );
   }
+
+  double left(int i, double stepWidth, num paddingNodeWidth) =>
+      i * stepWidth - (i * paddingNodeWidth);
 }
 
 typedef Widget TaskBuilder(context, index);
