@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math' as math;
 import 'dart:typed_data';
 import 'dart:ui';
 
@@ -119,31 +120,43 @@ class _BuildTaskState extends State<BuildTask> {
       padding: EdgeInsets.all(16),
       child: Center(
         child: SingleChildScrollView(
-          child: Align(
-            alignment: Alignment.bottomCenter,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                //TODO: add and show how much point task
-                Text(widget.userTask.task.name),
-                Text(
-                  getIntervalText(),
-                  style: TextStyle(
-                      fontStyle: FontStyle.italic, color: Colors.black54),
-                ),
-                GestureDetector(
-                  onLongPress: () => stepComplete(),
-                  behavior: HitTestBehavior.opaque,
-                  child: StepperLinearIndicator(
-                    width: size.width / 2,
-                    height: 20,
-                    stepCount: widget.userTask.task.count,
-                    currentCount: widget.userTask.count,
+          child: Stack(
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  //TODO: add and show how much point task
+                  Text(widget.userTask.task.name),
+                  Text(
+                    getIntervalText(),
+                    style: TextStyle(
+                        fontStyle: FontStyle.italic, color: Colors.black54),
+                  ),
+                  GestureDetector(
+                    onLongPress: () => stepComplete(),
+                    behavior: HitTestBehavior.opaque,
+                    child: StepperLinearIndicator(
+                      width: size.width / 2,
+                      height: 20,
+                      stepCount: widget.userTask.task.count,
+                      currentCount: widget.userTask.count,
+                    ),
+                  ),
+                ],
+              ),
+              Positioned(
+                bottom: 8,
+                right: 8,
+                child: Transform.rotate(
+                  angle: -math.pi / 6,
+                  child: GradientText(
+                    '+' + widget.userTask.point.toString() + '\n puan',
+                    fontSize: 20,
                   ),
                 ),
-              ],
-            ),
+              )
+            ],
           ),
         ),
       ),
