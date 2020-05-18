@@ -113,6 +113,22 @@ class TaskRepository {
     );
   }
 
+  bool canUpdate(UserTask userTask) {
+    if (userTask.complete == 1) {
+      return false;
+    } else {
+      if (userTask.nextActive != null && userTask.nextActive.compareTo(DateTime.now()) > 0) {
+        return false;
+      }
+      if (userTask.nextdeadline != null && userTask.nextdeadline.compareTo(DateTime.now()) < 0) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  updateUserTask(UserTask task) {}
+
   DateTime _getBeginingOfDay(DateTime date) {
     return new DateTime(date.year, date.month, date.day);
   }
