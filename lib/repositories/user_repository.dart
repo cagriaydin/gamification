@@ -57,6 +57,7 @@ class UserRepository {
     var userPointList = await getUserPointList(limit: 3);
     for (var user in userPointList) {
       userList.add(await getUser(user.userId));
+      userList.last.point = user.point;
     }
     return userList;
   }
