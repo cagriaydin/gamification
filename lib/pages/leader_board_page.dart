@@ -45,7 +45,7 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
       BranchRepository.instance.getBoardPointList(),
       BranchRepository.instance.getTopBranchPointList(),
       BranchRepository.instance.getBranchList(),
-       UserRepository.instance.getUserList(),
+      UserRepository.instance.getUserList(),
       UserRepository.instance.getUserPointList(),
     ]);
     super.initState();
@@ -116,60 +116,87 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
                                     height: size.height / 18,
                                   ),
                                   if (widget.isSelfCardVisible)
-                                  GestureDetector(
-                                    onTap: () {
-                                      scrollController.animateTo(
-                                        75 * double.tryParse((getMyRank() - 3).toString()),
-                                        duration: Duration(seconds: 1),
-                                        curve: Curves.fastOutSlowIn,
-                                      );
-                                      setState(() {
-                                        widget.isSelfCardVisible = false;
-                                      });
-                                    },
-                                    child: Container(
-                                      margin: EdgeInsets.all(11),
-                                      child: RankContent(
-                                        selfContent: true,
-                                        title: userList.singleWhere((element) => element.id == AuthenticationService.verifiedUser.id).name,
-                                        rank: getMyRank(),
-                                        point: userLeaderList.singleWhere((element) => element.userId == AuthenticationService.verifiedUser.id).point,
-                                        subTitle: "İşletme",
-                                        // subTitle: branchList
-                                        //     .singleWhere((element) => element.id == (userList.singleWhere((element) => element.id == AuthenticationService.verifiedUser.id).branchId))
-                                        //     .name,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.circular(12),
-                                        boxShadow: <BoxShadow>[
-                                          BoxShadow(
-                                            color: Color(0xFFC2F6FC),
-                                            spreadRadius: 0,
-                                            blurRadius: 5,
-                                            offset: Offset(0, 4),
-                                          ),
-                                        ],
+                                    GestureDetector(
+                                      onTap: () {
+                                        scrollController.animateTo(
+                                          75 *
+                                              double.tryParse(
+                                                  (getMyRank() - 3).toString()),
+                                          duration: Duration(seconds: 1),
+                                          curve: Curves.fastOutSlowIn,
+                                        );
+                                        setState(() {
+                                          widget.isSelfCardVisible = false;
+                                        });
+                                      },
+                                      child: Container(
+                                        margin: EdgeInsets.all(11),
+                                        child: RankContent(
+                                          image: userList
+                                              .singleWhere((element) =>
+                                                  element.id ==
+                                                  AuthenticationService
+                                                      .verifiedUser.id)
+                                              .image,
+                                          selfContent: true,
+                                          title: userList
+                                              .singleWhere((element) =>
+                                                  element.id ==
+                                                  AuthenticationService
+                                                      .verifiedUser.id)
+                                              .name,
+                                          rank: getMyRank(),
+                                          point: userLeaderList
+                                              .singleWhere((element) =>
+                                                  element.userId ==
+                                                  AuthenticationService
+                                                      .verifiedUser.id)
+                                              .point,
+                                          subTitle: branchList
+                                              .singleWhere((element) => element.id == (userList.singleWhere((element) => element.id == AuthenticationService.verifiedUser.id).branchId))
+                                              .name,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                          boxShadow: <BoxShadow>[
+                                            BoxShadow(
+                                              color: Color(0xFFC2F6FC),
+                                              spreadRadius: 0,
+                                              blurRadius: 5,
+                                              offset: Offset(0, 4),
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     ),
-                                  ),
                                   Flexible(
                                     child: ListView.builder(
                                         controller: scrollController,
                                         scrollDirection: Axis.vertical,
                                         itemCount: userLeaderList.length - 3,
-                                        itemBuilder: (BuildContext context, int index) {
-                                          UserLeaderBoard item = userLeaderList.skip(3).elementAt(index);
+                                        itemBuilder:
+                                            (BuildContext context, int index) {
+                                          UserLeaderBoard item = userLeaderList
+                                              .skip(3)
+                                              .elementAt(index);
                                           return Padding(
-                                            padding: const EdgeInsets.fromLTRB(18, 0, 18, 0),
+                                            padding: const EdgeInsets.fromLTRB(
+                                                18, 0, 18, 0),
                                             child: Container(
-                                              decoration: item.userId == AuthenticationService.verifiedUser.id
+                                              decoration: item.userId ==
+                                                      AuthenticationService
+                                                          .verifiedUser.id
                                                   ? BoxDecoration(
                                                       color: Colors.white,
-                                                      borderRadius: BorderRadius.circular(12),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              12),
                                                       boxShadow: <BoxShadow>[
                                                         BoxShadow(
-                                                          color: Color(0xFFC2F6FC),
+                                                          color:
+                                                              Color(0xFFC2F6FC),
                                                           spreadRadius: 0,
                                                           blurRadius: 5,
                                                           offset: Offset(0, 4),
@@ -178,10 +205,21 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
                                                     )
                                                   : BoxDecoration(),
                                               child: RankContent(
-                                                selfContent: item.userId == AuthenticationService.verifiedUser.id,
-                                                title: userList.singleWhere((element) => element.id == item.userId).name,
-                                                subTitle: "İşletme",
-                                                // subTitle: branchList.singleWhere((element) => element.id == (userList.singleWhere((element) => element.id == item.userId).branchId)).name,
+                                                image: userList
+                                                    .singleWhere((element) =>
+                                                        element.id ==
+                                                        item.userId)
+                                                    .image,
+
+                                                selfContent: item.userId ==
+                                                    AuthenticationService
+                                                        .verifiedUser.id,
+                                                title: userList
+                                                    .singleWhere((element) =>
+                                                        element.id ==
+                                                        item.userId)
+                                                    .name,
+                                                subTitle: branchList.singleWhere((element) => element.id == (userList.singleWhere((element) => element.id == item.userId).branchId)).name,
                                                 rank: index + 4,
                                                 point: item.point,
                                               ),
@@ -222,39 +260,54 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
                                         controller: scrollController,
                                         scrollDirection: Axis.vertical,
                                         itemCount: branchLeaderList.length - 3,
-                                        itemBuilder: (BuildContext context, int index) {
+                                        itemBuilder:
+                                            (BuildContext context, int index) {
                                           BranchLeaderBoard item =
-                                              branchLeaderList.skip(3).elementAt(index);
+                                              branchLeaderList
+                                                  .skip(3)
+                                                  .elementAt(index);
                                           return Padding(
-                                              padding: const EdgeInsets.fromLTRB(
-                                                  18, 0, 18, 0),
+                                              padding:
+                                                  const EdgeInsets.fromLTRB(
+                                                      18, 0, 18, 0),
                                               child: Container(
                                                 child: RankContent(
-                                                  image: branchList
-                                                        .singleWhere((element) =>
-                                                            element.id == item.branchId).image,
-                                                    selfContent: item.branchId ==
+                                                    image: branchList
+                                                        .singleWhere(
+                                                            (element) =>
+                                                                element.id ==
+                                                                item.branchId)
+                                                        .image,
+                                                    selfContent: item
+                                                            .branchId ==
                                                         AuthenticationService
-                                                            .verifiedUser.branchId,
+                                                            .verifiedUser
+                                                            .branchId,
                                                     point: item.point,
                                                     subTitle: branchList
-                                                        .singleWhere((element) =>
-                                                            element.id == item.branchId)
+                                                        .singleWhere(
+                                                            (element) =>
+                                                                element.id ==
+                                                                item.branchId)
                                                         .name,
                                                     rank: index + 4),
                                                 decoration: item.branchId ==
                                                         AuthenticationService
-                                                            .verifiedUser.branchId
+                                                            .verifiedUser
+                                                            .branchId
                                                     ? BoxDecoration(
                                                         color: Colors.white,
                                                         borderRadius:
-                                                            BorderRadius.circular(12),
+                                                            BorderRadius
+                                                                .circular(12),
                                                         boxShadow: <BoxShadow>[
                                                           BoxShadow(
-                                                            color: Color(0xFFC2F6FC),
+                                                            color: Color(
+                                                                0xFFC2F6FC),
                                                             spreadRadius: 0,
                                                             blurRadius: 5,
-                                                            offset: Offset(0, 4),
+                                                            offset:
+                                                                Offset(0, 4),
                                                           ),
                                                         ],
                                                       )

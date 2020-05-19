@@ -1,7 +1,6 @@
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:yorglass_ik/services/authentication-service.dart';
+import 'package:yorglass_ik/widgets/image_widget.dart';
 
 class RankContent extends StatefulWidget {
   final bool selfContent;
@@ -60,18 +59,11 @@ class _RankContentState extends State<RankContent> {
                 borderRadius:
                     BorderRadius.all(Radius.circular(getRadius(size))),
                 child: Padding(
-                  padding: const EdgeInsets.all(2.0),
-                  child: CircleAvatar(
-                    radius: getRadius(size),
-                    backgroundImage:
-                        widget.image == null
-                            ? AssetImage("assets/default-profile.png")
-                            : MemoryImage(
-                                base64.decode(
-                                    widget.image),
-                              ),
-                  ),
-                ),
+                    padding: const EdgeInsets.all(2.0),
+                    child: ImageWidget(
+                      id: widget.image,
+                      isBoardItem: true,
+                    )),
               ),
             ),
           ),
