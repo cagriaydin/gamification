@@ -125,7 +125,7 @@ class ProfilePage extends StatelessWidget {
                                           .toList(),
                                     );
                                   } else {
-                                    return Container();
+                                    return Center(child: CircularProgressIndicator(),);
                                   }
                                 },
                               ),
