@@ -137,9 +137,9 @@ class RewardsPage extends StatelessWidget {
                               AsyncSnapshot<List<Reward>> snapshot) {
                             if (snapshot.hasData) {
                               return GridView.count(
-                                scrollDirection: Axis.horizontal,
+                                scrollDirection: Axis.vertical,
                                 padding: EdgeInsets.all(8),
-                                crossAxisCount: 3,
+                                crossAxisCount: 2,
                                 children: snapshot.data
                                     .map((e) => RewardCards4(reward: e))
                                     .toList(),
