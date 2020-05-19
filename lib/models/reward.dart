@@ -3,8 +3,6 @@ import 'dart:convert';
 import 'dart:typed_data';
 import 'package:yorglass_ik/repositories/image-repository.dart';
 
-enum RewardType { forPeople, forAnimals, forSelf }
-
 class Reward {
   final String id;
   final String title;

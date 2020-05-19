@@ -123,7 +123,7 @@ class RewardsPage extends StatelessWidget {
                       Container(
                         height: size.height / 2,
                         child: FutureBuilder(
-                          future: RewardRepository.instance.getRewards(type: 3),
+                          future: RewardRepository.instance.getRewards(type: "3"),
                           builder: (BuildContext context,
                               AsyncSnapshot<List<Reward>> snapshot) {
                             if (snapshot.hasData) {
