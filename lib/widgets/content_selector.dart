@@ -238,6 +238,9 @@ class _ContentSelectorState extends State<ContentSelector>
 
   @override
   void afterFirstLayout(BuildContext context) {
-    isScrollable = scrollController.position.maxScrollExtent == 0;
+    setState(() {
+      isScrollable = scrollController.position.maxScrollExtent == 0;
+    });
+    print(scrollController.position.maxScrollExtent);
   }
 }

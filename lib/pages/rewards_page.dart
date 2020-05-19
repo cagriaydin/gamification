@@ -145,10 +145,23 @@ class RewardsPage extends StatelessWidget {
                   ),
                 ),
                 //TODO ödüllerim sayfası
-                Center(
-                  child: Text('ödüllerim sayfası'),
-                )
-              ],
+                FutureBuilder(
+                  future: RewardRepository.instance.getMyRewards(),
+                  builder: (BuildContext context,
+                      AsyncSnapshot<List<Reward>> snapshot) {
+                    if (snapshot.hasData) {
+                      return GridView.count(
+                        scrollDirection: Axis.vertical,
+                        padding: EdgeInsets.all(8),
+                        crossAxisCount: 2,
+                        children: snapshot.data
+                            .map((e) => RewardCards3(reward: e))
+                            .toList(),
+                      );
+                    } else
+                      return Center(child: CircularProgressIndicator());
+                  },
+                )              ],
             ),
           ),
           // Flexible(
