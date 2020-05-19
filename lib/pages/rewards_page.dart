@@ -144,13 +144,14 @@ class RewardsPage extends StatelessWidget {
                         ),
                       ),
                       Container(
-                        height: size.height / 2,
+                        height: size.height ,
                         child: FutureBuilder(
                           future: RewardRepository.instance.getRewards(),
                           builder: (BuildContext context,
                               AsyncSnapshot<List<Reward>> snapshot) {
                             if (snapshot.hasData) {
                               return GridView.count(
+                                childAspectRatio: 9 / 14 ,
                                 scrollDirection: Axis.vertical,
                                 padding: EdgeInsets.all(8),
                                 crossAxisCount: 2,
