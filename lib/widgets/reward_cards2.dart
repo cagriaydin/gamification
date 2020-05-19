@@ -30,18 +30,37 @@ class RewardCards2 extends StatelessWidget {
         child: FutureBuilder(
           future: reward.image64.future,
           builder: (BuildContext context, AsyncSnapshot<Uint8List> snapshot) {
+            if (snapshot.hasError) {
+              return Center(
+                  child: FlagAvatar(
+                split: false,
+                name: reward.title,
+                point: reward.point,
+                titleColor: Color(0xff26315F),
+              ));
+            }
             if (snapshot.hasData) {
               // return Image.memory(snapshot.data);
-              return Stack(
-                  alignment: AlignmentDirectional.center,
-                  children: <Widget>[
-                    FlagAvatar(
-                      name: reward.title,
-                      point: reward.point,
-                      image64: snapshot.data,
-                      titleColor: Color(0xff26315F),
-                    ),
-                  ]);
+              try {
+                return Stack(
+                    alignment: AlignmentDirectional.center,
+                    children: <Widget>[
+                      FlagAvatar(
+                        split: false,
+                        name: reward.title,
+                        point: reward.point,
+                        image64: snapshot.data,
+                        titleColor: Color(0xff26315F),
+                      ),
+                    ]);
+              } on Exception catch (e) {
+                return Center(
+                    child: FlagAvatar(
+                  name: reward.title,
+                  point: reward.point,
+                  titleColor: Color(0xff26315F),
+                ));
+              }
             } else
               return Center(child: CircularProgressIndicator());
           },

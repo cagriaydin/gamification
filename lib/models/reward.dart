@@ -24,8 +24,13 @@ class Reward {
   }
 
   setImage64() async {
-    final currentBase64 = await ImageRepository.instance.getImage64(this.imageId);
-    Uint8List decoded = base64.decode(currentBase64);
-    image64.complete(decoded);
+    try {
+      final currentBase64 = await ImageRepository.instance.getImage64(this.imageId);
+      Uint8List decoded = base64.decode(currentBase64);
+      image64.complete(decoded);
+    } catch (e) {
+      image64.completeError(e);
+      print(e);
+    }
   }
 }

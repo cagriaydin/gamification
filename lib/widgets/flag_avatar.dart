@@ -11,6 +11,7 @@ class FlagAvatar extends StatelessWidget {
   final int rank;
   final String name;
   final Color titleColor;
+  final bool split;
 
   const FlagAvatar(
       {Key key,
@@ -19,7 +20,8 @@ class FlagAvatar extends StatelessWidget {
       this.rank,
       this.name,
       this.image64,
-      this.titleColor})
+      this.titleColor,
+      this.split = true})
       : super(key: key);
 
   @override
@@ -36,7 +38,13 @@ class FlagAvatar extends StatelessWidget {
             children: [
               name.isNotEmpty
                   ? Text(
-                      name.length > 10 ? name.split(" ").join("\n") : name,
+                      split
+                          ? name.length > 10 ? name.split(" ").join("\n") : name
+                          : name.length > 20
+                              ? name.substring(
+                                      0, name.length > 15 ? 15 : name.length) +
+                                  '...'
+                              : name,
                       style: TextStyle(
                         color: titleColor == null ? Colors.white : titleColor,
                         fontSize: 16,
