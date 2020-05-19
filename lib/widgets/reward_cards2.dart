@@ -3,18 +3,12 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:yorglass_ik/models/reward.dart';
 import 'package:yorglass_ik/widgets/flag_avatar.dart';
-import 'package:yorglass_ik/widgets/reward_cards.dart';
 
-class RewardCards2 extends StatefulWidget {
+class RewardCards2 extends StatelessWidget {
   final Reward reward;
-  final Uint8List decodedImage;
-  const RewardCards2({Key key, this.reward, this.decodedImage})
-      : super(key: key);
-  @override
-  _RewardCards2State createState() => _RewardCards2State();
-}
 
-class _RewardCards2State extends State<RewardCards2> {
+  const RewardCards2({Key key, this.reward});
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -33,14 +27,24 @@ class _RewardCards2State extends State<RewardCards2> {
             ),
           ],
         ),
-        child: Stack(
-          alignment: AlignmentDirectional.center,
-                  children: <Widget> [FlagAvatar(
-            name: widget.reward.title,
-            point: widget.reward.point,
-            image64: widget.decodedImage,
-            titleColor: Color(0xff26315F),
-          ),]
+        child: FutureBuilder(
+          future: reward.image64.future,
+          builder: (BuildContext context, AsyncSnapshot<Uint8List> snapshot) {
+            if (snapshot.hasData) {
+              // return Image.memory(snapshot.data);
+              return Stack(
+                  alignment: AlignmentDirectional.center,
+                  children: <Widget>[
+                    FlagAvatar(
+                      name: reward.title,
+                      point: reward.point,
+                      image64: snapshot.data,
+                      titleColor: Color(0xff26315F),
+                    ),
+                  ]);
+            } else
+              return Center(child: CircularProgressIndicator());
+          },
         ),
       ),
     );
