@@ -5,14 +5,25 @@ import 'package:yorglass_ik/services/authentication-service.dart';
 import 'package:yorglass_ik/services/db-connection.dart';
 
 class SuggestionRepository {
-  static final SuggestionRepository _instance = SuggestionRepository._privateConstructor();
+  static final SuggestionRepository _instance =
+      SuggestionRepository._privateConstructor();
 
   SuggestionRepository._privateConstructor();
 
   static SuggestionRepository get instance => _instance;
 
-  Future<bool> checkSuggestion() async {
-    Results res = await DbConnection.query("SELECT * FROM suggestion");
+  Future<bool> hasSuggestionLimit() async {
+    Results res = await DbConnection.query(
+        "SELECT * FROM suggestion where uid = (?) and YEAR(date) = (?) and MONTH(date) = (?) and DAY(date) = (?)",
+        [
+          AuthenticationService.verifiedUser.id,
+          DateTime.now().year,
+          DateTime.now().month,
+          DateTime.now().day
+        ]);
+    if (res.length == 10) {
+      return false;
+    }
     return true;
   }
 
@@ -38,6 +49,4 @@ class SuggestionRepository {
       ],
     );
   }
-
-  
 }

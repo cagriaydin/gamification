@@ -215,23 +215,33 @@ class _SuggestionPageState extends State<SuggestionPage> {
     );
   }
 
-  sendSuggestion() {
-    if (descriptionController.text.length >= 10) {
-      suggestion.title = titleController.text;
-      suggestion.description = descriptionController.text;
-      SuggestionRepository.instance.sendSuggestion(suggestion);
+  sendSuggestion() async {
+    bool hasLimit = await SuggestionRepository.instance.hasSuggestionLimit();
+    if (hasLimit) {
+      if (descriptionController.text.length >= 10) {
+        suggestion.title = titleController.text;
+        suggestion.description = descriptionController.text;
+        await SuggestionRepository.instance.sendSuggestion(suggestion);
+        return PopupHelper().showPopup(
+          context,
+          Text(
+            "Önerini bizimle paylaştığın için teşekkür ederiz !",
+          ),
+        );
+      }
       return PopupHelper().showPopup(
         context,
         Text(
-          "Önerini bizimle paylaştığın için teşekkür ederiz !",
+          "Önerin çok kısa, biraz daha detaylandırır mısın?",
+        ),
+      );
+    } else {
+      return PopupHelper().showPopup(
+        context,
+        Text(
+          "Günde en fazla 10 öneri paylaşabilirsin",
         ),
       );
     }
-    return PopupHelper().showPopup(
-      context,
-      Text(
-        "Önerin çok kısa, biraz daha detaylandırır mısın?",
-      ),
-    );
   }
 }
