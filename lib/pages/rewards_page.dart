@@ -120,7 +120,15 @@ class RewardsPage extends StatelessWidget {
                         height: size.height / 2.5,
                         child: RewardSliderTwo(),
                       ),
-                      //TODO: type 3 start here
+                      //TODO: type 3 start here 
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          "Kendimi mutlu etme zamanı!",
+                          style:
+                              TextStyle(color: Color(0xffAAAAAD), fontSize: 20),
+                        ),
+                      ),
                       Container(
                         height: size.height ,
                         child: FutureBuilder(
