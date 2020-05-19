@@ -32,8 +32,6 @@ class _TaskListPageState extends State<TaskListPage> {
 
   final double kEffectHeight = 100;
 
-  Future getUserTasks;
-
   ValueNotifier<CrossFadeState> crossFade =
       ValueNotifier(CrossFadeState.showFirst);
 
@@ -41,7 +39,7 @@ class _TaskListPageState extends State<TaskListPage> {
   void initState() {
     controller = ScrollController();
     controller.addListener(scrollControllerListener);
-    getUserTasks = TaskRepository.instance.getUserTasks();
+    TaskRepository.instance.getUserTasks();
     super.initState();
   }
 
@@ -198,8 +196,8 @@ class _TaskListPageState extends State<TaskListPage> {
             ),
           ),
           Expanded(
-            child: FutureBuilder<List<UserTask>>(
-              future: TaskRepository.instance.getUserTasks(),
+            child: StreamBuilder<List<UserTask>>(
+              stream: TaskRepository.instance.currentUserTasks,
               builder: (BuildContext context,
                   AsyncSnapshot<List<UserTask>> snapshot) {
                 final loader = Center(
@@ -290,7 +288,7 @@ class _BuildTaskState extends State<BuildTask> {
                       height: 8,
                     ),
                     GestureDetector(
-                      onLongPress: () => stepComplete(),
+                      onDoubleTap: () => stepComplete(),
                       behavior: HitTestBehavior.opaque,
                       child: StepperLinearIndicator(
                         width: size.width / 2,
@@ -350,8 +348,8 @@ class _BuildTaskState extends State<BuildTask> {
     }
   }
 
-  void stepComplete() {
-    TaskRepository.instance.updateUserTask(widget.userTask);
+  Future<void> stepComplete() async {
+    await TaskRepository.instance.updateUserTask(widget.userTask);
   }
 
   void taskComplete() {}
@@ -475,7 +473,7 @@ class _TaskListBuilderState extends State<TaskListBuilder>
   @override
   void dispose() {
     widget.crossFadeNotifier.removeListener(crossFadeListener);
-    _debounce.cancel();
+    if (_debounce != null) _debounce.cancel();
     overlayEntry.remove();
     super.dispose();
   }
@@ -545,7 +543,7 @@ class _TaskListBuilderState extends State<TaskListBuilder>
         await Future.delayed(Duration(milliseconds: 600));
         offsetNotifier.value = AnimateOffset(offset ?? Offset.zero, false);
         controller.animateTo(
-          offset.dy,
+          offset.dy - 10,
           duration: Duration(milliseconds: 600),
           curve: Curves.ease,
         );
@@ -578,7 +576,8 @@ class _TaskListBuilderState extends State<TaskListBuilder>
 
   void crossFadeListener() async {
     if (_debounce?.isActive ?? false) _debounce.cancel();
-    _debounce = Timer(const Duration(milliseconds: 500), () {
+    _debounce = Timer(const Duration(milliseconds: 500), () async {
+      await Future.delayed(const Duration(milliseconds: 300));
       final box = customPaintKey.currentContext.findRenderObject() as RenderBox;
       initialPos = box.localToGlobal(Offset.zero);
       animateToIndex(position);

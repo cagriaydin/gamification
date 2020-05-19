@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:mysql1/mysql1.dart';
 import 'package:uuid/uuid.dart';
 import 'package:yorglass_ik/models/task.dart';
@@ -18,8 +20,13 @@ class TaskRepository {
 
   static TaskRepository get instance => _instance;
 
+  StreamController<List<UserTask>> _currentTasks = StreamController.broadcast();
+
+  Stream get currentUserTasks => _currentTasks.stream;
+
   Future<List<UserTask>> getUserTasks() async {
-    Results res = await DbConnection.query("SELECT * FROM task WHERE active = 1");
+    Results res =
+    await DbConnection.query("SELECT * FROM task WHERE active = 1");
     List<Task> taskList = [];
     if (res.length > 0) {
       forEach(res, (element) {
@@ -59,7 +66,8 @@ class TaskRepository {
             point: element[8],
           ),
         );
-        userTaskList.last.nextdeadline = userTaskList.last.nextdeadline.toLocal();
+        userTaskList.last.nextdeadline =
+            userTaskList.last.nextdeadline.toLocal();
         userTaskList.last.lastUpdate = userTaskList.last.lastUpdate.toLocal();
         userTaskList.last.nextActive = userTaskList.last.nextActive.toLocal();
       });
@@ -100,6 +108,7 @@ class TaskRepository {
         createNewUserTask(task, userTaskList);
       }
     });
+    _currentTasks.add(userTaskList);
     return userTaskList;
   }
 
@@ -134,10 +143,12 @@ class TaskRepository {
     if (userTask.complete == 1) {
       return false;
     } else {
-      if (userTask.nextActive != null && userTask.nextActive.compareTo(DateTime.now()) > 0) {
+      if (userTask.nextActive != null &&
+          userTask.nextActive.compareTo(DateTime.now()) > 0) {
         return false;
       }
-      if (userTask.nextdeadline != null && userTask.nextdeadline.compareTo(DateTime.now()) < 0) {
+      if (userTask.nextdeadline != null &&
+          userTask.nextdeadline.compareTo(DateTime.now()) < 0) {
         return false;
       }
     }
@@ -247,7 +258,9 @@ class TaskRepository {
   }
 
   DateTime _getEndOfDay(DateTime date) {
-    return _getBeginingOfDay(date).add(new Duration(days: 1)).subtract(new Duration(milliseconds: 1));
+    return _getBeginingOfDay(date)
+        .add(new Duration(days: 1))
+        .subtract(new Duration(milliseconds: 1));
   }
 
   DateTime _getBeginingOfWeek(DateTime date) {
@@ -257,7 +270,9 @@ class TaskRepository {
 
   DateTime _getEndOfWeek(DateTime date) {
     date = _getBeginingOfDay(date);
-    return date.add(new Duration(days: 7 - date.weekday)).subtract(new Duration(milliseconds: 1));
+    return date
+        .add(new Duration(days: 7 - date.weekday))
+        .subtract(new Duration(milliseconds: 1));
   }
 
   DateTime _getBeginingOfMonth(DateTime date) {
@@ -277,7 +292,9 @@ class TaskRepository {
   }
 
   Future updateUserInfo() async {
-    Results res = await DbConnection.query("SELECT * FROM leaderboard WHERE enddate IS NULL AND userid = ?", [AuthenticationService.verifiedUser.id]);
+    Results res = await DbConnection.query(
+        "SELECT * FROM leaderboard WHERE enddate IS NULL AND userid = ?",
+        [AuthenticationService.verifiedUser.id]);
     if (res.length > 0) {
       AuthenticationService.verifiedUser.point = res.single[1];
     }
@@ -286,7 +303,8 @@ class TaskRepository {
     for (UserTask t in tasks) {
       if (!TaskRepository.instance.canUpdate(t)) count++;
     }
-    AuthenticationService.verifiedUser.percentage = (count / tasks.length * 100).round();
+    AuthenticationService.verifiedUser.percentage =
+        (count / tasks.length * 100).round();
     AuthenticationService.verifiedUser.taskCount = tasks.length - count;
   }
 }
