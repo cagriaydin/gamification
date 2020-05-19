@@ -114,13 +114,19 @@ class ProfilePage extends StatelessWidget {
                               child: FutureBuilder<List<User>>(
                                 future: UserRepository.instance.getTopUserPointList(),
                                 builder: (BuildContext context, AsyncSnapshot<List<User>> snapshot) {
-                                  return LeaderBoard(
-                                    list: snapshot.data.map((e) => LeaderBoardItem(
-                                          image: e.image,
-                                          point: e.point,
-                                          name: e.name,
-                                        )).toList(),
-                                  );
+                                  if (snapshot.hasData) {
+                                    return LeaderBoard(
+                                      list: snapshot.data
+                                          .map((e) => LeaderBoardItem(
+                                                image: e.image,
+                                                point: e.point,
+                                                name: e.name,
+                                              ))
+                                          .toList(),
+                                    );
+                                  } else {
+                                    return Container();
+                                  }
                                 },
                               ),
                             ),

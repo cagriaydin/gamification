@@ -2,12 +2,10 @@ import 'package:yorglass_ik/models/branch.dart';
 import 'package:yorglass_ik/models/user.dart';
 import 'package:yorglass_ik/models/user_leader_board.dart';
 import 'package:mysql1/mysql1.dart';
-import 'package:yorglass_ik/models/user.dart';
 import 'package:yorglass_ik/repositories/branch_repository.dart';
 import 'package:yorglass_ik/repositories/image-repository.dart';
 import 'package:yorglass_ik/models/image.dart';
 import 'package:yorglass_ik/repositories/task-repository.dart';
-import 'package:yorglass_ik/services/authentication-service.dart';
 import 'package:yorglass_ik/services/db-connection.dart';
 
 class UserRepository {
@@ -18,7 +16,7 @@ class UserRepository {
   static UserRepository get instance => _instance;
 
   Future<List<UserLeaderBoard>> getUserPointList({int limit}) async {
-    Results res = await DbConnection.query("SELECT * FROM leaderboard where enddate IS NULL ORDER BY point" + (limit != null ? (" LIMIT " + limit.toString()) : ""));
+    Results res = await DbConnection.query("SELECT * FROM leaderboard where enddate IS NULL ORDER BY point DESC" + (limit != null ? (" LIMIT " + limit.toString()) : ""));
     List<UserLeaderBoard> list = [];
     if (res.length > 0) {
       forEach(res, (element) {
@@ -43,10 +41,6 @@ class UserRepository {
           image: element[5],
           point: element[7],
         );
-        if (user.image != null) {
-          Image userImage = await ImageRepository.instance.getImage(element[5]);
-          user.image = userImage.base64;
-        }
         user.branchName = bList.firstWhere((element) => element.id == user.branchId).name;
         list.add(user);
       }
@@ -59,6 +53,7 @@ class UserRepository {
     var userPointList = await getUserPointList(limit: 3);
     for (var user in userPointList) {
       userList.add(await getUser(user.userId));
+      userList.last.point = user.point;
     }
     return userList;
   }

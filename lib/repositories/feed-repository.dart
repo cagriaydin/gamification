@@ -12,7 +12,7 @@ class FeedRepository {
 
   static FeedRepository get instance => _instance;
   Future<List<FeedItem>> getFeed() async {
-    Results res = await DbConnection.query("SELECT * FROM feed WHERE id NOT IN (?) ORDER BY date, likecount", [AuthenticationService.verifiedUser.deletedFeeds]);
+    Results res = await DbConnection.query("SELECT * FROM feed WHERE id NOT IN (?) ORDER BY date, likecount DESC", [AuthenticationService.verifiedUser.deletedFeeds]);
     List<FeedItem> feedItemList = [];
     if (res.length > 0) {
       forEach(res, (element) {
