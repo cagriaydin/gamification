@@ -30,7 +30,7 @@ class BuildUserInfo extends StatelessWidget {
         Stack(
           children: [
             Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(20.0),
               child: CircleAvatar(
                 radius: radius ?? 70,
                 backgroundImage: user.image == null

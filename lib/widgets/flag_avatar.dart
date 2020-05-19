@@ -50,14 +50,19 @@ class FlagAvatar extends StatelessWidget {
                 SizedBox(
                   width: 8,
                 ),
-                Text(
-                  branchName,
-                  textAlign: TextAlign.left,
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w300,
-                      fontSize: 12),
-                  overflow: TextOverflow.ellipsis,
+                Tooltip(
+                  message: branchName,
+                  child: Text(
+                    branchName.length > 10
+                        ? branchName.substring(0, 10) + '...'
+                        : branchName,
+                    textAlign: TextAlign.left,
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w300,
+                        fontSize: 12),
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
               ],
             ),

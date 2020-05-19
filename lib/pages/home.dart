@@ -91,11 +91,15 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                     SizedBox(height: 16),
-                    Text(
-                      AuthenticationService.verifiedUser.branchName,
-                      style: TextStyle(
-                          fontSize: 20,
-                          color: Color(0xff4BADBB).withOpacity(.6)),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        AuthenticationService.verifiedUser.branchName,
+                        style: TextStyle(
+                            fontSize: 20,
+                            color: Color(0xff4BADBB).withOpacity(.6)),
+                            textAlign: TextAlign.center,
+                      ),
                     ),
                     SizedBox(
                       height: 20,
@@ -208,7 +212,7 @@ class MenuButton extends StatelessWidget {
         if (count != null)
           Positioned(
             right: 50,
-            top: 10,
+            top: 5,
             child: Container(
               width: 22,
               height: 22,

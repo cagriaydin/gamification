@@ -103,7 +103,7 @@ class ProfilePage extends StatelessWidget {
                   child: Padding(
                     padding: size.height < 600
                         ? const EdgeInsets.all(8)
-                        : const EdgeInsets.all(16.0),
+                        : const EdgeInsets.all(7.0),
                     child: ContentSelector(
                       onChange: onContentSelectorChange,
                       options: options,
