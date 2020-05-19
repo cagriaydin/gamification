@@ -27,7 +27,7 @@ class SuggestionRepository {
         suggestion.type,
         suggestion.status,
         suggestion.flag,
-        suggestion.date,
+        suggestion.date.toUtc(),
       ],
     );
     // await sendSuggestion(suggeestion);

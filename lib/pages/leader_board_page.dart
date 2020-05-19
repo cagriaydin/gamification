@@ -30,17 +30,20 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
     ContentOption(title: 'Bireysel', isActive: true),
     ContentOption(title: 'İşletme'),
   ];
-
-  List<BranchLeaderBoard> branchLeaderList =
-      BranchRepository.instance.getBoardPointList();
-  List<Branch> branchList = BranchRepository.instance.getBranchList();
-
-  List<UserLeaderBoard> userLeaderList =
-      UserRepository.instance.getUserPointList();
-  List<User> userList = UserRepository.instance.getUserList();
-
-  List<Branch> branchTopList =
-      BranchRepository.instance.getTopBranchPointList();
+  List<BranchLeaderBoard> branchLeaderList = [];
+  List<Branch> branchList = [];
+  List<Branch> branchTopList = [];
+  List<UserLeaderBoard> userLeaderList = [];
+  List<User> userList = [];
+  @override
+  void initState() {
+    BranchRepository.instance.getBoardPointList().then((value) => setState(() => branchLeaderList = value));
+    BranchRepository.instance.getTopBranchPointList().then((value) => setState(() => branchTopList = value));
+    BranchRepository.instance.getBranchList().then((value) => setState(() => branchList = value));
+    UserRepository.instance.getUserPointList().then((value) => setState(() => userLeaderList = value));
+    UserRepository.instance.getUserList().then((value) => setState(() => userList = value));
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -101,9 +104,7 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
                             GestureDetector(
                               onTap: () {
                                 scrollController.animateTo(
-                                  75 *
-                                      double.tryParse(
-                                          (getMyRank() - 3).toString()),
+                                  75 * double.tryParse((getMyRank() - 3).toString()),
                                   duration: Duration(seconds: 1),
                                   curve: Curves.fastOutSlowIn,
                                 );
@@ -115,26 +116,11 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
                                 margin: EdgeInsets.all(11),
                                 child: RankContent(
                                   selfContent: true,
-                                  title: userList
-                                      .singleWhere((element) =>
-                                          element.id ==
-                                          AuthenticationService.verifiedUser.id)
-                                      .name,
+                                  title: userList.singleWhere((element) => element.id == AuthenticationService.verifiedUser.id).name,
                                   rank: getMyRank(),
-                                  point: userLeaderList
-                                      .singleWhere((element) =>
-                                          element.userId ==
-                                          AuthenticationService.verifiedUser.id)
-                                      .point,
+                                  point: userLeaderList.singleWhere((element) => element.userId == AuthenticationService.verifiedUser.id).point,
                                   subTitle: branchList
-                                      .singleWhere((element) =>
-                                          element.id ==
-                                          (userList
-                                              .singleWhere((element) =>
-                                                  element.id ==
-                                                  AuthenticationService
-                                                      .verifiedUser.id)
-                                              .branchId))
+                                      .singleWhere((element) => element.id == (userList.singleWhere((element) => element.id == AuthenticationService.verifiedUser.id).branchId))
                                       .name,
                                 ),
                                 decoration: BoxDecoration(
@@ -157,19 +143,14 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
                                 scrollDirection: Axis.vertical,
                                 itemCount: userLeaderList.length - 3,
                                 itemBuilder: (BuildContext context, int index) {
-                                  UserLeaderBoard item =
-                                      userLeaderList.skip(3).elementAt(index);
+                                  UserLeaderBoard item = userLeaderList.skip(3).elementAt(index);
                                   return Padding(
-                                    padding:
-                                        const EdgeInsets.fromLTRB(18, 0, 18, 0),
+                                    padding: const EdgeInsets.fromLTRB(18, 0, 18, 0),
                                     child: Container(
-                                      decoration: item.userId ==
-                                              AuthenticationService
-                                                  .verifiedUser.id
+                                      decoration: item.userId == AuthenticationService.verifiedUser.id
                                           ? BoxDecoration(
                                               color: Colors.white,
-                                              borderRadius:
-                                                  BorderRadius.circular(12),
+                                              borderRadius: BorderRadius.circular(12),
                                               boxShadow: <BoxShadow>[
                                                 BoxShadow(
                                                   color: Color(0xFFC2F6FC),
@@ -181,22 +162,9 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
                                             )
                                           : BoxDecoration(),
                                       child: RankContent(
-                                        selfContent: item.userId ==
-                                            AuthenticationService
-                                                .verifiedUser.id,
-                                        title: userList
-                                            .singleWhere((element) =>
-                                                element.id == item.userId)
-                                            .name,
-                                        subTitle: branchList
-                                            .singleWhere((element) =>
-                                                element.id ==
-                                                (userList
-                                                    .singleWhere((element) =>
-                                                        element.id ==
-                                                        item.userId)
-                                                    .branchId))
-                                            .name,
+                                        selfContent: item.userId == AuthenticationService.verifiedUser.id,
+                                        title: userList.singleWhere((element) => element.id == item.userId).name,
+                                        subTitle: branchList.singleWhere((element) => element.id == (userList.singleWhere((element) => element.id == item.userId).branchId)).name,
                                         rank: index + 4,
                                         point: item.point,
                                       ),
@@ -214,17 +182,17 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
                                 LeaderBoardItem(
                                   image: branchTopList[0].image,
                                   point: branchTopList[0].point,
-                                  name: branchTopList[0].name + " İşletmesi",
+                                  name: branchTopList[0].name,
                                 ),
                                 LeaderBoardItem(
                                   image: branchTopList[1].image,
                                   point: branchTopList[1].point,
-                                  name: branchTopList[1].name + " İşletmesi",
+                                  name: branchTopList[1].name,
                                 ),
                                 LeaderBoardItem(
                                   image: branchTopList[2].image,
                                   point: branchTopList[2].point,
-                                  name: branchTopList[2].name + " İşletmesi",
+                                  name: branchTopList[2].name,
                                 ),
                               ],
                             ),
@@ -238,29 +206,19 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
                                 scrollDirection: Axis.vertical,
                                 itemCount: branchLeaderList.length - 3,
                                 itemBuilder: (BuildContext context, int index) {
-                                  BranchLeaderBoard item =
-                                      branchLeaderList.skip(3).elementAt(index);
+                                  BranchLeaderBoard item = branchLeaderList.skip(3).elementAt(index);
                                   return Padding(
-                                      padding: const EdgeInsets.fromLTRB(
-                                          18, 0, 18, 0),
+                                      padding: const EdgeInsets.fromLTRB(18, 0, 18, 0),
                                       child: Container(
                                         child: RankContent(
-                                            selfContent: item.branchId ==
-                                                AuthenticationService
-                                                    .verifiedUser.branchId,
+                                            selfContent: item.branchId == AuthenticationService.verifiedUser.branchId,
                                             point: item.point,
-                                            subTitle: branchList
-                                                .singleWhere((element) =>
-                                                    element.id == item.branchId)
-                                                .name,
+                                            subTitle: branchList.singleWhere((element) => element.id == item.branchId).name,
                                             rank: index + 4),
-                                        decoration: item.branchId ==
-                                                AuthenticationService
-                                                    .verifiedUser.branchId
+                                        decoration: item.branchId == AuthenticationService.verifiedUser.branchId
                                             ? BoxDecoration(
                                                 color: Colors.white,
-                                                borderRadius:
-                                                    BorderRadius.circular(12),
+                                                borderRadius: BorderRadius.circular(12),
                                                 boxShadow: <BoxShadow>[
                                                   BoxShadow(
                                                     color: Color(0xFFC2F6FC),
@@ -288,17 +246,14 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
   }
 
   getMyRank() {
-    return userLeaderList.indexOf(userLeaderList.singleWhere((element) =>
-            element.userId == AuthenticationService.verifiedUser.id)) +
-        1;
+    return userLeaderList.indexOf(userLeaderList.singleWhere((element) => element.userId == AuthenticationService.verifiedUser.id)) + 1;
   }
 
   onContentSelectorChange(ContentOption contentOption) {
-    WidgetsBinding.instance
-        .addPostFrameCallback((_) => pageController.animateToPage(
-              contentOption.title == 'Bireysel' ? 0 : 1,
-              duration: Duration(milliseconds: 300),
-              curve: Curves.easeOut,
-            ));
+    WidgetsBinding.instance.addPostFrameCallback((_) => pageController.animateToPage(
+          contentOption.title == 'Bireysel' ? 0 : 1,
+          duration: Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        ));
   }
 }

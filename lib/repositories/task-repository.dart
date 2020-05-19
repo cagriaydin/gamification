@@ -19,90 +19,88 @@ class TaskRepository {
   static TaskRepository get instance => _instance;
 
   Future<List<UserTask>> getUserTasks() async {
-    try {
-      Results res =
-          await DbConnection.query("SELECT * FROM task WHERE active = 1");
-      List<Task> taskList = [];
-      if (res.length > 0) {
-        forEach(res, (element) {
-          taskList.add(
-            Task(
-              id: element[0],
-              name: element[1],
-              point: element[2],
-              interval: element[3],
-              count: element[4],
-              renewableTime: element[5],
-            ),
-          );
-        });
-      }
+    Results res = await DbConnection.query("SELECT * FROM task WHERE active = 1");
+    List<Task> taskList = [];
+    if (res.length > 0) {
+      forEach(res, (element) {
+        taskList.add(
+          Task(
+            id: element[0],
+            name: element[1],
+            point: element[2],
+            interval: element[3],
+            count: element[4],
+            renewableTime: element[5],
+          ),
+        );
+      });
+    }
 
-      Results userTasks = await DbConnection.query(
-        "SELECT * FROM usertask WHERE userid = ? AND (lastupdate, taskid) IN (SELECT MAX(lastupdate), taskid FROM usertask WHERE userid = ? GROUP BY taskid)",
-        [
-          AuthenticationService.verifiedUser.id,
-          AuthenticationService.verifiedUser.id,
-        ],
-      );
-      List<UserTask> userTaskList = [];
-      if (userTasks.length > 0) {
-        forEach(userTaskList, (element) {
-          userTaskList.add(
-            UserTask(
-              id: element[0],
-              taskId: element[1],
-              userId: element[2],
-              lastUpdate: element[3],
-              nextActive: element[4],
-              nextdeadline: element[5],
-              count: element[6],
-              complete: element[7],
-              point: element[8],
-            ),
-          );
-        });
-      }
+    Results userTasks = await DbConnection.query(
+      "SELECT * FROM usertask WHERE userid = ? AND (lastupdate, taskid) IN (SELECT MAX(lastupdate), taskid FROM usertask WHERE userid = ? GROUP BY taskid)",
+      [
+        AuthenticationService.verifiedUser.id,
+        AuthenticationService.verifiedUser.id,
+      ],
+    );
+    List<UserTask> userTaskList = [];
+    if (userTasks.length > 0) {
+      forEach(userTasks, (element) {
+        userTaskList.add(
+          UserTask(
+            id: element[0],
+            taskId: element[1],
+            userId: element[2],
+            lastUpdate: element[3],
+            nextActive: element[4],
+            nextdeadline: element[5],
+            count: element[6],
+            complete: element[7],
+            point: element[8],
+          ),
+        );
+        userTaskList.last.nextdeadline = userTaskList.last.nextdeadline.toLocal();
+        userTaskList.last.lastUpdate = userTaskList.last.lastUpdate.toLocal();
+        userTaskList.last.nextActive = userTaskList.last.nextActive.toLocal();
+      });
+    }
 
-      forEach(taskList, (task) {
-        List<UserTask> tasks = userTaskList.where((userTask) {
-          return userTask.taskId == task.id;
-        }).toList();
-        if (tasks.length > 0) {
-          UserTask userTask = tasks.first;
-          userTask.task = task;
-          if (userTask.complete == 1) {
-            if (task.interval == null) {
-              userTaskList.remove(userTask);
-              createNewUserTask(task, userTaskList);
-            } else {
-              DateTime startTime;
-              if (task.interval == 1) {
-                startTime = _getBeginingOfDay(DateTime.now());
-              } else if (task.interval == 2) {
-                startTime = _getBeginingOfWeek(DateTime.now());
-              } else if (task.interval == 3) {
-                startTime = _getBeginingOfMonth(DateTime.now());
-              }
-              if (userTask.lastUpdate.compareTo(startTime) < 0) {
-                userTaskList.remove(userTask);
-                createNewUserTask(task, userTaskList);
-              }
-            }
+    forEach(taskList, (task) {
+      List<UserTask> tasks = userTaskList.where((userTask) {
+        return userTask.taskId == task.id;
+      }).toList();
+      if (tasks.length > 0) {
+        UserTask userTask = tasks.first;
+        userTask.task = task;
+        if (userTask.complete == 1) {
+          if (task.interval == null) {
+            userTaskList.remove(userTask);
+            createNewUserTask(task, userTaskList);
           } else {
-            if (userTask.nextdeadline.compareTo(DateTime.now()) < 0) {
+            DateTime startTime;
+            if (task.interval == 1) {
+              startTime = _getBeginingOfDay(DateTime.now());
+            } else if (task.interval == 2) {
+              startTime = _getBeginingOfWeek(DateTime.now());
+            } else if (task.interval == 3) {
+              startTime = _getBeginingOfMonth(DateTime.now());
+            }
+            if (userTask.lastUpdate.compareTo(startTime) < 0) {
               userTaskList.remove(userTask);
               createNewUserTask(task, userTaskList);
             }
           }
         } else {
-          createNewUserTask(task, userTaskList);
+          if (userTask.nextdeadline.compareTo(DateTime.now()) < 0) {
+            userTaskList.remove(userTask);
+            createNewUserTask(task, userTaskList);
+          }
         }
-      });
-      return userTaskList;
-    } catch (e) {
-      print(e);
-    }
+      } else {
+        createNewUserTask(task, userTaskList);
+      }
+    });
+    return userTaskList;
   }
 
   void createNewUserTask(Task task, List<UserTask> userTaskList) {
@@ -136,12 +134,10 @@ class TaskRepository {
     if (userTask.complete == 1) {
       return false;
     } else {
-      if (userTask.nextActive != null &&
-          userTask.nextActive.compareTo(DateTime.now()) > 0) {
+      if (userTask.nextActive != null && userTask.nextActive.compareTo(DateTime.now()) > 0) {
         return false;
       }
-      if (userTask.nextdeadline != null &&
-          userTask.nextdeadline.compareTo(DateTime.now()) < 0) {
+      if (userTask.nextdeadline != null && userTask.nextdeadline.compareTo(DateTime.now()) < 0) {
         return false;
       }
     }
@@ -214,7 +210,7 @@ class TaskRepository {
     if (res != null && res.affectedRows > 0) {
       if (task.complete == 1) {
         await DbConnection.query(
-          "UPDATE leaderboard SET point = point + ? WHERE userid = ?",
+          "UPDATE leaderboard SET point = point + ? WHERE userid = ? AND enddate IS NULL",
           [
             task.point,
             AuthenticationService.verifiedUser.id,
@@ -222,6 +218,7 @@ class TaskRepository {
         );
       }
     }
+    await updateUserInfo();
     return task;
   }
 
@@ -229,18 +226,18 @@ class TaskRepository {
     if (minutes > 0 || hours > 0) {
       DateTime nextTime = start;
       if (days > 0) {
-        nextTime.add(new Duration(days: days));
+        nextTime = nextTime.add(new Duration(days: days));
       }
       if (hours > 0) {
-        nextTime.add(new Duration(hours: hours));
+        nextTime = nextTime.add(new Duration(hours: hours));
       }
       if (minutes > 0) {
-        nextTime.add(new Duration(minutes: minutes));
+        nextTime = nextTime.add(new Duration(minutes: minutes));
       }
       return nextTime;
     } else {
-      DateTime nextTime = _getBeginingOfDay(DateTime.now());
-      nextTime.add(new Duration(days: days));
+      DateTime nextTime = _getBeginingOfDay(start);
+      nextTime = nextTime.add(new Duration(days: days));
       return nextTime;
     }
   }
@@ -250,9 +247,7 @@ class TaskRepository {
   }
 
   DateTime _getEndOfDay(DateTime date) {
-    return _getBeginingOfDay(date)
-        .add(new Duration(days: 1))
-        .subtract(new Duration(milliseconds: 1));
+    return _getBeginingOfDay(date).add(new Duration(days: 1)).subtract(new Duration(milliseconds: 1));
   }
 
   DateTime _getBeginingOfWeek(DateTime date) {
@@ -262,9 +257,7 @@ class TaskRepository {
 
   DateTime _getEndOfWeek(DateTime date) {
     date = _getBeginingOfDay(date);
-    return date
-        .add(new Duration(days: 7 - date.weekday))
-        .subtract(new Duration(milliseconds: 1));
+    return date.add(new Duration(days: 7 - date.weekday)).subtract(new Duration(milliseconds: 1));
   }
 
   DateTime _getBeginingOfMonth(DateTime date) {
@@ -281,5 +274,19 @@ class TaskRepository {
       month++;
     }
     return new DateTime(year, month, 1).subtract(new Duration(milliseconds: 1));
+  }
+
+  Future updateUserInfo() async {
+    Results res = await DbConnection.query("SELECT * FROM leaderboard WHERE enddate IS NULL AND userid = ?", [AuthenticationService.verifiedUser.id]);
+    if (res.length > 0) {
+      AuthenticationService.verifiedUser.point = res.single[1];
+    }
+    List<UserTask> tasks = await TaskRepository.instance.getUserTasks();
+    int count = 0;
+    for (UserTask t in tasks) {
+      if (!TaskRepository.instance.canUpdate(t)) count++;
+    }
+    AuthenticationService.verifiedUser.percentage = (count / tasks.length * 100).round();
+    AuthenticationService.verifiedUser.taskCount = tasks.length - count;
   }
 }

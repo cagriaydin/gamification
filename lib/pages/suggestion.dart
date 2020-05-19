@@ -108,13 +108,7 @@ class _SuggestionPageState extends State<SuggestionPage> {
                               ),
                               SizedBox(height: 5),
                               Text(
-                                AuthenticationService.verifiedUser.branchName[0]
-                                        .toUpperCase() +
-                                    AuthenticationService
-                                        .verifiedUser.branchName
-                                        .substring(1)
-                                        .toLowerCase() +
-                                    ' İşletmesi',
+                                AuthenticationService.verifiedUser.branchName,
                                 style: TextStyle(
                                   fontSize: 12,
                                   color: Color(0xff4BADBB).withOpacity(.6),
