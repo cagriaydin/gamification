@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:yorglass_ik/models/user.dart';
-import 'package:yorglass_ik/pages/task_list_page.dart';
 
 class BuildUserInfo extends StatelessWidget {
   const BuildUserInfo({
@@ -23,7 +22,9 @@ class BuildUserInfo extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        SizedBox(height: 36,),
+        SizedBox(
+          height: 36,
+        ),
         Stack(
           children: [
             Padding(
@@ -69,7 +70,9 @@ class BuildUserInfo extends StatelessWidget {
               height: 8,
             ),
             Text(
-              user.branchName,
+              user.branchName.length > 20
+                  ? user.branchName.substring(0, 20) + '...'
+                  : user.branchName,
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: Color(0xff3FC1C9),

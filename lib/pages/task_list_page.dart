@@ -30,9 +30,49 @@ class _TaskListPageState extends State<TaskListPage> {
 
   final double kEffectHeight = 100;
 
+  Future getUserTasks;
+
+  var crossFade = CrossFadeState.showFirst;
+
   @override
   void initState() {
     controller = ScrollController();
+    controller.addListener(() {
+      if (controller.hasClients) {
+        if (controller.offset >= 200) {
+          if (crossFade != CrossFadeState.showSecond) {
+            setState(() {
+              crossFade = CrossFadeState.showSecond;
+            });
+          }
+        }
+        if (controller.offset <= controller.position.minScrollExtent &&
+            !controller.position.outOfRange) {
+          if (crossFade != CrossFadeState.showFirst) {
+            setState(() {
+              crossFade = CrossFadeState.showFirst;
+            });
+          }
+        }
+//        final val =
+//        (kEffectHeight - controller.offset * 0.5).clamp(0.0, kEffectHeight);
+//        if (val < 100 && mounted) {
+//          controller.positions.last
+//          if (crossFade != CrossFadeState.showSecond) {
+//            setState(() {
+//              crossFade = CrossFadeState.showSecond;
+//            });
+//          }
+//        } else {
+//          if (crossFade != CrossFadeState.showFirst) {
+//            setState(() {
+//              crossFade = CrossFadeState.showFirst;
+//            });
+//          }
+//        }
+      }
+    });
+    getUserTasks = TaskRepository.instance.getUserTasks();
     super.initState();
   }
 
@@ -60,47 +100,42 @@ class _TaskListPageState extends State<TaskListPage> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          AnimatedBuilder(
-            animation: controller,
-            builder: (BuildContext context, Widget child) {
-              final val = (kEffectHeight - controller.offset * 0.3)
-                  .clamp(0.0, kEffectHeight);
-              if (val < 100) {
-                return Container(
-                  height: controller.hasClients
-                      ? val < 125 ? 125 : val
-                      : kEffectHeight,
-                  padding: EdgeInsets.only(top: padding.top, bottom: 12),
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.all(Radius.circular(16)),
-                      boxShadow: [
-                        BoxShadow(
-                            color: Color(0xff54B4BA),
-                            offset: Offset(2, 3),
-                            blurRadius: 4,
-                            spreadRadius: 2)
-                      ]),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      Column(
-                        children: [
-                          GradientText((widget.user.point ?? 0).toString()),
-                          GradientText(
-                            'puan',
-                            fontWeight: FontWeight.w300,
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                );
-              } else
-                return child;
-            },
-            child: Column(
+          AnimatedCrossFade(
+            crossFadeState: crossFade,
+            duration: Duration(milliseconds: 600),
+            secondChild: Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: Container(
+                height: 150,
+                padding: EdgeInsets.only(top: padding.top),
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.all(Radius.circular(16)),
+                    boxShadow: [
+                      BoxShadow(
+                          color: Color(0xff54B4BA),
+                          offset: Offset(2, 3),
+                          blurRadius: 4,
+                          spreadRadius: 2)
+                    ]),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Column(
+                      children: [
+                        GradientText((widget.user.point ?? 0).toString()),
+                        GradientText(
+                          'puan',
+                          fontWeight: FontWeight.w300,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            firstChild: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Row(
@@ -412,6 +447,7 @@ class _TaskListBuilderState extends State<TaskListBuilder>
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return SingleChildScrollView(
+      physics: BouncingScrollPhysics(),
       controller: controller,
       child: Container(
         key: customPaintKey,
@@ -625,7 +661,7 @@ class MyCustomPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(CustomPainter oldDelegate) {
-    return (oldDelegate as MyCustomPainter).length != this.length;
+    return (oldDelegate as MyCustomPainter).length == this.length;
   }
 }
 
