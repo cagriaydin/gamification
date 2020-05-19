@@ -32,7 +32,7 @@ class _TaskListPageState extends State<TaskListPage> {
 
   Future getUserTasks;
 
-  var crossFade = CrossFadeState.showFirst;
+  ValueNotifier<CrossFadeState> crossFade = ValueNotifier(CrossFadeState.showFirst);
 
   @override
   void initState() {
@@ -40,36 +40,20 @@ class _TaskListPageState extends State<TaskListPage> {
     controller.addListener(() {
       if (controller.hasClients) {
         if (controller.offset >= 200) {
-          if (crossFade != CrossFadeState.showSecond) {
+          if (crossFade.value != CrossFadeState.showSecond) {
             setState(() {
-              crossFade = CrossFadeState.showSecond;
+              crossFade.value = CrossFadeState.showSecond;
             });
           }
         }
         if (controller.offset <= controller.position.minScrollExtent &&
             !controller.position.outOfRange) {
-          if (crossFade != CrossFadeState.showFirst) {
+          if (crossFade.value != CrossFadeState.showFirst) {
             setState(() {
-              crossFade = CrossFadeState.showFirst;
+              crossFade.value = CrossFadeState.showFirst;
             });
           }
         }
-//        final val =
-//        (kEffectHeight - controller.offset * 0.5).clamp(0.0, kEffectHeight);
-//        if (val < 100 && mounted) {
-//          controller.positions.last
-//          if (crossFade != CrossFadeState.showSecond) {
-//            setState(() {
-//              crossFade = CrossFadeState.showSecond;
-//            });
-//          }
-//        } else {
-//          if (crossFade != CrossFadeState.showFirst) {
-//            setState(() {
-//              crossFade = CrossFadeState.showFirst;
-//            });
-//          }
-//        }
       }
     });
     getUserTasks = TaskRepository.instance.getUserTasks();
@@ -85,6 +69,7 @@ class _TaskListPageState extends State<TaskListPage> {
   @override
   Widget build(BuildContext context) {
     final padding = MediaQuery.of(context).padding;
+    final size = MediaQuery.of(context).size;
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
@@ -101,12 +86,31 @@ class _TaskListPageState extends State<TaskListPage> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           AnimatedCrossFade(
-            crossFadeState: crossFade,
-            duration: Duration(milliseconds: 600),
+            layoutBuilder:
+                (topChild, topChildKey, bottomChild, bottomChildKey) {
+              return Stack(
+                overflow: Overflow.visible,
+                alignment: Alignment.center,
+                children: [
+                  Positioned(
+                    key: bottomChildKey,
+                    top: 0,
+                    child: bottomChild,
+                  ),
+                  Positioned(
+                    key: topChildKey,
+                    child: topChild,
+                  ),
+                ],
+              );
+            },
+            crossFadeState: crossFade.value,
+            duration: Duration(milliseconds: 1000),
             secondChild: Padding(
               padding: const EdgeInsets.only(bottom: 8),
               child: Container(
                 height: 150,
+                width: size.width,
                 padding: EdgeInsets.only(top: padding.top),
                 decoration: BoxDecoration(
                     color: Colors.white,
@@ -124,10 +128,14 @@ class _TaskListPageState extends State<TaskListPage> {
                   children: [
                     Column(
                       children: [
-                        GradientText((widget.user.point ?? 0).toString()),
-                        GradientText(
-                          'puan',
-                          fontWeight: FontWeight.w300,
+                        Flexible(
+                            child: GradientText(
+                                (widget.user.point ?? 0).toString())),
+                        Flexible(
+                          child: GradientText(
+                            'puan',
+                            fontWeight: FontWeight.w300,
+                          ),
                         ),
                       ],
                     ),
@@ -135,42 +143,45 @@ class _TaskListPageState extends State<TaskListPage> {
                 ),
               ),
             ),
-            firstChild: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Row(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Row(
-                      children: [
-                        GradientText(
-                          '%',
-                          fontWeight: FontWeight.w300,
-                        ),
-                        GradientText((widget.user.percentage ?? 0).toString()),
-                      ],
-                    ),
-                    BuildUserInfo(
-                      user: widget.user,
-                    ),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        GradientText((widget.user.point ?? 0).toString()),
-                        GradientText(
-                          'puan',
-                          fontWeight: FontWeight.w300,
-                        ),
-                      ],
-                    )
-                  ],
-                ),
-                Image.asset(
-                  'assets/task_divider.png',
-                  fit: BoxFit.fitWidth,
-                ),
-              ],
+            firstChild: Container(
+              width: size.width,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Row(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Row(
+                        children: [
+                          GradientText(
+                            '%',
+                            fontWeight: FontWeight.w300,
+                          ),
+                          GradientText((widget.user.percentage ?? 0).toString()),
+                        ],
+                      ),
+                      BuildUserInfo(
+                        user: widget.user,
+                      ),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          GradientText((widget.user.point ?? 0).toString()),
+                          GradientText(
+                            'puan',
+                            fontWeight: FontWeight.w300,
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
+                  Image.asset(
+                    'assets/task_divider.png',
+                    fit: BoxFit.fitWidth,
+                  ),
+                ],
+              ),
             ),
           ),
           Expanded(
@@ -187,6 +198,7 @@ class _TaskListPageState extends State<TaskListPage> {
                   userTasks = snapshot.data;
                   if (userTasks != null && userTasks.isNotEmpty) {
                     return TaskListBuilder(
+                      crossFadeNotifier:crossFade,
                       controller: controller,
                       length: snapshot.data.length,
                       taskBuilder: taskBuilder,
@@ -392,11 +404,13 @@ class TaskListBuilder extends StatefulWidget {
   final TaskBuilder taskBuilder;
   final ScrollController controller;
 
+  final ValueNotifier<CrossFadeState> crossFadeNotifier;
+
   const TaskListBuilder({
     Key key,
     @required this.length,
     @required this.taskBuilder,
-    @required this.controller,
+    @required this.controller, this.crossFadeNotifier,
   }) : super(key: key);
 
   @override
@@ -535,6 +549,10 @@ class _TaskListBuilderState extends State<TaskListBuilder>
     customPaintSize = size;
     final box = customPaintKey.currentContext.findRenderObject() as RenderBox;
     initialPos = box.localToGlobal(Offset.zero);
+    widget.crossFadeNotifier.addListener(() {
+      final box = customPaintKey.currentContext.findRenderObject() as RenderBox;
+      initialPos = box.localToGlobal(Offset.zero);
+    });
     animateToIndex(0);
   }
 
