@@ -32,7 +32,7 @@ class AuthenticationService {
     } else {
       verifiedUser = user;
     }
-    TaskRepository.instance.updateUserInfo();
+    await TaskRepository.instance.updateUserInfo();
     return user;
   }
 

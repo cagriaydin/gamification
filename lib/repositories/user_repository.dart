@@ -41,10 +41,6 @@ class UserRepository {
           image: element[5],
           point: element[7],
         );
-        if (user.image != null) {
-          Image userImage = await ImageRepository.instance.getImage(element[5]);
-          user.image = userImage.base64;
-        }
         user.branchName = bList.firstWhere((element) => element.id == user.branchId).name;
         list.add(user);
       }
