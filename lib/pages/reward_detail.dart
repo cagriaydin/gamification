@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:yorglass_ik/models/reward.dart';
+import 'package:yorglass_ik/repositories/reward-repository.dart';
 import 'package:yorglass_ik/widgets/image_widget.dart';
 
 class RewardDetail extends StatelessWidget {
@@ -85,7 +86,19 @@ class RewardDetail extends StatelessWidget {
                       ),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.all(Radius.circular(20))),
-                      onPressed: () {},
+                      onPressed: () async {
+                        try {
+                          var x =
+                              await RewardRepository.instance.getRewardTypes();
+                          print(x);
+
+                          var y = await RewardRepository.instance
+                              .buyReward(reward.id);
+                          print(y);
+                        } catch (e) {
+                           print(e);
+                        }
+                      },
                     ),
                   ),
                 ],

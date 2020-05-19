@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:yorglass_ik/models/content_option.dart';
 import 'package:yorglass_ik/models/reward.dart';
 import 'package:yorglass_ik/repositories/reward-repository.dart';
-import 'package:yorglass_ik/services/authentication-service.dart';
 import 'package:yorglass_ik/widgets/content_selector.dart';
 import 'package:yorglass_ik/widgets/gradient_text.dart';
 import 'package:yorglass_ik/widgets/reward-cards3.dart';
@@ -56,17 +55,32 @@ class RewardsPage extends StatelessWidget {
               child: Column(
                 children: [
                   Flexible(
-                    child: GradientText(
-                      (AuthenticationService.verifiedUser.point ?? 0)
-                          .toString(),
-                      fontSize: 25,
-                    ),
-                  ),
-                  Flexible(
-                    child: GradientText(
-                      'puan',
-                      fontSize: 20,
-                      fontWeight: FontWeight.w300,
+                    child: FutureBuilder(
+                      future: RewardRepository.instance.getActivePoint(),
+                      builder:
+                          (BuildContext context, AsyncSnapshot<int> snapshot) {
+                        if (snapshot.hasData || snapshot.hasError) {
+                          return Column(
+                            children: [
+                              Flexible(
+                                child: GradientText(
+                                  (snapshot.data ?? 0).toString(),
+                                  fontSize: 25,
+                                ),
+                              ),
+                              Flexible(
+                                child: GradientText(
+                                  'puan',
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w300,
+                                ),
+                              ),
+                            ],
+                          );
+                        } else {
+                          return Center(child: CircularProgressIndicator());
+                        }
+                      },
                     ),
                   ),
                   Container(
@@ -130,9 +144,9 @@ class RewardsPage extends StatelessWidget {
                         ),
                       ),
                       Container(
-                        height: size.height ,
+                        height: size.height / 2,
                         child: FutureBuilder(
-                          future: RewardRepository.instance.getRewards(type: "3"),
+                          future: RewardRepository.instance.getRewards(),
                           builder: (BuildContext context,
                               AsyncSnapshot<List<Reward>> snapshot) {
                             if (snapshot.hasData) {
@@ -170,7 +184,8 @@ class RewardsPage extends StatelessWidget {
                     } else
                       return Center(child: CircularProgressIndicator());
                   },
-                )              ],
+                )
+              ],
             ),
           ),
         ],

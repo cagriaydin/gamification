@@ -73,7 +73,7 @@ class RewardRepository {
 
   Future<List<RewardType>> getRewardTypes() async {
     List<RewardType> typeList = [];
-    Results res = await DbConnection.query("SELECT * FROM rewardtype ORDER BY order");
+    Results res = await DbConnection.query("SELECT * FROM rewardtype ORDER BY showorder");
     if (res.length > 0) {
       for (Row r in res) {
         typeList.add(RewardType(id: r[0], title: r[1]));
@@ -95,7 +95,7 @@ class RewardRepository {
 
   Future<int> getActivePoint() async {
     Results res = await DbConnection.query(
-      "SELECT SUM(point), (SELECT SUM(point) FROM userreward where userid = usertask.userid) FROM usertask where complete = 1 AND userid = ?",
+      "SELECT SUM(point), (SELECT SUM(point) FROM userreward where userid = usertask.userid) FROM usertask where complete = 1 AND userid = ? GROUP BY userid",
       [
         AuthenticationService.verifiedUser.id,
       ],
