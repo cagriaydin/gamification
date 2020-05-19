@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:math' as math;
 import 'dart:typed_data';
@@ -6,6 +7,7 @@ import 'dart:ui';
 import 'package:after_layout/after_layout.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:yorglass_ik/models/user-task.dart';
 import 'package:yorglass_ik/models/user.dart';
@@ -32,36 +34,46 @@ class _TaskListPageState extends State<TaskListPage> {
 
   Future getUserTasks;
 
-  ValueNotifier<CrossFadeState> crossFade = ValueNotifier(CrossFadeState.showFirst);
+  ValueNotifier<CrossFadeState> crossFade =
+      ValueNotifier(CrossFadeState.showFirst);
 
   @override
   void initState() {
     controller = ScrollController();
-    controller.addListener(() {
-      if (controller.hasClients) {
-        if (controller.offset >= 200) {
-          if (crossFade.value != CrossFadeState.showSecond) {
-            setState(() {
-              crossFade.value = CrossFadeState.showSecond;
-            });
-          }
-        }
-        if (controller.offset <= controller.position.minScrollExtent &&
-            !controller.position.outOfRange) {
-          if (crossFade.value != CrossFadeState.showFirst) {
-            setState(() {
-              crossFade.value = CrossFadeState.showFirst;
-            });
-          }
-        }
-      }
-    });
+    controller.addListener(scrollControllerListener);
     getUserTasks = TaskRepository.instance.getUserTasks();
     super.initState();
   }
 
+  void scrollControllerListener() {
+    if (controller.hasClients) {
+//      print('**********************************************');
+//      print(controller.offset);
+//      print(controller.position.activity.isScrolling);
+//      print(controller.position.userScrollDirection == ScrollDirection.forward);
+//      print(controller.offset >= 300);
+      if (controller.position.userScrollDirection == ScrollDirection.reverse &&
+          controller.offset >= 400) {
+        if (crossFade.value != CrossFadeState.showSecond) {
+          setState(() {
+            crossFade.value = CrossFadeState.showSecond;
+          });
+        }
+      }
+      if (controller.offset <= controller.position.minScrollExtent &&
+          controller.offset < -150) {
+        if (crossFade.value != CrossFadeState.showFirst) {
+          setState(() {
+            crossFade.value = CrossFadeState.showFirst;
+          });
+        }
+      }
+    }
+  }
+
   @override
   void dispose() {
+    controller.removeListener(scrollControllerListener);
     controller.dispose();
     super.dispose();
   }
@@ -105,7 +117,7 @@ class _TaskListPageState extends State<TaskListPage> {
               );
             },
             crossFadeState: crossFade.value,
-            duration: Duration(milliseconds: 1000),
+            duration: Duration(milliseconds: 600),
             secondChild: Padding(
               padding: const EdgeInsets.only(bottom: 8),
               child: Container(
@@ -158,7 +170,8 @@ class _TaskListPageState extends State<TaskListPage> {
                             '%',
                             fontWeight: FontWeight.w300,
                           ),
-                          GradientText((widget.user.percentage ?? 0).toString()),
+                          GradientText(
+                              (widget.user.percentage ?? 0).toString()),
                         ],
                       ),
                       BuildUserInfo(
@@ -198,7 +211,7 @@ class _TaskListPageState extends State<TaskListPage> {
                   userTasks = snapshot.data;
                   if (userTasks != null && userTasks.isNotEmpty) {
                     return TaskListBuilder(
-                      crossFadeNotifier:crossFade,
+                      crossFadeNotifier: crossFade,
                       controller: controller,
                       length: snapshot.data.length,
                       taskBuilder: taskBuilder,
@@ -246,71 +259,76 @@ class _BuildTaskState extends State<BuildTask> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return Container(
-      padding: EdgeInsets.all(16),
+      padding: EdgeInsets.only(
+          left: widget.isLeft ? 16 : 0, right: widget.isLeft ? 0 : 16),
       child: Center(
         child: SingleChildScrollView(
-          child: Stack(
-            children: [
-              Column(
-                crossAxisAlignment: widget.isLeft
-                    ? CrossAxisAlignment.start
-                    : CrossAxisAlignment.end,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    widget.userTask.task.name,
-                    textAlign: widget.isLeft ? TextAlign.left : TextAlign.right,
-                  ),
-                  SizedBox(
-                    height: 8,
-                  ),
-                  Text(
-                    getIntervalText(),
-                    style: TextStyle(
-                        fontStyle: FontStyle.italic, color: Colors.black54),
-                  ),
-                  SizedBox(
-                    height: 8,
-                  ),
-                  GestureDetector(
-                    onLongPress: () => stepComplete(),
-                    behavior: HitTestBehavior.opaque,
-                    child: StepperLinearIndicator(
-                      width: size.width / 2,
-                      height: 20,
-                      stepCount: widget.userTask.task.count,
-                      currentCount: widget.userTask.count,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Stack(
+              children: [
+                Column(
+                  crossAxisAlignment: widget.isLeft
+                      ? CrossAxisAlignment.start
+                      : CrossAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      widget.userTask.task.name,
+                      textAlign:
+                          widget.isLeft ? TextAlign.left : TextAlign.right,
                     ),
-                  ),
-                ],
-              ),
-              if (!widget.isLeft)
-                Positioned(
-                  bottom: 2,
-                  left: 8,
-                  child: Transform.rotate(
-                    angle: -math.pi / 6,
-                    child: GradientText(
-                      '+' + widget.userTask.point.toString() + '\n puan',
-                      disabled: widget.userTask.complete == 0,
-                      fontSize: 20,
+                    SizedBox(
+                      height: 8,
                     ),
-                  ),
+                    Text(
+                      getIntervalText(),
+                      style: TextStyle(
+                          fontStyle: FontStyle.italic, color: Colors.black54),
+                    ),
+                    SizedBox(
+                      height: 8,
+                    ),
+                    GestureDetector(
+                      onLongPress: () => stepComplete(),
+                      behavior: HitTestBehavior.opaque,
+                      child: StepperLinearIndicator(
+                        width: size.width / 2,
+                        height: 20,
+                        stepCount: widget.userTask.task.count,
+                        currentCount: widget.userTask.count,
+                      ),
+                    ),
+                  ],
                 ),
-              if (widget.isLeft)
-                Positioned(
-                  bottom: 2,
-                  right: 8,
-                  child: Transform.rotate(
-                    angle: -math.pi / 6,
-                    child: GradientText(
-                      '+' + widget.userTask.point.toString() + '\n puan',
-                      disabled: widget.userTask.complete == 0,
-                      fontSize: 20,
+                if (!widget.isLeft)
+                  Positioned(
+                    bottom: 2,
+                    left: 8,
+                    child: Transform.rotate(
+                      angle: -math.pi / 6,
+                      child: GradientText(
+                        '+' + widget.userTask.point.toString() + '\n puan',
+                        disabled: widget.userTask.complete == 0,
+                        fontSize: 20,
+                      ),
                     ),
                   ),
-                )
-            ],
+                if (widget.isLeft)
+                  Positioned(
+                    bottom: 2,
+                    right: 8,
+                    child: Transform.rotate(
+                      angle: -math.pi / 6,
+                      child: GradientText(
+                        '+' + widget.userTask.point.toString() + '\n puan',
+                        disabled: widget.userTask.complete == 0,
+                        fontSize: 20,
+                      ),
+                    ),
+                  )
+              ],
+            ),
           ),
         ),
       ),
@@ -410,7 +428,8 @@ class TaskListBuilder extends StatefulWidget {
     Key key,
     @required this.length,
     @required this.taskBuilder,
-    @required this.controller, this.crossFadeNotifier,
+    @required this.controller,
+    this.crossFadeNotifier,
   }) : super(key: key);
 
   @override
@@ -429,6 +448,8 @@ class _TaskListBuilderState extends State<TaskListBuilder>
       ValueNotifier<AnimateOffset>(AnimateOffset(Offset.zero, false));
 
   List<Offset> currentOffsets = [];
+
+  Timer _debounce;
 
   ScrollController get controller => widget.controller;
 
@@ -453,6 +474,8 @@ class _TaskListBuilderState extends State<TaskListBuilder>
 
   @override
   void dispose() {
+    widget.crossFadeNotifier.removeListener(crossFadeListener);
+    _debounce.cancel();
     overlayEntry.remove();
     super.dispose();
   }
@@ -524,7 +547,7 @@ class _TaskListBuilderState extends State<TaskListBuilder>
         controller.animateTo(
           offset.dy,
           duration: Duration(milliseconds: 600),
-          curve: Curves.easeOut,
+          curve: Curves.ease,
         );
       }
     }
@@ -549,11 +572,17 @@ class _TaskListBuilderState extends State<TaskListBuilder>
     customPaintSize = size;
     final box = customPaintKey.currentContext.findRenderObject() as RenderBox;
     initialPos = box.localToGlobal(Offset.zero);
-    widget.crossFadeNotifier.addListener(() {
+    widget.crossFadeNotifier.addListener(crossFadeListener);
+    animateToIndex(0);
+  }
+
+  void crossFadeListener() async {
+    if (_debounce?.isActive ?? false) _debounce.cancel();
+    _debounce = Timer(const Duration(milliseconds: 500), () {
       final box = customPaintKey.currentContext.findRenderObject() as RenderBox;
       initialPos = box.localToGlobal(Offset.zero);
+      animateToIndex(position);
     });
-    animateToIndex(0);
   }
 
   overlayBuilder(BuildContext context) {
