@@ -2,16 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:yorglass_ik/models/reward.dart';
 import 'package:yorglass_ik/widgets/image_widget.dart';
 
-Reward reward = Reward(
-  id: "1",
-  imageId: "c9a560ac-63f2-401b-8185-2bae139957ad",
-  itemType: "forAnimals",
-  title: "Dostlarımıza Mama",
-);
 
 class RewardDetail extends StatelessWidget {
-  Reward reward;
+  final Reward reward;
+
   RewardDetail({this.reward});
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -53,7 +49,7 @@ class RewardDetail extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 28,
                         ),
-                          textAlign: TextAlign.center,
+                        textAlign: TextAlign.center,
                       ),
                     ),
                   ),
@@ -67,7 +63,6 @@ class RewardDetail extends StatelessWidget {
                           style: TextStyle(
                             fontSize: 20,
                             color: Colors.pink,
-                            
                           ),
                           textAlign: TextAlign.center,
                         ),

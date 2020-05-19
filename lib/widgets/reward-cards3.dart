@@ -2,22 +2,15 @@ import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:yorglass_ik/models/reward.dart';
-import 'package:yorglass_ik/widgets/flag_avatar.dart';
-import 'package:yorglass_ik/widgets/flag_point.dart';
-import 'package:yorglass_ik/widgets/reward_cards.dart';
 import 'package:percent_indicator/percent_indicator.dart';
+import 'package:yorglass_ik/models/reward.dart';
+import 'package:yorglass_ik/widgets/flag_point.dart';
 
-class RewardCards3 extends StatefulWidget {
+class RewardCards3 extends StatelessWidget {
   final Reward reward;
-  final Uint8List decodedImage;
-  const RewardCards3({Key key, this.reward, this.decodedImage})
-      : super(key: key);
-  @override
-  _RewardCards3State createState() => _RewardCards3State();
-}
 
-class _RewardCards3State extends State<RewardCards3> {
+  const RewardCards3({Key key, @required this.reward}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -49,14 +42,24 @@ class _RewardCards3State extends State<RewardCards3> {
                     children: <Widget>[
                       SizedBox(
                         height: 220,
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(20.0),
-                          child: Image.memory(widget.decodedImage),
+                        child: FutureBuilder(
+                          future: reward.image64.future,
+                          builder: (BuildContext context,
+                              AsyncSnapshot<Uint8List> snapshot) {
+                            if (snapshot.hasData) {
+                              // return Image.memory(snapshot.data);
+                              return ClipRRect(
+                                borderRadius: BorderRadius.circular(20.0),
+                                child: Image.memory(snapshot.data),
+                              );
+                            } else
+                              return Center(child: CircularProgressIndicator());
+                          },
                         ),
                       ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Text(widget.reward.title),
+                        child: Text(reward.title),
                       )
                     ],
                   ),
@@ -67,20 +70,18 @@ class _RewardCards3State extends State<RewardCards3> {
               right: 0,
               top: 0,
               child: FlagPoint(
-                point: widget.reward.point,
+                point: reward.point,
               ),
             ),
             Positioned(
               right: -30,
               bottom: 100,
               child: Transform.rotate(
-                angle: 90 * pi/180,
+                angle: 90 * pi / 180,
                 child: LinearPercentIndicator(
                   width: 140.0,
                   lineHeight: 14.0,
-                  percent: widget.reward.point / 350 > 1.0
-                      ? 1.0
-                      : widget.reward.point / 350,
+                  percent: reward.point / 350 > 1.0 ? 1.0 : reward.point / 350,
                   backgroundColor: Colors.grey,
                   progressColor: Colors.blue,
                 ),

@@ -22,84 +22,90 @@ class RewardsPage extends StatelessWidget {
           ),
         ),
       ),
-      body: Column(
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.only(bottom: 8),
-            child: Container(
-              height: 125,
-              width: size.width,
-              padding: EdgeInsets.only(top: padding.top),
-              decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.all(Radius.circular(16)),
-                  boxShadow: [
-                    BoxShadow(
-                        color: Color(0xff54B4BA),
-                        offset: Offset(2, 3),
-                        blurRadius: 4,
-                        spreadRadius: 2)
-                  ]),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  Column(
+      body: SingleChildScrollView(
+        child: Container(
+          width: size.width,
+          height: size.height - (padding.bottom + padding.top),
+          child: Column(
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(bottom: 8),
+                child: Container(
+                  height: 125,
+                  width: size.width,
+                  padding: EdgeInsets.only(top: padding.top),
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.all(Radius.circular(16)),
+                      boxShadow: [
+                        BoxShadow(
+                            color: Color(0xff54B4BA),
+                            offset: Offset(2, 3),
+                            blurRadius: 4,
+                            spreadRadius: 2)
+                      ]),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.max,
                     children: [
-                      Flexible(
-                          child: GradientText(
-                              (AuthenticationService.verifiedUser.point ?? 0)
-                                  .toString())),
-                      Flexible(
-                        child: GradientText(
-                          'puan',
-                          fontWeight: FontWeight.w300,
-                        ),
+                      Column(
+                        children: [
+                          Flexible(
+                              child: GradientText(
+                                  (AuthenticationService.verifiedUser.point ?? 0)
+                                      .toString())),
+                          Flexible(
+                            child: GradientText(
+                              'puan',
+                              fontWeight: FontWeight.w300,
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                ],
+                ),
               ),
-            ),
+              Expanded(
+                child: Column(
+                  mainAxisSize: MainAxisSize.max,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        "İnsanlara Faydam Olsun",
+                        style: TextStyle(color: Color(0xffAAAAAD), fontSize: 20),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 3,
+                      child: RewardSliderOne(),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        "Şirin Hayvan Dostlarımıza",
+                        style: TextStyle(color: Color(0xffAAAAAD), fontSize: 20),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 3,
+                      child: RewardSliderTwo(),
+                    ),
+                  ],
+                ),
+              ),
+              // Flexible(
+              //   child: RewardSliderOne(),
+              // ),
+              // GridView(
+              //   semanticChildCount: 2,
+              //   children: <Widget>[],
+              // ),
+            ],
           ),
-          Expanded(
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    "İnsanlara Faydam Olsun",
-                    style: TextStyle(color: Color(0xffAAAAAD), fontSize: 20),
-                  ),
-                ),
-                Expanded(
-                  flex: 3,
-                  child: RewardSliderOne(),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    "Şirin Hayvan Dostlarımıza",
-                    style: TextStyle(color: Color(0xffAAAAAD), fontSize: 20),
-                  ),
-                ),
-                Expanded(
-                  flex: 3,
-                  child: RewardSliderTwo(),
-                ),
-              ],
-            ),
-          ),
-          // Flexible(
-          //   child: RewardSliderOne(),
-          // ),
-          // GridView(
-          //   semanticChildCount: 2,
-          //   children: <Widget>[],
-          // ),
-        ],
+        ),
       ),
     );
   }

@@ -1,4 +1,3 @@
-import 'package:mysql1/mysql1.dart';
 import 'package:yorglass_ik/models/reward.dart';
 
 class RewardRepository {
@@ -8,9 +7,14 @@ class RewardRepository {
   RewardRepository._privateConstructor();
 
   static RewardRepository get instance => _instance;
-  Future<List<Reward>> getReward() async {
-    List<Reward> rewardItemList = [];
 
+  Future<List<Reward>> getRewards({int type}) async {
+    if (type == null) {
+      type = RewardType.forAnimals.index;
+    }
+    List<Reward> rewardItemList = [];
+    await Future.delayed(Duration(milliseconds: 300));
+    rewardItemList = _rewardList;
     return rewardItemList;
   }
 
@@ -23,7 +27,7 @@ class RewardRepository {
 }
 
 //"c9a560ac-63f2-401b-8185-2bae139957ad"
-List<Reward> rewardList = [
+List<Reward> _rewardList = [
   Reward(
     id: "1",
     imageId: "c9a560ac-63f2-401b-8185-2bae139957ad",
