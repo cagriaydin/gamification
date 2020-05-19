@@ -290,11 +290,14 @@ class _BuildTaskState extends State<BuildTask> {
                     GestureDetector(
                       onDoubleTap: () => stepComplete(),
                       behavior: HitTestBehavior.opaque,
-                      child: StepperLinearIndicator(
-                        width: size.width / 2,
-                        height: 20,
-                        stepCount: widget.userTask.task.count,
-                        currentCount: widget.userTask.count,
+                      child: Opacity(
+                        opacity: opacity(),
+                        child: StepperLinearIndicator(
+                          width: size.width / 2,
+                          height: 20,
+                          stepCount: widget.userTask.task.count,
+                          currentCount: widget.userTask.count,
+                        ),
                       ),
                     ),
                   ],
@@ -333,6 +336,13 @@ class _BuildTaskState extends State<BuildTask> {
     );
   }
 
+  double opacity() {
+    if (widget.userTask.complete == 1) {
+      return 1;
+    } else
+      return TaskRepository.instance.canUpdate(widget.userTask) ? 1 : .2;
+  }
+
   String getIntervalText() {
     switch (widget.userTask.task.interval) {
       case 1:
@@ -350,6 +360,11 @@ class _BuildTaskState extends State<BuildTask> {
 
   Future<void> stepComplete() async {
     await TaskRepository.instance.updateUserTask(widget.userTask);
+    if (widget.userTask.complete == 1) {
+      await AuthenticationService.instance.verifyUser();
+      await Future.delayed(Duration(milliseconds: 500));
+      setState(() {});
+    }
   }
 
   void taskComplete() {}
@@ -459,7 +474,7 @@ class _TaskListBuilderState extends State<TaskListBuilder>
 
   @override
   void initState() {
-    decodedImage = base64.decode(AuthenticationService.verifiedUser.image);
+    decodeImage();
     if (overlayEntry != null) {
       overlayEntry.remove();
     }
@@ -468,6 +483,14 @@ class _TaskListBuilderState extends State<TaskListBuilder>
       Overlay.of(context).insert(overlayEntry);
     });
     super.initState();
+  }
+
+  void decodeImage() {
+    try {
+      decodedImage = base64.decode(AuthenticationService.verifiedUser.image);
+    } catch (e) {
+      print(e);
+    }
   }
 
   @override
@@ -577,7 +600,7 @@ class _TaskListBuilderState extends State<TaskListBuilder>
   void crossFadeListener() async {
     if (_debounce?.isActive ?? false) _debounce.cancel();
     _debounce = Timer(const Duration(milliseconds: 500), () async {
-      await Future.delayed(const Duration(milliseconds: 300));
+      await Future.delayed(const Duration(milliseconds: 500));
       final box = customPaintKey.currentContext.findRenderObject() as RenderBox;
       initialPos = box.localToGlobal(Offset.zero);
       animateToIndex(position);
@@ -742,10 +765,15 @@ class ShadowAvatar extends StatelessWidget {
           padding: const EdgeInsets.all(4.0),
           child: ClipOval(
             clipBehavior: Clip.antiAlias,
-            child: Image.memory(
-              imageUrl,
-              fit: BoxFit.fitWidth,
-            ),
+            child: imageUrl == null
+                ? Image.asset(
+                    'assets/default-profile.png',
+                    fit: BoxFit.fitWidth,
+                  )
+                : Image.memory(
+                    imageUrl,
+                    fit: BoxFit.fitWidth,
+                  ),
           ),
         ),
       ),

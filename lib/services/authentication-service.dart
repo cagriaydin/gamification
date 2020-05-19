@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:yorglass_ik/enums/authentication-enum.dart';
 import 'package:yorglass_ik/enums/verification-status-enum.dart';
 import 'package:yorglass_ik/models/authentication-status.dart';
-import 'package:yorglass_ik/models/user-task.dart';
 import 'package:yorglass_ik/models/user.dart';
 import 'package:yorglass_ik/repositories/task-repository.dart';
 import 'package:yorglass_ik/repositories/user_repository.dart';

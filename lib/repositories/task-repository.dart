@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:mysql1/mysql1.dart';
+import 'package:rxdart/rxdart.dart';
 import 'package:uuid/uuid.dart';
 import 'package:yorglass_ik/models/task.dart';
 import 'package:yorglass_ik/models/user-task.dart';
@@ -20,13 +21,13 @@ class TaskRepository {
 
   static TaskRepository get instance => _instance;
 
-  StreamController<List<UserTask>> _currentTasks = StreamController.broadcast();
+  StreamController<List<UserTask>> _currentTasks = BehaviorSubject();
 
   Stream get currentUserTasks => _currentTasks.stream;
 
   Future<List<UserTask>> getUserTasks() async {
     Results res =
-    await DbConnection.query("SELECT * FROM task WHERE active = 1");
+        await DbConnection.query("SELECT * FROM task WHERE active = 1");
     List<Task> taskList = [];
     if (res.length > 0) {
       forEach(res, (element) {
@@ -108,6 +109,7 @@ class TaskRepository {
         createNewUserTask(task, userTaskList);
       }
     });
+    userTaskList.sort((a, b) => a.point.compareTo(b.point));
     _currentTasks.add(userTaskList);
     return userTaskList;
   }
