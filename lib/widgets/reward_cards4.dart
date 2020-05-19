@@ -43,7 +43,7 @@ class _RewardCards4State extends State<RewardCards4> {
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
-                  widget.reward.title,
+                  widget.reward.title.length > 10 ? widget.reward.title.split(" ").join("\n") : widget.reward.title,
                   style: TextStyle(fontSize: 20),
                 ),
               ),
@@ -52,9 +52,19 @@ class _RewardCards4State extends State<RewardCards4> {
               future: widget.reward.image64.future,
               builder:
                   (BuildContext context, AsyncSnapshot<Uint8List> snapshot) {
+                if (snapshot.hasError) {
+                  return Center(
+                      child: FlagAvatar(
+                    split: true,
+                    name: "",
+                    point: widget.reward.point,
+                    titleColor: Color(0xff26315F),
+                  ));
+                }
                 if (snapshot.hasData) {
                   return FlagAvatar(
                     name: "",
+                    split: true,
                     point: widget.reward.point,
                     image64: snapshot.data,
                     titleColor: Color(0xff26315F),
@@ -64,7 +74,7 @@ class _RewardCards4State extends State<RewardCards4> {
               },
             ),
             Positioned(
-              top: 26,
+              top: 70,
               child: new CircularPercentIndicator(
                 radius: 90.0,
                 lineWidth: 7.0,

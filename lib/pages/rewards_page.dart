@@ -137,6 +137,7 @@ class RewardsPage extends StatelessWidget {
                               AsyncSnapshot<List<Reward>> snapshot) {
                             if (snapshot.hasData) {
                               return GridView.count(
+                                childAspectRatio: 9 / 14 ,
                                 scrollDirection: Axis.vertical,
                                 padding: EdgeInsets.all(8),
                                 crossAxisCount: 2,
@@ -170,7 +171,7 @@ class RewardsPage extends StatelessWidget {
                     } else
                       return Center(child: CircularProgressIndicator());
                   },
-                )              ],
+                  )              ],
             ),
           ),
         ],
