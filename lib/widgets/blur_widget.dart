@@ -3,7 +3,6 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 
 class BlurWidget extends StatelessWidget {
-
   const BlurWidget({
     Key key,
     this.child,
@@ -24,7 +23,7 @@ class BlurWidget extends StatelessWidget {
           child: backgroundChild,
         ),
         BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 1.1, sigmaY: 1.1),
+          filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
           child: Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(

@@ -35,7 +35,7 @@ class RewardCards extends StatelessWidget {
       child: Stack(
         children: [
           Positioned(
-            top: cardPadding + 30,
+            top: cardPadding + 40,
             left: cardPadding,
             child: Transform.scale(
               scale: 0.8,
@@ -43,7 +43,7 @@ class RewardCards extends StatelessWidget {
                 width: width,
                 height: width,
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(8)),
+                  borderRadius: BorderRadius.all(Radius.circular(5)),
                   gradient: getGradient(
                       firstColor: Color(0xffA7C9CC),
                       lastColor: Color(0xffCFD4D6)),
@@ -52,7 +52,7 @@ class RewardCards extends StatelessWidget {
             ),
           ),
           Positioned(
-            top: cardPadding + 16,
+            top: cardPadding + 20,
             left: cardPadding,
             child: Transform.scale(
               scale: 0.9,
@@ -106,7 +106,7 @@ class RewardCards extends StatelessWidget {
                           )
                         ],
                       ),
-                      bottom: 16,
+                      bottom: 5,
                       right: 8,
                     ),
                   ],
