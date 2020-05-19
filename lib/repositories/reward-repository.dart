@@ -32,25 +32,18 @@ List<Reward> rewardList = [
     point: 400,
   ),
   Reward(
-    id: "1",
+    id: "2",
     imageId: "c9a560ac-63f2-401b-8185-2bae139957ad",
     itemType: "forAnimals",
     title: "Dostlarımıza Mama",
     point: 400,
   ),
   Reward(
-    id: "2",
+    id: "3",
     imageId: "c9a560ac-63f2-401b-8185-2bae139957ad",
     itemType: "forPeople",
     title: "Adına Fidan Dikiyoruz",
     point: 350,
-  ),
-  Reward(
-    id: "3",
-    imageId: "c9a560ac-63f2-401b-8185-2bae139957ad",
-    itemType: "forSelf",
-    title: "Spotify Üyelik",
-    point: 1400,
   ),
   Reward(
     id: "4",
@@ -61,6 +54,13 @@ List<Reward> rewardList = [
   ),
   Reward(
     id: "5",
+    imageId: "c9a560ac-63f2-401b-8185-2bae139957ad",
+    itemType: "forSelf",
+    title: "Spotify Üyelik",
+    point: 1400,
+  ),
+  Reward(
+    id: "6",
     imageId: "c9a560ac-63f2-401b-8185-2bae139957ad",
     itemType: "forSelf",
     title: "Spotify Üyelik",

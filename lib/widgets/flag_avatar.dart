@@ -1,15 +1,25 @@
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:yorglass_ik/widgets/flag_point.dart';
 
 class FlagAvatar extends StatelessWidget {
   final String imageUrl;
+  final Uint8List image64;
   final int point;
   final int rank;
   final String name;
+  final Color titleColor;
 
-  const FlagAvatar({Key key, this.imageUrl, this.point, this.rank, this.name})
+  const FlagAvatar(
+      {Key key,
+      this.imageUrl,
+      this.point,
+      this.rank,
+      this.name,
+      this.image64,
+      this.titleColor})
       : super(key: key);
 
   @override
@@ -28,7 +38,7 @@ class FlagAvatar extends StatelessWidget {
                   ? Text(
                       name,
                       style: TextStyle(
-                        color: Colors.white,
+                        color: titleColor == null ? Colors.white : titleColor,
                         fontSize: 16,
                       ),
                     )
@@ -96,7 +106,9 @@ class FlagAvatar extends StatelessWidget {
   Object backgroundImage() {
     try {
       return imageUrl == null
-          ? AssetImage("assets/default-profile.png")
+          ? (image64 == null
+              ? AssetImage("assets/default-profile.png")
+              : MemoryImage(image64))
           : MemoryImage(base64.decode(imageUrl));
     } catch (e) {
       print(e);
@@ -105,7 +117,7 @@ class FlagAvatar extends StatelessWidget {
   }
 
   double getRadius(size) {
-    double currentSize = (size.height < 700 || size.width < 400) ? 50 : 60;
+    double currentSize = (size.height < 700 || size.width < 400) ? 65 : 75;
     if (rank == 1) {
       return currentSize;
     } else if (rank == 2) {
