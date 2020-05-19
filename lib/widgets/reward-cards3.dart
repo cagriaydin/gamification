@@ -19,7 +19,7 @@ class RewardCards3 extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(8)),
           color: Colors.white,
-          gradient: getGradient(),
+          // gradient: getGradient(),
           boxShadow: [
             BoxShadow(
               offset: Offset(-2, 2),
@@ -77,13 +77,17 @@ class RewardCards3 extends StatelessWidget {
               right: -30,
               bottom: 100,
               child: Transform.rotate(
-                angle: 90 * pi / 180,
+                angle: 270 * pi / 180,
                 child: LinearPercentIndicator(
+                  linearStrokeCap: LinearStrokeCap.roundAll,
                   width: 140.0,
                   lineHeight: 14.0,
-                  percent: reward.point / 350 > 1.0 ? 1.0 : reward.point / 350,
-                  backgroundColor: Colors.grey,
-                  progressColor: Colors.blue,
+                  percent: reward.point / 700 > 1.0 ? 1.0 : reward.point / 700,
+                  backgroundColor: Colors.black12,
+                  
+                  linearGradient: LinearGradient(
+                    colors: [Color(0xFFABF3F8),Color(0xFF80CEDF),],
+                  ),
                 ),
               ),
             ),

@@ -8,6 +8,7 @@ import 'package:yorglass_ik/widgets/gradient_text.dart';
 import 'package:yorglass_ik/widgets/reward-cards3.dart';
 import 'package:yorglass_ik/widgets/reward-slider-one.dart';
 import 'package:yorglass_ik/widgets/reward-slider-two.dart';
+import 'package:yorglass_ik/widgets/reward_cards4.dart';
 
 class RewardsPage extends StatelessWidget {
   final List<ContentOption> options = [
@@ -66,11 +67,9 @@ class RewardsPage extends StatelessWidget {
               ),
             ),
           ),
-          Expanded(
+          Flexible(
             child: SingleChildScrollView(
               child: Column(
-                mainAxisSize: MainAxisSize.max,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -96,7 +95,9 @@ class RewardsPage extends StatelessWidget {
                   ),
                   //TODO: type 3 start here
                   Container(
-                    height: size.height / 2,
+                    height: size.height,
+                    width: size.width,
+                    alignment: AlignmentDirectional.center,
                     child: FutureBuilder(
                       future: RewardRepository.instance.getRewards(type: 3),
                       builder: (BuildContext context,
@@ -105,9 +106,9 @@ class RewardsPage extends StatelessWidget {
                           return GridView.count(
                             scrollDirection: Axis.horizontal,
                             padding: EdgeInsets.all(8),
-                            crossAxisCount: 2,
+                            crossAxisCount: 3,
                             children: snapshot.data
-                                .map((e) => RewardCards3(reward: e))
+                                .map((e) => RewardCards4(reward: e))
                                 .toList(),
                           );
                         } else
@@ -120,13 +121,6 @@ class RewardsPage extends StatelessWidget {
               ),
             ),
           ),
-          // Flexible(
-          //   child: RewardSliderOne(),
-          // ),
-          // GridView(
-          //   semanticChildCount: 2,
-          //   children: <Widget>[],
-          // ),
         ],
       ),
     );
