@@ -595,12 +595,6 @@ class _TaskListBuilderState extends State<TaskListBuilder>
     customPaintSize = size;
     final box = lastPlace.currentContext.findRenderObject() as RenderBox;
     initialPos = box.localToGlobal(Offset.zero);
-//    print('controller.offset ${controller.offset}');
-//    print('initialPos.dy ${initialPos.dy}');
-//    await Future.delayed(Duration(milliseconds: 500));
-//    initialPos = box.localToGlobal(Offset.zero);
-//    print('controller.offset ${controller.offset}');
-//    print('initialPos.dy ${initialPos.dy}');
     widget.crossFadeNotifier.addListener(crossFadeListener);
     animateToIndex(0);
   }
@@ -608,15 +602,8 @@ class _TaskListBuilderState extends State<TaskListBuilder>
   void crossFadeListener() async {
     if (_debounce?.isActive ?? false) _debounce.cancel();
     _debounce = Timer(const Duration(milliseconds: 1000), () async {
-//      print('after crossFadeListener**************');
-//      print('controller.offset ${controller.offset}');
-//      print('initialPos.dy ${initialPos.dy}');
-//      await Future.delayed(const Duration(milliseconds: 500));
       final box = lastPlace.currentContext.findRenderObject() as RenderBox;
       initialPos = box.localToGlobal(Offset.zero);
-//      print('after crossFadeListener**************');
-//      print('controller.offset ${controller.offset}');
-//      print('initialPos.dy ${initialPos.dy}');
       animateToIndex(position);
     });
   }
