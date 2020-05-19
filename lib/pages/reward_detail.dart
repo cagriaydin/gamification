@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:yorglass_ik/models/reward.dart';
 import 'package:yorglass_ik/widgets/image_widget.dart';
 
-
 class RewardDetail extends StatelessWidget {
   final Reward reward;
 
@@ -12,6 +11,11 @@ class RewardDetail extends StatelessWidget {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+      ),
+      extendBodyBehindAppBar: true,
       body: Stack(
         children: <Widget>[
           Positioned(

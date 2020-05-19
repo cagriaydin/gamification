@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:yorglass_ik/models/reward.dart';
+import 'package:yorglass_ik/pages/reward_detail.dart';
 import 'package:yorglass_ik/repositories/reward-repository.dart';
 import 'package:yorglass_ik/widgets/reward-cards3.dart';
 
@@ -21,8 +22,16 @@ class RewardSliderTwo extends StatelessWidget {
                   builder: (BuildContext context,
                       AsyncSnapshot<Uint8List> _snapshot) {
                     if (snapshot.hasData) {
-                      return RewardCards3(
-                        reward: snapshot.data[index],
+                      return GestureDetector(
+                        onTap: () => Navigator.push(context,
+                            MaterialPageRoute(builder: (BuildContext context) {
+                          return RewardDetail(
+                            reward: snapshot.data[index],
+                          );
+                        })),
+                        child: RewardCards3(
+                          reward: snapshot.data[index],
+                        ),
                       );
                     } else
                       return Center(child: CircularProgressIndicator());

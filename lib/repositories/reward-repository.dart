@@ -11,6 +11,7 @@ class RewardRepository {
   Future<List<Reward>> getRewards({int type}) async {
     if (type == null) {
       type = RewardType.forAnimals.index;
+      //TODO: Query with type
     }
     List<Reward> rewardItemList = [];
     await Future.delayed(Duration(milliseconds: 300));

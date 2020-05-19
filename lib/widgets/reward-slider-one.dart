@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:yorglass_ik/models/reward.dart';
+import 'package:yorglass_ik/pages/reward_detail.dart';
 import 'package:yorglass_ik/repositories/reward-repository.dart';
 import 'package:yorglass_ik/widgets/reward_cards2.dart';
 
@@ -13,11 +14,19 @@ class RewardSliderOne extends StatelessWidget {
         if (snapshot.hasData) {
           return Swiper(
             itemBuilder: (BuildContext context, int index) {
-              return SizedBox(
-                height: 150,
-                child: Container(
-                  child: RewardCards2(
+              return GestureDetector(
+                onTap: () => Navigator.push(context,
+                    MaterialPageRoute(builder: (BuildContext context) {
+                  return RewardDetail(
                     reward: snapshot.data[index],
+                  );
+                })),
+                child: SizedBox(
+                  height: 150,
+                  child: Container(
+                    child: RewardCards2(
+                      reward: snapshot.data[index],
+                    ),
                   ),
                 ),
               );
