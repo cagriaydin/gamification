@@ -7,6 +7,8 @@ import 'package:yorglass_ik/widgets/content_selector.dart';
 import 'package:yorglass_ik/widgets/gradient_text.dart';
 import 'package:yorglass_ik/widgets/reward-cards3.dart';
 import 'package:yorglass_ik/widgets/reward-slider-one.dart';
+import 'package:yorglass_ik/widgets/reward-slider-two.dart';
+import 'package:yorglass_ik/widgets/reward_cards4.dart';
 
 class RewardsPage extends StatelessWidget {
   final List<ContentOption> options = [
@@ -106,39 +108,47 @@ class RewardsPage extends StatelessWidget {
                         height: size.height / 3,
                         child: RewardSliderOne(),
                       ),
-//                      Padding(
-//                        padding: const EdgeInsets.all(8.0),
-//                        child: Text(
-//                          "Şirin Hayvan Dostlarımıza",
-//                          style:
-//                              TextStyle(color: Color(0xffAAAAAD), fontSize: 20),
-//                        ),
-//                      ),
-//                      Container(
-//                        height: size.height / 2.5,
-//                        child: RewardSliderTwo(),
-//                      ),
-//                      //TODO: type 3 start here
-//                      Container(
-//                        height: size.height ,
-//                        child: FutureBuilder(
-//                          future: RewardRepository.instance.getRewards(type: "3"),
-//                          builder: (BuildContext context,
-//                              AsyncSnapshot<List<Reward>> snapshot) {
-//                            if (snapshot.hasData) {
-//                              return GridView.count(
-//                                scrollDirection: Axis.horizontal,
-//                                padding: EdgeInsets.all(8),
-//                                crossAxisCount: 3,
-//                                children: snapshot.data
-//                                    .map((e) => RewardCards4(reward: e))
-//                                    .toList(),
-//                              );
-//                            } else
-//                              return Center(child: CircularProgressIndicator());
-//                          },
-//                        ),
-//                      )
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          "Şirin Hayvan Dostlarımıza",
+                          style:
+                              TextStyle(color: Color(0xffAAAAAD), fontSize: 20),
+                        ),
+                      ),
+                      Container(
+                        height: size.height / 2.5,
+                        child: RewardSliderTwo(),
+                      ),
+                      //TODO: type 3 start here
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          "Kendimi mutlu etme zamanı!",
+                          style:
+                              TextStyle(color: Color(0xffAAAAAD), fontSize: 20),
+                        ),
+                      ),
+                      Container(
+                        height: size.height ,
+                        child: FutureBuilder(
+                          future: RewardRepository.instance.getRewards(type: "3"),
+                          builder: (BuildContext context,
+                              AsyncSnapshot<List<Reward>> snapshot) {
+                            if (snapshot.hasData) {
+                              return GridView.count(
+                                scrollDirection: Axis.vertical,
+                                padding: EdgeInsets.all(8),
+                                crossAxisCount: 2,
+                                children: snapshot.data
+                                    .map((e) => RewardCards4(reward: e))
+                                    .toList(),
+                              );
+                            } else
+                              return Center(child: CircularProgressIndicator());
+                          },
+                        ),
+                      )
                       //TODO type 3 finish
                     ],
                   ),
