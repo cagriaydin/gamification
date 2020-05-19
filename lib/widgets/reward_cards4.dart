@@ -43,48 +43,53 @@ class _RewardCards4State extends State<RewardCards4> {
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
-                  widget.reward.title.length > 10 ? widget.reward.title.split(" ").join("\n") : widget.reward.title,
+                  widget.reward.title.length > 10
+                      ? widget.reward.title.split(" ").join("\n")
+                      : widget.reward.title,
                   style: TextStyle(fontSize: 20),
                 ),
               ),
             ),
-            FutureBuilder(
-              future: widget.reward.image64.future,
-              builder:
-                  (BuildContext context, AsyncSnapshot<Uint8List> snapshot) {
-                if (snapshot.hasError) {
-                  return Center(
-                      child: FlagAvatar(
-                    split: true,
-                    name: "",
-                    point: widget.reward.point,
-                    titleColor: Color(0xff26315F),
-                  ));
-                }
-                if (snapshot.hasData) {
-                  return FlagAvatar(
-                    name: "",
-                    split: true,
-                    point: widget.reward.point,
-                    image64: snapshot.data,
-                    titleColor: Color(0xff26315F),
-                  );
-                } else
-                  return Center(child: CircularProgressIndicator());
-              },
+            Positioned(
+              top: 72,
+              child: FutureBuilder(
+                future: widget.reward.image64.future,
+                builder:
+                    (BuildContext context, AsyncSnapshot<Uint8List> snapshot) {
+                  if (snapshot.hasError) {
+                    return Center(
+                        child: FlagAvatar(
+                      split: true,
+                      name: "",
+                      point: widget.reward.point,
+                      titleColor: Color(0xff26315F),
+                    ));
+                  }
+                  if (snapshot.hasData) {
+                    return FlagAvatar(
+                      name: "",
+                      split: true,
+                      point: widget.reward.point,
+                      image64: snapshot.data,
+                      titleColor: Color(0xff26315F),
+                    );
+                  } else
+                    return Center(child: CircularProgressIndicator());
+                },
+              ),
             ),
             Positioned(
-              top: 70,
+              top: 80,
               child: new CircularPercentIndicator(
                 radius: 90.0,
                 lineWidth: 7.0,
-                percent: widget.reward.point / 700 > 1.0
+                percent: widget.reward.point / 1600 > 1.0
                     ? 1.0
-                    : widget.reward.point / 700,
+                    : widget.reward.point / 1600,
                 center: IconShadowWidget(
                   Icon(
                     //user.point
-                    widget.reward.point < 700 ? Icons.lock : Icons.lock_open,
+                    widget.reward.point < 1600 ? Icons.lock : Icons.lock_open,
                     color: Colors.white,
                     size: 36,
                   ),
@@ -92,7 +97,10 @@ class _RewardCards4State extends State<RewardCards4> {
                 ),
                 backgroundColor: Colors.black12,
                 linearGradient: LinearGradient(
-                  colors: [Colors.white, Color(0xff1A8EA7)],
+                  colors: [
+                    Color(0xff1A8EA7),
+                    Colors.white,
+                  ],
                 ),
               ),
             ),

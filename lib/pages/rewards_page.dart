@@ -173,7 +173,9 @@ class _RewardsPageState extends State<RewardsPage> {
                               AsyncSnapshot<List<Reward>> snapshot) {
                             if (snapshot.hasData) {
                               return GridView.count(
-                                childAspectRatio: 9 / 14,
+                                childAspectRatio:
+                                    MediaQuery.of(context).size.width /
+                                        (MediaQuery.of(context).size.height),
                                 scrollDirection: Axis.vertical,
                                 padding: EdgeInsets.all(8),
                                 crossAxisCount: 2,
