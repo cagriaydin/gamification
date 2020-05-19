@@ -28,7 +28,7 @@ class TaskListPage extends StatefulWidget {
 class _TaskListPageState extends State<TaskListPage> {
   List<UserTask> userTasks;
 
-  ScrollController controller;
+  ScrollController controller = ScrollController();
 
   final double kEffectHeight = 100;
 
@@ -37,7 +37,6 @@ class _TaskListPageState extends State<TaskListPage> {
 
   @override
   void initState() {
-    controller = ScrollController();
     controller.addListener(scrollControllerListener);
     TaskRepository.instance.getUserTasks();
     super.initState();
@@ -72,7 +71,7 @@ class _TaskListPageState extends State<TaskListPage> {
   @override
   void dispose() {
     controller.removeListener(scrollControllerListener);
-    controller.dispose();
+//    controller.dispose();
     super.dispose();
   }
 
@@ -464,6 +463,8 @@ class _TaskListBuilderState extends State<TaskListBuilder>
 
   Timer _debounce;
 
+  var lastPlace = GlobalKey();
+
   ScrollController get controller => widget.controller;
 
   int position = 0;
@@ -505,6 +506,7 @@ class _TaskListBuilderState extends State<TaskListBuilder>
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return SingleChildScrollView(
+      key: lastPlace,
       physics: BouncingScrollPhysics(),
       controller: controller,
       child: Container(
@@ -588,21 +590,33 @@ class _TaskListBuilderState extends State<TaskListBuilder>
   }
 
   @override
-  void afterFirstLayout(BuildContext context) {
+  Future<void> afterFirstLayout(BuildContext context) async {
     final size = MediaQuery.of(context).size;
     customPaintSize = size;
-    final box = customPaintKey.currentContext.findRenderObject() as RenderBox;
+    final box = lastPlace.currentContext.findRenderObject() as RenderBox;
     initialPos = box.localToGlobal(Offset.zero);
+//    print('controller.offset ${controller.offset}');
+//    print('initialPos.dy ${initialPos.dy}');
+//    await Future.delayed(Duration(milliseconds: 500));
+//    initialPos = box.localToGlobal(Offset.zero);
+//    print('controller.offset ${controller.offset}');
+//    print('initialPos.dy ${initialPos.dy}');
     widget.crossFadeNotifier.addListener(crossFadeListener);
     animateToIndex(0);
   }
 
   void crossFadeListener() async {
     if (_debounce?.isActive ?? false) _debounce.cancel();
-    _debounce = Timer(const Duration(milliseconds: 500), () async {
-      await Future.delayed(const Duration(milliseconds: 500));
-      final box = customPaintKey.currentContext.findRenderObject() as RenderBox;
+    _debounce = Timer(const Duration(milliseconds: 1000), () async {
+//      print('after crossFadeListener**************');
+//      print('controller.offset ${controller.offset}');
+//      print('initialPos.dy ${initialPos.dy}');
+//      await Future.delayed(const Duration(milliseconds: 500));
+      final box = lastPlace.currentContext.findRenderObject() as RenderBox;
       initialPos = box.localToGlobal(Offset.zero);
+//      print('after crossFadeListener**************');
+//      print('controller.offset ${controller.offset}');
+//      print('initialPos.dy ${initialPos.dy}');
       animateToIndex(position);
     });
   }
@@ -620,7 +634,7 @@ class _TaskListBuilderState extends State<TaskListBuilder>
             builder: (BuildContext context, Widget child) {
               final box = keyContext.findRenderObject() as RenderBox;
               final Offset pos = box.localToGlobal(value.offset);
-              var bool = (initialPos.dy > (pos.dy) || value.animate);
+              var bool = (initialPos.dy.abs() > (pos.dy) || value.animate);
               //final top = box.size.height - 2000;
               return Positioned(
                 top: pos.dy - 40,
