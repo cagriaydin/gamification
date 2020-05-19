@@ -75,6 +75,8 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
                   child: Image.asset(
                     "assets/board-background.png",
                     width: size.width,
+                    height: size.height / 2,
+                    fit: BoxFit.fill,
                   ),
                 ),
                 Scaffold(
@@ -113,7 +115,7 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
                                     child: widget.leaderBoard,
                                   ),
                                   SizedBox(
-                                    height: size.height / 18,
+                                    height: size.height / 14,
                                   ),
                                   if (widget.isSelfCardVisible)
                                     GestureDetector(
@@ -253,7 +255,7 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
                                     ),
                                   ),
                                   SizedBox(
-                                    height: size.height / 15,
+                                    height: size.height / 10,
                                   ),
                                   Flexible(
                                     child: ListView.builder(
@@ -327,7 +329,12 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
               ],
             );
           } else {
-            return Center(child: CircularProgressIndicator());
+            return Container(
+              color: Colors.white,
+              child: Center(child: CircularProgressIndicator(),
+                
+              ),
+            );
           }
         });
   }

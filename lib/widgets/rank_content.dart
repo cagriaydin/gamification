@@ -81,7 +81,7 @@ class _RankContentState extends State<RankContent> {
                             color: color),
                       ),
                       SizedBox(
-                        height: 4,
+                        height: 10,
                       ),
                       Row(
                         children: [
@@ -98,7 +98,7 @@ class _RankContentState extends State<RankContent> {
                               textAlign: TextAlign.left,
                               style: TextStyle(
                                 color: Color(0xFF4BADBB).withOpacity(.6),
-                                fontSize: widget.selfContent ? 12 : 10,
+                                fontSize: widget.selfContent ? 16 : 14,
                               ),
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -129,7 +129,7 @@ class _RankContentState extends State<RankContent> {
                 Text(
                   widget.point.toString(),
                   style: TextStyle(
-                      fontSize: widget.selfContent ? 25 : 20,
+                      fontSize: widget.selfContent ? 30 : 25,
                       fontWeight: FontWeight.w300,
                       color: color),
                 ),

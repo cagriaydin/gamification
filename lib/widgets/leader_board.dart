@@ -35,6 +35,7 @@ class LeaderBoard extends StatelessWidget {
             name: list.elementAt(1).name,
             point: list.elementAt(1).point ?? 0,
             rank: 2,
+            branchName: list.elementAt(1).branchName,
           ),
         ),
         Hero(
@@ -44,6 +45,7 @@ class LeaderBoard extends StatelessWidget {
             name: list.elementAt(0).name,
             point: list.elementAt(0).point ?? 0,
             rank: 1,
+            branchName: list.elementAt(1).branchName,
           ),
         ),
         Hero(
@@ -53,6 +55,7 @@ class LeaderBoard extends StatelessWidget {
             name: list.elementAt(2).name,
             point: list.elementAt(2).point ?? 0,
             rank: 3,
+            branchName: list.elementAt(1).branchName,
           ),
         ),
       ],

@@ -43,7 +43,7 @@ class _ImageWidgetState extends State<ImageWidget> {
             )
           : Image.memory(
               Base64Codec().decode(base64),
-              fit: BoxFit.fill,
+              fit: BoxFit.cover,
             ),
     );
   }
