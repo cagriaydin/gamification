@@ -14,8 +14,15 @@ class RewardRepository {
       //TODO: Query with type
     }
     List<Reward> rewardItemList = [];
-    await Future.delayed(Duration(milliseconds: 300));
+    await Future.delayed(Duration(milliseconds: 900));
     rewardItemList = _rewardList;
+    return rewardItemList;
+  }
+
+  Future<List<Reward>> getMyRewards() async {
+    List<Reward> rewardItemList = [];
+    await Future.delayed(Duration(milliseconds: 300));
+    rewardItemList = _rewardList.sublist(0,3);
     return rewardItemList;
   }
 
