@@ -46,6 +46,12 @@ class RewardCards3 extends StatelessWidget {
                           future: reward.image64.future,
                           builder: (BuildContext context,
                               AsyncSnapshot<Uint8List> snapshot) {
+                            if (snapshot.hasError) {
+                              return ClipRRect(
+                                borderRadius: BorderRadius.circular(20.0),
+                                child: Image.asset('assets/default-profile.png'),
+                              );
+                            }
                             if (snapshot.hasData) {
                               // return Image.memory(snapshot.data);
                               return ClipRRect(
@@ -84,9 +90,11 @@ class RewardCards3 extends StatelessWidget {
                   lineHeight: 14.0,
                   percent: reward.point / 700 > 1.0 ? 1.0 : reward.point / 700,
                   backgroundColor: Colors.black12,
-                  
                   linearGradient: LinearGradient(
-                    colors: [Color(0xFFABF3F8),Color(0xFF80CEDF),],
+                    colors: [
+                      Color(0xFFABF3F8),
+                      Color(0xFF80CEDF),
+                    ],
                   ),
                 ),
               ),
