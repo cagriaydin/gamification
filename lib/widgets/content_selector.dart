@@ -22,8 +22,8 @@ class ContentSelector extends StatefulWidget {
   const ContentSelector({
     Key key,
     @required this.options,
-    this.activeColor = const Color(0xff2FB4C2),
-    this.disabledColor = Colors.black26,
+    this.activeColor = const Color(0xFF2DB3C1),
+    this.disabledColor =const Color(0xFF8E8D90),
     this.onChange,
     this.isLeaderBoard = false,
     this.paddingHorizontal = 24,
@@ -95,9 +95,9 @@ class _ContentSelectorState extends State<ContentSelector>
                       style: TextStyle(
                         color: contentOption.isActive
                             ? widget.activeColor
-                            : widget.disabledColor,
-                        fontSize: contentOption.isActive ? 16 : 15,
-                        fontWeight: FontWeight.w400,
+                            : widget.disabledColor.withOpacity(.6),
+                        fontSize: contentOption.isActive ? 18 : 15,
+                        fontWeight: FontWeight.w300,
                       ),
                     ),
                     SizedBox(
@@ -110,9 +110,10 @@ class _ContentSelectorState extends State<ContentSelector>
                         ? Text(
                             contentOption.count.toString() + ' ileti',
                             style: TextStyle(
-                              color: widget.disabledColor,
-                              fontSize: contentOption.isActive ? 12 : 10,
+                              color: widget.disabledColor.withOpacity(.6),
+                              fontSize: contentOption.isActive ? 14 : 12,
                               fontWeight: FontWeight.w300,
+                              fontStyle: FontStyle.italic
                             ),
                           )
                         : Container(
@@ -177,7 +178,7 @@ class _ContentSelectorState extends State<ContentSelector>
                       style: TextStyle(
                         color: contentOption.isActive
                             ? widget.activeColor
-                            : widget.disabledColor,
+                            : widget.disabledColor.withOpacity(.6),
                         fontSize: contentOption.isActive ? 16 : 15,
                         fontWeight: FontWeight.w400,
                       ),
@@ -192,7 +193,7 @@ class _ContentSelectorState extends State<ContentSelector>
                         ? Text(
                             contentOption.count.toString() + ' ileti',
                             style: TextStyle(
-                              color: widget.disabledColor,
+                              color: widget.disabledColor.withOpacity(.6),
                               fontSize: contentOption.isActive ? 12 : 10,
                               fontWeight: FontWeight.w300,
                             ),

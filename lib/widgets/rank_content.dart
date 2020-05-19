@@ -1,7 +1,6 @@
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:yorglass_ik/services/authentication-service.dart';
+import 'package:yorglass_ik/widgets/image_widget.dart';
 
 class RankContent extends StatefulWidget {
   final bool selfContent;
@@ -60,18 +59,11 @@ class _RankContentState extends State<RankContent> {
                 borderRadius:
                     BorderRadius.all(Radius.circular(getRadius(size))),
                 child: Padding(
-                  padding: const EdgeInsets.all(2.0),
-                  child: CircleAvatar(
-                    radius: getRadius(size),
-                    backgroundImage:
-                        AuthenticationService.verifiedUser.image == null
-                            ? AssetImage("assets/default-profile.png")
-                            : MemoryImage(
-                                base64.decode(
-                                    AuthenticationService.verifiedUser.image),
-                              ),
-                  ),
-                ),
+                    padding: const EdgeInsets.all(2.0),
+                    child: ImageWidget(
+                      id: widget.image,
+                      isBoardItem: true,
+                    )),
               ),
             ),
           ),
@@ -100,14 +92,16 @@ class _RankContentState extends State<RankContent> {
                           SizedBox(
                             width: 8,
                           ),
-                          Text(
-                            widget.subTitle + " İşletmesi",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: Color(0xFF4BADBB).withOpacity(.6),
-                              fontSize: widget.selfContent ? 12 : 10,
+                          Flexible(
+                            child: Text(
+                              widget.subTitle,
+                              textAlign: TextAlign.left,
+                              style: TextStyle(
+                                color: Color(0xFF4BADBB).withOpacity(.6),
+                                fontSize: widget.selfContent ? 12 : 10,
+                              ),
+                              overflow: TextOverflow.ellipsis,
                             ),
-                            overflow: TextOverflow.ellipsis,
                           ),
                         ],
                       )
@@ -117,7 +111,7 @@ class _RankContentState extends State<RankContent> {
                     children: [
                       Flexible(
                         child: Text(
-                          widget.subTitle + " İşletmesi",
+                          widget.subTitle,
                           style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.w300,

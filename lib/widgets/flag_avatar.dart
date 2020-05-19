@@ -30,22 +30,23 @@ class FlagAvatar extends StatelessWidget {
       child: Stack(
         alignment: Alignment.bottomCenter,
         children: [
-          FlagPoint(point: point),
+          if (point != null) FlagPoint(point: point),
           Stack(
             alignment: Alignment.topCenter,
             children: [
               name.isNotEmpty
                   ? Text(
-                      name,
+                      name.length > 10 ? name.split(" ").join("\n") : name,
                       style: TextStyle(
                         color: titleColor == null ? Colors.white : titleColor,
                         fontSize: 16,
                       ),
+                      textAlign: TextAlign.center,
                     )
                   : Text(""),
               Padding(
                 padding: name.isNotEmpty
-                    ? const EdgeInsets.fromLTRB(8, 48, 8, 64)
+                    ? const EdgeInsets.fromLTRB(8, 64, 8, 64)
                     : const EdgeInsets.fromLTRB(8, 8, 8, 64),
                 child: Material(
                   elevation: 5,
@@ -64,7 +65,7 @@ class FlagAvatar extends StatelessWidget {
               if (rank == 1)
                 Padding(
                   padding: const EdgeInsets.only(
-                    top: 18.0,
+                    top: 36.0,
                     right: 85,
                   ),
                   child: Image.asset(

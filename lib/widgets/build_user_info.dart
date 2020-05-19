@@ -22,6 +22,9 @@ class BuildUserInfo extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
+        SizedBox(
+          height: 36,
+        ),
         Stack(
           children: [
             Padding(
@@ -39,7 +42,7 @@ class BuildUserInfo extends StatelessWidget {
                   radius: (radius + 70) ?? 160.0,
                   lineWidth: 10.0,
                   animation: true,
-                  percent: (user.percentage ?? 0)* 1/100,
+                  percent: (user.percentage ?? 0) * 1 / 100,
                   circularStrokeCap: CircularStrokeCap.round,
                   backgroundColor: Colors.white,
                   progressColor: Color(0xff2DB3C1),
@@ -67,7 +70,9 @@ class BuildUserInfo extends StatelessWidget {
               height: 8,
             ),
             Text(
-              user.branchName,
+              user.branchName.length > 20
+                  ? user.branchName.substring(0, 20) + '...'
+                  : user.branchName,
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: Color(0xff3FC1C9),

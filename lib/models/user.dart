@@ -20,6 +20,7 @@ class User {
   String image;
 
   int percentage;
+  int taskCount;
   int point;
   List<String> likedFeeds;
   List<String> deletedFeeds;
@@ -29,6 +30,7 @@ class User {
     @required this.name,
     @required this.point,
     @required this.percentage,
+    @required this.taskCount,
     @required this.branchName,
     @required this.phone,
     @required this.code,
@@ -42,6 +44,7 @@ class User {
     String id,
     String name,
     int point,
+    int taskCount,
     int percentage,
     String branchName,
     String branchId,
@@ -56,6 +59,7 @@ class User {
         name: name ?? this.name,
         point: point ?? this.point,
         percentage: percentage ?? this.percentage,
+        taskCount: taskCount ?? this.taskCount,
         branchName: branchName ?? this.branchName,
         branchId: branchId ?? this.branchId,
         phone: phone ?? this.phone,
@@ -70,6 +74,7 @@ class User {
         name: json["name"] == null ? null : json["name"],
         point: json["point"] == null ? null : json["point"],
         percentage: json["percentage"] == null ? null : json["percentage"],
+        taskCount: json["taskCount"] == null ? null : json["taskCount"],
         branchName: json["branchName"] == null ? null : json["branchName"],
         branchId: json["branchId"] == null ? null : json["branchId"],
         phone: json["phone"] == null ? null : json["phone"],
@@ -84,6 +89,7 @@ class User {
         name: snapshot.data["name"] == null ? null : snapshot.data["name"],
         point: snapshot.data["point"] == null ? null : snapshot.data["point"],
         percentage: snapshot.data["percentage"] == null ? null : snapshot.data["percentage"],
+        taskCount: snapshot.data["taskCount"] == null ? null : snapshot.data["taskCount"],
         branchName: snapshot.data["branchName"] == null ? null : snapshot.data["branchName"],
         branchId: snapshot.data["branchId"] == null ? null : snapshot.data["branchId"],
         phone: snapshot.data["phone"] == null ? null : snapshot.data["phone"],
@@ -98,6 +104,7 @@ class User {
         "name": name == null ? null : name,
         "point": point == null ? null : point,
         "percentage": percentage == null ? null : percentage,
+        "taskCount": taskCount == null ? null : taskCount,
         "branchName": branchName == null ? null : branchName,
         "branchId": branchId == null ? null : branchId,
         "phone": phone == null ? null : phone,
