@@ -6,6 +6,10 @@ import 'package:yorglass_ik/repositories/reward-repository.dart';
 import 'package:yorglass_ik/widgets/reward_cards2.dart';
 
 class RewardSliderOne extends StatelessWidget {
+  final ValueNotifier currentPoint;
+
+  const RewardSliderOne({Key key, this.currentPoint}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -15,12 +19,15 @@ class RewardSliderOne extends StatelessWidget {
           return Swiper(
             itemBuilder: (BuildContext context, int index) {
               return GestureDetector(
-                onTap: () => Navigator.push(context,
-                    MaterialPageRoute(builder: (BuildContext context) {
-                  return RewardDetail(
-                    reward: snapshot.data[index],
-                  );
-                })),
+                onTap: () {
+                  return Navigator.push(context,
+                      MaterialPageRoute(builder: (BuildContext context) {
+                    return RewardDetail(
+                      reward: snapshot.data[index],
+                      currentPoint: currentPoint.value,
+                    );
+                  }));
+                },
                 child: SizedBox(
                   height: 150,
                   child: Container(

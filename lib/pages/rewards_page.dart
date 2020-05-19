@@ -9,13 +9,33 @@ import 'package:yorglass_ik/widgets/reward-slider-one.dart';
 import 'package:yorglass_ik/widgets/reward-slider-two.dart';
 import 'package:yorglass_ik/widgets/reward_cards4.dart';
 
-class RewardsPage extends StatelessWidget {
+class RewardsPage extends StatefulWidget {
+  @override
+  _RewardsPageState createState() => _RewardsPageState();
+}
+
+class _RewardsPageState extends State<RewardsPage> {
   final List<ContentOption> options = [
     ContentOption(title: 'Ödül Havuzu', isActive: true),
     ContentOption(title: 'Ödüllerim'),
   ];
 
   final controller = PageController(initialPage: 0);
+
+  ValueNotifier<int> currentPoint = ValueNotifier(0);
+
+  Future<int> getActivePointFuture;
+
+  @override
+  void initState() {
+    handleInitState();
+    super.initState();
+  }
+
+  void handleInitState() async {
+    getActivePointFuture = RewardRepository.instance.getActivePoint();
+    currentPoint.value = await getActivePointFuture;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +76,7 @@ class RewardsPage extends StatelessWidget {
                 children: [
                   Flexible(
                     child: FutureBuilder(
-                      future: RewardRepository.instance.getActivePoint(),
+                      future: getActivePointFuture,
                       builder:
                           (BuildContext context, AsyncSnapshot<int> snapshot) {
                         if (snapshot.hasData || snapshot.hasError) {
@@ -120,7 +140,9 @@ class RewardsPage extends StatelessWidget {
                       ),
                       Container(
                         height: size.height / 3,
-                        child: RewardSliderOne(),
+                        child: RewardSliderOne(
+                          currentPoint: currentPoint,
+                        ),
                       ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -144,14 +166,14 @@ class RewardsPage extends StatelessWidget {
                         ),
                       ),
                       Container(
-                        height: size.height ,
+                        height: size.height,
                         child: FutureBuilder(
                           future: RewardRepository.instance.getRewards(),
                           builder: (BuildContext context,
                               AsyncSnapshot<List<Reward>> snapshot) {
                             if (snapshot.hasData) {
                               return GridView.count(
-                                childAspectRatio: 9 / 14 ,
+                                childAspectRatio: 9 / 14,
                                 scrollDirection: Axis.vertical,
                                 padding: EdgeInsets.all(8),
                                 crossAxisCount: 2,

@@ -6,7 +6,9 @@ import 'package:yorglass_ik/widgets/image_widget.dart';
 class RewardDetail extends StatelessWidget {
   final Reward reward;
 
-  RewardDetail({this.reward});
+  final num currentPoint;
+
+  RewardDetail({this.reward, this.currentPoint = 0});
 
   @override
   Widget build(BuildContext context) {
@@ -59,12 +61,12 @@ class RewardDetail extends StatelessWidget {
                     ),
                   ),
                   Visibility(
-                    visible: reward.point > 500,
+                    visible: reward.point > currentPoint,
                     child: Expanded(
                       child: Padding(
                         padding: const EdgeInsets.all(24.0),
                         child: Text(
-                          "Bu ödül için 150 puan daha kazanmalısın !",
+                          "Bu ödül için ${reward.point - currentPoint} puan daha kazanmalısın !",
                           style: TextStyle(
                             fontSize: 20,
                             color: Colors.pink,
@@ -86,19 +88,17 @@ class RewardDetail extends StatelessWidget {
                       ),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.all(Radius.circular(20))),
-                      onPressed: () async {
-                        try {
-                          var x =
-                              await RewardRepository.instance.getRewardTypes();
-                          print(x);
-
-                          var y = await RewardRepository.instance
-                              .buyReward(reward.id);
-                          print(y);
-                        } catch (e) {
-                           print(e);
-                        }
-                      },
+                      onPressed: reward.point > currentPoint
+                          ? null
+                          : () async {
+                              try {
+                                var y = await RewardRepository.instance
+                                    .buyReward(reward.id);
+                                print(y);
+                              } catch (e) {
+                                print(e);
+                              }
+                            },
                     ),
                   ),
                 ],

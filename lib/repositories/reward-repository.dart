@@ -5,7 +5,8 @@ import 'package:yorglass_ik/services/authentication-service.dart';
 import 'package:yorglass_ik/services/db-connection.dart';
 
 class RewardRepository {
-  static final RewardRepository _instance = RewardRepository._privateConstructor();
+  static final RewardRepository _instance =
+      RewardRepository._privateConstructor();
 
   RewardRepository._privateConstructor();
 
@@ -14,9 +15,12 @@ class RewardRepository {
   Future<List<Reward>> getRewards({String type}) async {
     Results res;
     if (type == null) {
-      res = await DbConnection.query("SELECT *, (SELECT count(1) FROM rewardlike WHERE rewardid = reward.id) as count FROM reward ORDER BY point DESC");
+      res = await DbConnection.query(
+          "SELECT *, (SELECT count(1) FROM rewardlike WHERE rewardid = reward.id) as count FROM reward ORDER BY point DESC");
     } else {
-      res = await DbConnection.query("SELECT *, (SELECT count(1) FROM rewardlike WHERE rewardid = reward.id) as count FROM reward WHERE type = ? ORDER BY point DESC", [type]);
+      res = await DbConnection.query(
+          "SELECT *, (SELECT count(1) FROM rewardlike WHERE rewardid = reward.id) as count FROM reward WHERE type = ? ORDER BY point DESC",
+          [type]);
     }
     List<Reward> rewardItemList = [];
     if (res.length > 0) {
@@ -60,10 +64,12 @@ class RewardRepository {
 
   Future<Reward> getRewardItem(String id) async {
     Results res;
-    res = await DbConnection.query("SELECT *, (SELECT count(1) FROM rewardlike WHERE rewardid = reward.id) as count FROM reward WHERE id = ?", [id]);
+    res = await DbConnection.query(
+        "SELECT *, (SELECT count(1) FROM rewardlike WHERE rewardid = reward.id) as count FROM reward WHERE id = ?",
+        [id]);
     return Reward(
       id: res.single[0],
-      title: res.single[1],
+      title: res.single[1].toString(),
       imageId: res.single[2],
       point: res.single[3],
       itemType: res.single[4],
@@ -73,7 +79,8 @@ class RewardRepository {
 
   Future<List<RewardType>> getRewardTypes() async {
     List<RewardType> typeList = [];
-    Results res = await DbConnection.query("SELECT * FROM rewardtype ORDER BY showorder");
+    Results res =
+        await DbConnection.query("SELECT * FROM rewardtype ORDER BY showorder");
     if (res.length > 0) {
       for (Row r in res) {
         typeList.add(RewardType(id: r[0], title: r[1]));
@@ -83,7 +90,9 @@ class RewardRepository {
   }
 
   Future<List<String>> likedRewards() async {
-    Results res = await DbConnection.query("SELECT rewardid FROM rewardlike WHERE userid = ?", [AuthenticationService.verifiedUser.id]);
+    Results res = await DbConnection.query(
+        "SELECT rewardid FROM rewardlike WHERE userid = ?",
+        [AuthenticationService.verifiedUser.id]);
     List<String> likedList = [];
     if (res.length > 0) {
       for (Row r in res) {
@@ -95,25 +104,29 @@ class RewardRepository {
 
   Future<int> getActivePoint() async {
     Results res = await DbConnection.query(
-      "SELECT SUM(point), (SELECT SUM(point) FROM userreward where userid = usertask.userid) FROM usertask where complete = 1 AND userid = ? GROUP BY userid",
+      "SELECT COALESCE(SUM(point),0), (SELECT COALESCE(SUM(point),0) FROM userreward where userid = usertask.userid) FROM usertask where complete = 1 AND userid = ? GROUP BY userid",
       [
         AuthenticationService.verifiedUser.id,
       ],
     );
-    return res.single[1] ?? 0 - res.single[2] ?? 0;
+    int earn = (res.single[0] as double).floor();
+    int cost =  (res.single[1] as double).floor();
+    return (earn == null ? 0 : earn) - (cost == null ? 0 : cost);
   }
 
   Future buyReward(String id) async {
     Reward r = await getRewardItem(id);
     int budget = await getActivePoint();
     if (budget > r.point) {
-      await DbConnection.query("INSERT INTO userreward (userid, rewardid, date, status, point) VALUES (?, ?, ?, ?, ?)", [
-        AuthenticationService.verifiedUser.id,
-        r.id,
-        DateTime.now().toUtc(),
-        0,
-        r.point,
-      ]);
+      await DbConnection.query(
+          "INSERT INTO userreward (userid, rewardid, date, status, point) VALUES (?, ?, ?, ?, ?)",
+          [
+            AuthenticationService.verifiedUser.id,
+            r.id,
+            DateTime.now().toUtc(),
+            0,
+            r.point,
+          ]);
     } else {
       throw Exception("Puanınız bu hediyeyi almak için yetersiz");
     }
