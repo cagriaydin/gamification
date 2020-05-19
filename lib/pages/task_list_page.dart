@@ -28,7 +28,7 @@ class TaskListPage extends StatefulWidget {
 class _TaskListPageState extends State<TaskListPage> {
   List<UserTask> userTasks;
 
-  ScrollController controller;
+  ScrollController controller = ScrollController();
 
   final double kEffectHeight = 100;
 
@@ -37,7 +37,6 @@ class _TaskListPageState extends State<TaskListPage> {
 
   @override
   void initState() {
-    controller = ScrollController();
     controller.addListener(scrollControllerListener);
     TaskRepository.instance.getUserTasks();
     super.initState();
@@ -72,7 +71,7 @@ class _TaskListPageState extends State<TaskListPage> {
   @override
   void dispose() {
     controller.removeListener(scrollControllerListener);
-    controller.dispose();
+//    controller.dispose();
     super.dispose();
   }
 
@@ -464,6 +463,8 @@ class _TaskListBuilderState extends State<TaskListBuilder>
 
   Timer _debounce;
 
+  var lastPlace = GlobalKey();
+
   ScrollController get controller => widget.controller;
 
   int position = 0;
@@ -505,6 +506,7 @@ class _TaskListBuilderState extends State<TaskListBuilder>
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return SingleChildScrollView(
+      key: lastPlace,
       physics: BouncingScrollPhysics(),
       controller: controller,
       child: Container(
@@ -588,10 +590,10 @@ class _TaskListBuilderState extends State<TaskListBuilder>
   }
 
   @override
-  void afterFirstLayout(BuildContext context) {
+  Future<void> afterFirstLayout(BuildContext context) async {
     final size = MediaQuery.of(context).size;
     customPaintSize = size;
-    final box = customPaintKey.currentContext.findRenderObject() as RenderBox;
+    final box = lastPlace.currentContext.findRenderObject() as RenderBox;
     initialPos = box.localToGlobal(Offset.zero);
     widget.crossFadeNotifier.addListener(crossFadeListener);
     animateToIndex(0);
@@ -599,9 +601,8 @@ class _TaskListBuilderState extends State<TaskListBuilder>
 
   void crossFadeListener() async {
     if (_debounce?.isActive ?? false) _debounce.cancel();
-    _debounce = Timer(const Duration(milliseconds: 500), () async {
-      await Future.delayed(const Duration(milliseconds: 500));
-      final box = customPaintKey.currentContext.findRenderObject() as RenderBox;
+    _debounce = Timer(const Duration(milliseconds: 1000), () async {
+      final box = lastPlace.currentContext.findRenderObject() as RenderBox;
       initialPos = box.localToGlobal(Offset.zero);
       animateToIndex(position);
     });
