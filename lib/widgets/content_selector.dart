@@ -19,17 +19,20 @@ class ContentSelector extends StatefulWidget {
 
   final double paddingHorizontal;
 
+  final MainAxisAlignment rowMainAxisAlignment;
+
   const ContentSelector({
     Key key,
     @required this.options,
     this.activeColor = const Color(0xFF2DB3C1),
-    this.disabledColor =const Color(0xFF8E8D90),
+    this.disabledColor = const Color(0xFF8E8D90),
     this.onChange,
     this.isLeaderBoard = false,
     this.paddingHorizontal = 24,
     this.customWidgetBuilder,
     this.contentSelectorType = ContentSelectorType.feed,
     this.fontSize = 14,
+    this.rowMainAxisAlignment = MainAxisAlignment.center,
   }) : super(key: key);
 
   @override
@@ -63,7 +66,7 @@ class _ContentSelectorState extends State<ContentSelector>
     if (isScrollable) {
       return Row(
         mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: widget.rowMainAxisAlignment,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: widget.options.map((contentOption) {
           if (widget.customWidgetBuilder != null) {
@@ -76,9 +79,11 @@ class _ContentSelectorState extends State<ContentSelector>
                 widget.options.forEach((element) {
                   element.isActive = false;
                 });
-                setState(() {
-                  contentOption.isActive = true;
-                });
+                if (mounted) {
+                  setState(() {
+                    contentOption.isActive = true;
+                  });
+                }
                 onChangeCallback(contentOption);
               },
               child: Padding(
@@ -110,11 +115,10 @@ class _ContentSelectorState extends State<ContentSelector>
                         ? Text(
                             contentOption.count.toString() + ' ileti',
                             style: TextStyle(
-                              color: widget.disabledColor.withOpacity(.6),
-                              fontSize: contentOption.isActive ? 14 : 12,
-                              fontWeight: FontWeight.w300,
-                              fontStyle: FontStyle.italic
-                            ),
+                                color: widget.disabledColor.withOpacity(.6),
+                                fontSize: contentOption.isActive ? 14 : 12,
+                                fontWeight: FontWeight.w300,
+                                fontStyle: FontStyle.italic),
                           )
                         : Container(
                             height: 1,
@@ -125,7 +129,7 @@ class _ContentSelectorState extends State<ContentSelector>
                                   contentOption.isActive
                                       ? (widget.isLeaderBoard
                                           ? Colors.white
-                                          : Colors.blue)
+                                          : widget.activeColor)
                                       : Colors.transparent,
                                   widget.isLeaderBoard || contentOption.isActive
                                       ? Colors.white10
@@ -159,9 +163,11 @@ class _ContentSelectorState extends State<ContentSelector>
                 widget.options.forEach((element) {
                   element.isActive = false;
                 });
-                setState(() {
-                  contentOption.isActive = true;
-                });
+                if (mounted) {
+                  setState(() {
+                    contentOption.isActive = true;
+                  });
+                }
                 onChangeCallback(contentOption);
               },
               child: Padding(

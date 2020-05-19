@@ -11,9 +11,11 @@ import 'package:yorglass_ik/widgets/reward-slider-two.dart';
 
 class RewardsPage extends StatelessWidget {
   final List<ContentOption> options = [
-    ContentOption(title: 'Bireysel', isActive: true),
-    ContentOption(title: 'İşletme'),
+    ContentOption(title: 'Ödül Havuzu', isActive: true),
+    ContentOption(title: 'Ödüllerim'),
   ];
+
+  final controller = PageController(initialPage: 0);
 
   @override
   Widget build(BuildContext context) {
@@ -53,13 +55,30 @@ class RewardsPage extends StatelessWidget {
               child: Column(
                 children: [
                   Flexible(
-                      child: GradientText(
-                          (AuthenticationService.verifiedUser.point ?? 0)
-                              .toString())),
+                    child: GradientText(
+                      (AuthenticationService.verifiedUser.point ?? 0)
+                          .toString(),
+                      fontSize: 25,
+                    ),
+                  ),
                   Flexible(
                     child: GradientText(
                       'puan',
+                      fontSize: 20,
                       fontWeight: FontWeight.w300,
+                    ),
+                  ),
+                  Container(
+                    width: size.width,
+                    height: 40,
+                    child: ContentSelector(
+                      onChange: onContentSelectorChange,
+                      options: options,
+                      rowMainAxisAlignment: MainAxisAlignment.spaceAround,
+                      contentSelectorType: ContentSelectorType.tab,
+                      activeColor: Color(0xff4BADBB),
+                      isLeaderBoard: false,
+                      disabledColor: Colors.black54,
                     ),
                   ),
                 ],
@@ -67,57 +86,69 @@ class RewardsPage extends StatelessWidget {
             ),
           ),
           Expanded(
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      "İnsanlara Faydam Olsun",
-                      style: TextStyle(color: Color(0xffAAAAAD), fontSize: 20),
-                    ),
+            child: PageView(
+              physics: NeverScrollableScrollPhysics(),
+              controller: controller,
+              children: [
+                SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          "İnsanlara Faydam Olsun",
+                          style:
+                              TextStyle(color: Color(0xffAAAAAD), fontSize: 20),
+                        ),
+                      ),
+                      Container(
+                        height: size.height / 3,
+                        child: RewardSliderOne(),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          "Şirin Hayvan Dostlarımıza",
+                          style:
+                              TextStyle(color: Color(0xffAAAAAD), fontSize: 20),
+                        ),
+                      ),
+                      Container(
+                        height: size.height / 2.5,
+                        child: RewardSliderTwo(),
+                      ),
+                      //TODO: type 3 start here
+                      Container(
+                        height: size.height / 2,
+                        child: FutureBuilder(
+                          future: RewardRepository.instance.getRewards(type: 3),
+                          builder: (BuildContext context,
+                              AsyncSnapshot<List<Reward>> snapshot) {
+                            if (snapshot.hasData) {
+                              return GridView.count(
+                                scrollDirection: Axis.horizontal,
+                                padding: EdgeInsets.all(8),
+                                crossAxisCount: 2,
+                                children: snapshot.data
+                                    .map((e) => RewardCards3(reward: e))
+                                    .toList(),
+                              );
+                            } else
+                              return Center(child: CircularProgressIndicator());
+                          },
+                        ),
+                      )
+                      //TODO type 3 finish
+                    ],
                   ),
-                  Container(
-                    height: size.height / 3,
-                    child: RewardSliderOne(),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      "Şirin Hayvan Dostlarımıza",
-                      style: TextStyle(color: Color(0xffAAAAAD), fontSize: 20),
-                    ),
-                  ),
-                  Container(
-                    height: size.height / 2.5,
-                    child: RewardSliderTwo(),
-                  ),
-                  //TODO: type 3 start here
-                  Container(
-                    height: size.height / 2,
-                    child: FutureBuilder(
-                      future: RewardRepository.instance.getRewards(type: 3),
-                      builder: (BuildContext context,
-                          AsyncSnapshot<List<Reward>> snapshot) {
-                        if (snapshot.hasData) {
-                          return GridView.count(
-                            scrollDirection: Axis.horizontal,
-                            padding: EdgeInsets.all(8),
-                            crossAxisCount: 2,
-                            children: snapshot.data
-                                .map((e) => RewardCards3(reward: e))
-                                .toList(),
-                          );
-                        } else
-                          return Center(child: CircularProgressIndicator());
-                      },
-                    ),
-                  )
-                  //TODO type 3 finish
-                ],
-              ),
+                ),
+                //TODO ödüllerim sayfası
+                Center(
+                  child: Text('ödüllerim sayfası'),
+                )
+              ],
             ),
           ),
           // Flexible(
@@ -132,5 +163,12 @@ class RewardsPage extends StatelessWidget {
     );
   }
 
-  onContentSelectorChange(ContentOption p1) {}
+  onContentSelectorChange(ContentOption contentOption) {
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) => controller.animateToPage(
+              contentOption.title == 'Ödüllerim' ? 1 : 0,
+              duration: Duration(milliseconds: 300),
+              curve: Curves.easeOut,
+            ));
+  }
 }
