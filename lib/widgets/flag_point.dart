@@ -24,12 +24,20 @@ class FlagPoint extends StatelessWidget {
             ),
           ),
           child: Padding(
-            padding: EdgeInsets.all(16),
+            padding: EdgeInsets.all(18),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text((point ?? 0).toString()),
-                Text('puan'),
+                Text((point ?? 0).toString(),
+                style: TextStyle(
+                  fontWeight: FontWeight.w300,
+                  fontSize: 20
+                ),),
+                Text('puan',
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w300
+                ),),
               ],
             ),
           ),

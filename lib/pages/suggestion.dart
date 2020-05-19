@@ -77,7 +77,7 @@ class _SuggestionPageState extends State<SuggestionPage> {
                     CustomBoxShadow(
                         color: color,
                         offset: new Offset(0, 4),
-                        blurRadius: 20.0,
+                        blurRadius: 10.0,
                         blurStyle: BlurStyle.outer),
                   ],
                 ),
@@ -116,12 +116,24 @@ class _SuggestionPageState extends State<SuggestionPage> {
                                     color: Theme.of(context).accentColor),
                               ),
                               SizedBox(height: 5),
-                              Text(
-                                AuthenticationService.verifiedUser.branchName,
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: Color(0xff4BADBB).withOpacity(.6),
-                                ),
+                              Row(
+                                children: [
+                                  Image.asset(
+                                    "assets/blue_pin.png",
+                                    scale: 6,
+                                  ),
+                                  SizedBox(
+                                    width: 8,
+                                  ),
+                                  Text(
+                                    AuthenticationService
+                                        .verifiedUser.branchName,
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: Color(0xff4BADBB).withOpacity(.6),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ],
                           ),

@@ -22,7 +22,7 @@ class PointBuilder extends StatelessWidget {
           style: TextStyle(
             shadows: <Shadow>[
               Shadow(
-                blurRadius: 10.0,
+                blurRadius: 20.0,
                 color: color,
               )
             ],

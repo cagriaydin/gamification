@@ -128,16 +128,16 @@ class _HomePageState extends State<HomePage> {
                                     builder: (context) => SuggestionPage(),
                                   ),
                                 )),
-                        MenuButton(
-                          text: "KVKK Onayı",
-                          icon: Icons.insert_drive_file,
-                          click: () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => SuggestionPage(),
-                            ),
-                          ),
-                        ),
+                        // MenuButton(
+                        //   text: "KVKK Onayı",
+                        //   icon: Icons.insert_drive_file,
+                        //   click: () => Navigator.push(
+                        //     context,
+                        //     MaterialPageRoute(
+                        //       builder: (context) => SuggestionPage(),
+                        //     ),
+                        //   ),
+                        // ),
                       ],
                     )
                   ],

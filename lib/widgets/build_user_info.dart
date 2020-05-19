@@ -7,11 +7,13 @@ import 'package:yorglass_ik/models/user.dart';
 class BuildUserInfo extends StatelessWidget {
   const BuildUserInfo({
     Key key,
+    this.isTaskPage = false,
     @required this.user,
     this.radius,
     this.showPercentage = false,
   }) : super(key: key);
 
+  final bool isTaskPage;
   final User user;
   final double radius;
   final bool showPercentage;
@@ -66,8 +68,8 @@ class BuildUserInfo extends StatelessWidget {
         Row(
           children: [
             Image.asset(
-              "assets/blue_pin.png",
-              scale: 4,
+              isTaskPage ? "assets/darkblue_pin.png" : "assets/blue_pin.png",
+              scale: isTaskPage ? 5 : 4,
             ),
             SizedBox(
               width: 8,
@@ -78,8 +80,9 @@ class BuildUserInfo extends StatelessWidget {
                   : user.branchName,
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 18,
-                color: Color(0xff4BADBB).withOpacity(.6),
+                fontSize: isTaskPage ? 15 : 18,
+                fontWeight: isTaskPage ? FontWeight.w200 : FontWeight.w400,
+                color: isTaskPage ? Color(0xFF26315F) : Color(0xff4BADBB).withOpacity(.6),
               ),
               overflow: TextOverflow.ellipsis,
             ),

@@ -127,7 +127,7 @@ class _TaskListPageState extends State<TaskListPage> {
                     borderRadius: BorderRadius.all(Radius.circular(16)),
                     boxShadow: [
                       BoxShadow(
-                          color: Color(0xff54B4BA),
+                          color: Color(0xffC5F7FA),
                           offset: Offset(2, 3),
                           blurRadius: 4,
                           spreadRadius: 2)
@@ -139,12 +139,17 @@ class _TaskListPageState extends State<TaskListPage> {
                     Column(
                       children: [
                         Flexible(
-                            child: GradientText(
-                                (widget.user.point ?? 0).toString())),
+                          child: GradientText(
+                            (widget.user.point ?? 0).toString(),
+                            fontSize: 40,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
                         Flexible(
                           child: GradientText(
                             'puan',
                             fontWeight: FontWeight.w300,
+                            fontSize: 25,
                           ),
                         ),
                       ],
@@ -162,28 +167,46 @@ class _TaskListPageState extends State<TaskListPage> {
                     mainAxisSize: MainAxisSize.max,
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      Row(
-                        children: [
-                          GradientText(
-                            '%',
-                            fontWeight: FontWeight.w300,
-                          ),
-                          GradientText(
-                              (widget.user.percentage ?? 0).toString()),
-                        ],
+                      Padding(
+                        padding: const EdgeInsets.only(top: 90),
+                        child: Row(
+                          children: [
+                            GradientText(
+                              '%',
+                              fontWeight: FontWeight.w300,
+                              fontSize: 30,
+                            ),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            GradientText(
+                              (widget.user.percentage ?? 0).toString(),
+                              fontSize: 30,
+                            ),
+                          ],
+                        ),
                       ),
                       BuildUserInfo(
                         user: widget.user,
+                        isTaskPage: true,
                       ),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          GradientText((widget.user.point ?? 0).toString()),
-                          GradientText(
-                            'puan',
-                            fontWeight: FontWeight.w300,
-                          ),
-                        ],
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 90.0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            GradientText(
+                              (widget.user.point ?? 0).toString(),
+                              fontWeight: FontWeight.w500,
+                              fontSize: 40,
+                            ),
+                            GradientText(
+                              'puan',
+                              fontWeight: FontWeight.w300,
+                              fontSize: 25,
+                            ),
+                          ],
+                        ),
                       )
                     ],
                   ),
@@ -277,12 +300,14 @@ class _BuildTaskState extends State<BuildTask> {
                           widget.isLeft ? TextAlign.left : TextAlign.right,
                     ),
                     SizedBox(
-                      height: 8,
+                      height: 18,
                     ),
                     Text(
                       getIntervalText(),
                       style: TextStyle(
-                          fontStyle: FontStyle.italic, color: Colors.black54),
+                          fontStyle: FontStyle.italic,
+                          color: Color(0xFF26315F).withOpacity(.6),
+                          fontWeight: FontWeight.w300),
                     ),
                     SizedBox(
                       height: 8,
@@ -304,27 +329,49 @@ class _BuildTaskState extends State<BuildTask> {
                 ),
                 if (!widget.isLeft)
                   Positioned(
-                    bottom: 2,
-                    left: 8,
+                    bottom: 0,
+                    left: 40,
                     child: Transform.rotate(
-                      angle: -math.pi / 6,
-                      child: GradientText(
-                        '+' + widget.userTask.point.toString() + '\n puan',
-                        disabled: widget.userTask.complete == 0,
-                        fontSize: 20,
+                      angle: math.pi / 10,
+                      child: Column(
+                        children: [
+                          GradientText(
+                            '+' + widget.userTask.point.toString(),
+                            disabled: widget.userTask.complete == 0,
+                            fontSize: 20,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          GradientText(
+                            'puan',
+                            disabled: widget.userTask.complete == 0,
+                            fontSize: 15,
+                            fontWeight: FontWeight.w300,
+                          ),
+                        ],
                       ),
                     ),
                   ),
                 if (widget.isLeft)
                   Positioned(
-                    bottom: 2,
-                    right: 8,
+                    bottom: 0,
+                    right: 40,
                     child: Transform.rotate(
-                      angle: -math.pi / 6,
-                      child: GradientText(
-                        '+' + widget.userTask.point.toString() + '\n puan',
-                        disabled: widget.userTask.complete == 0,
-                        fontSize: 20,
+                      angle: -math.pi / 10,
+                      child: Column(
+                        children: [
+                          GradientText(
+                            '+' + widget.userTask.point.toString(),
+                            disabled: widget.userTask.complete == 0,
+                            fontSize: 20,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          GradientText(
+                            'puan',
+                            disabled: widget.userTask.complete == 0,
+                            fontSize: 15,
+                            fontWeight: FontWeight.w300,
+                          ),
+                        ],
                       ),
                     ),
                   )
@@ -390,12 +437,12 @@ class StepperLinearIndicator extends StatelessWidget {
       width: width,
       height: height,
 //      padding: EdgeInsets.all(5),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(90)),
-        border: Border.all(
-          color: Color(0xff54B4BA),
-        ),
-      ),
+      // decoration: BoxDecoration(
+      //   borderRadius: BorderRadius.all(Radius.circular(90)),
+      //   border: Border.all(
+      //     color: Color(0xff54B4BA),
+      //   ),
+      // ),
       child: Stack(
         fit: StackFit.expand,
         children: [
@@ -410,7 +457,7 @@ class StepperLinearIndicator extends StatelessWidget {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(90)),
                   border: Border.all(
-                    width: .5,
+                    width: .1,
                     color: Color(0xff54B4BA),
                   ),
                   gradient: LinearGradient(
@@ -679,7 +726,7 @@ class MyCustomPainter extends CustomPainter {
       ..shader = LinearGradient(colors: <Color>[
         Colors.white,
 //        Color(0xff26315F),
-        Color(0xff2FB4C2),
+        Color(0xff2FB4C2).withOpacity(.3),
         Colors.white
       ], begin: Alignment.topCenter, end: Alignment.bottomCenter)
           .createShader(Rect.fromLTWH(
@@ -688,7 +735,7 @@ class MyCustomPainter extends CustomPainter {
         taskListBuilderSize.width,
         taskListBuilderSize.height,
       ))
-      ..strokeWidth = 15;
+      ..strokeWidth = 5;
 
     final p = size.width / 5;
     final lastP = size.width - p;
@@ -748,18 +795,18 @@ class ShadowAvatar extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
             borderRadius: BorderRadius.all(Radius.circular(90)),
-            color: Color(0xff3FC1C9),
+            color: Color(0xFF3FC1C9).withOpacity(.1),
             boxShadow: [
               BoxShadow(
-                  color: Color(0xff3FC1C9).withOpacity(.8),
+                  color: Color(0xFF3FC1C9).withOpacity(.5),
                   offset: Offset(0, 3),
                   blurRadius: 10,
-                  spreadRadius: 1.5),
+                  spreadRadius: 1),
               BoxShadow(
-                  color: Color(0xff3FC1C9).withOpacity(.5),
+                  color: Color(0xFF3FC1C9).withOpacity(.5),
                   offset: Offset(0, -3),
                   blurRadius: 10,
-                  spreadRadius: 1.5),
+                  spreadRadius: 1),
             ]),
         child: Padding(
           padding: const EdgeInsets.all(4.0),
