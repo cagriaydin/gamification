@@ -68,7 +68,7 @@ class ProfilePage extends StatelessWidget {
                       BuildUserInfo(
                         showPercentage: true,
                         user: user,
-                        radius: size.height < 700 ? 50 : 70,
+                        radius: size.height < 700 ? 50 : 60,
                       ),
                       Column(
                         mainAxisAlignment: MainAxisAlignment.center,

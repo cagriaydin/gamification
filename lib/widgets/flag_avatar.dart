@@ -118,7 +118,7 @@ class FlagAvatar extends StatelessWidget {
   }
 
   double getRadius(size) {
-    double currentSize = (size.height < 700 || size.width < 400) ? 65 : 75;
+    double currentSize = (size.height < 700 || size.width < 400) ? 60 : 70;
     if (rank == 1) {
       return currentSize;
     } else if (rank == 2) {
