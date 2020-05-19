@@ -66,7 +66,8 @@ class _FeedPageState extends State<FeedPage> {
             padding: const EdgeInsets.only(right: 20),
             child: Icon(
               Icons.search,
-              color: Theme.of(context).primaryColor,
+              // NEXT RELEASE
+              color: Theme.of(context).primaryColor.withOpacity(0),
               size: 30,
             ),
           ),

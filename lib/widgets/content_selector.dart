@@ -96,7 +96,7 @@ class _ContentSelectorState extends State<ContentSelector>
                         color: contentOption.isActive
                             ? widget.activeColor
                             : widget.disabledColor.withOpacity(.6),
-                        fontSize: contentOption.isActive ? 18 : 15,
+                        fontSize: contentOption.isActive ? 24 : 20,
                         fontWeight: FontWeight.w300,
                       ),
                     ),
@@ -125,7 +125,7 @@ class _ContentSelectorState extends State<ContentSelector>
                                   contentOption.isActive
                                       ? (widget.isLeaderBoard
                                           ? Colors.white
-                                          : Colors.blue)
+                                          : Color(0xFF2DB3C1))
                                       : Colors.transparent,
                                   widget.isLeaderBoard || contentOption.isActive
                                       ? Colors.white10
@@ -179,7 +179,7 @@ class _ContentSelectorState extends State<ContentSelector>
                         color: contentOption.isActive
                             ? widget.activeColor
                             : widget.disabledColor.withOpacity(.6),
-                        fontSize: contentOption.isActive ? 16 : 15,
+                        fontSize: contentOption.isActive ? 24 : 20,
                         fontWeight: FontWeight.w400,
                       ),
                     ),
@@ -194,7 +194,7 @@ class _ContentSelectorState extends State<ContentSelector>
                             contentOption.count.toString() + ' ileti',
                             style: TextStyle(
                               color: widget.disabledColor.withOpacity(.6),
-                              fontSize: contentOption.isActive ? 12 : 10,
+                              fontSize: contentOption.isActive ? 14 : 12,
                               fontWeight: FontWeight.w300,
                             ),
                           )

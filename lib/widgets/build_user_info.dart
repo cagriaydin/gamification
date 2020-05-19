@@ -39,7 +39,7 @@ class BuildUserInfo extends StatelessWidget {
             if (showPercentage)
               Positioned.fill(
                 child: CircularPercentIndicator(
-                  radius: (radius + 70) ?? 160.0,
+                  radius: (radius + 80) ?? 160.0,
                   lineWidth: 10.0,
                   animation: true,
                   percent: (user.percentage ?? 0) * 1 / 100,
@@ -55,10 +55,13 @@ class BuildUserInfo extends StatelessWidget {
           user.name,
           textAlign: TextAlign.center,
           style: TextStyle(
-            color: Color(0xff26315F),
-            fontWeight: FontWeight.w500,
-          ),
+              color: Color(0xff26315F),
+              fontWeight: FontWeight.w500,
+              fontSize: 24),
           overflow: TextOverflow.ellipsis,
+        ),
+        SizedBox(
+          height: 7,
         ),
         Row(
           children: [
@@ -67,7 +70,7 @@ class BuildUserInfo extends StatelessWidget {
               scale: 4,
             ),
             SizedBox(
-              height: 8,
+              width: 8,
             ),
             Text(
               user.branchName.length > 20
@@ -75,8 +78,8 @@ class BuildUserInfo extends StatelessWidget {
                   : user.branchName,
               textAlign: TextAlign.center,
               style: TextStyle(
-                color: Color(0xff3FC1C9),
-                fontWeight: FontWeight.w300,
+                fontSize: 18,
+                color: Color(0xff4BADBB).withOpacity(.6),
               ),
               overflow: TextOverflow.ellipsis,
             ),

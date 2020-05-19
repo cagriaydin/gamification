@@ -35,10 +35,10 @@ class _HomePageState extends State<HomePage> {
             color: Colors.white,
             boxShadow: [
               BoxShadow(
-                spreadRadius: 20,
+                spreadRadius: 40,
                 color: Color(0xffD1F7FB),
                 offset: new Offset(0, 0),
-                blurRadius: 20,
+                blurRadius: 40,
               ),
             ],
           ),
@@ -60,16 +60,19 @@ class _HomePageState extends State<HomePage> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
                     Container(
-                      height: size.width / 4,
-                      width: size.width / 4,
+                      height: size.width / 3,
+                      width: size.width / 3,
                       decoration: BoxDecoration(
                         border: Border.all(color: Colors.white, width: 2.0),
-                        borderRadius: new BorderRadius.all(new Radius.circular(60)),
+                        borderRadius:
+                            new BorderRadius.all(new Radius.circular(90)),
                         image: DecorationImage(
-                          fit: BoxFit.fill,
-                          image: AuthenticationService.verifiedUser.image == null
+                          fit: BoxFit.cover,
+                          image: AuthenticationService.verifiedUser.image ==
+                                  null
                               ? AssetImage("assets/default-profile.png")
-                              : MemoryImage(base64.decode(AuthenticationService.verifiedUser.image)),
+                              : MemoryImage(base64.decode(
+                                  AuthenticationService.verifiedUser.image)),
                         ),
                       ),
                     ),
@@ -77,13 +80,22 @@ class _HomePageState extends State<HomePage> {
                     Text(
                       AuthenticationService.verifiedUser.name,
                       style: TextStyle(
-                        fontSize: 24,
+                        fontSize: 30,
+                        color: Theme.of(context).accentColor,
+                        shadows: <Shadow>[
+                          Shadow(
+                            blurRadius: 4.0,
+                            color: Color(0xFFE0ECF4),
+                          )
+                        ],
                       ),
                     ),
                     SizedBox(height: 16),
                     Text(
                       AuthenticationService.verifiedUser.branchName,
-                      style: TextStyle(fontSize: 18, color: Color(0xff4BADBB)),
+                      style: TextStyle(
+                          fontSize: 20,
+                          color: Color(0xff4BADBB).withOpacity(.6)),
                     ),
                     SizedBox(
                       height: 20,
@@ -180,6 +192,12 @@ class MenuButton extends StatelessWidget {
                     text,
                     style: TextStyle(
                       fontSize: 20,
+                      shadows: <Shadow>[
+                        Shadow(
+                          blurRadius: 4.0,
+                          color: Color(0xFFE0ECF4),
+                        )
+                      ],
                     ),
                   ),
                 )
@@ -196,7 +214,7 @@ class MenuButton extends StatelessWidget {
               height: 22,
               padding: EdgeInsets.all(3),
               decoration: BoxDecoration(
-                color: Colors.red,
+                color: Color(0xFFF90A60),
                 borderRadius: BorderRadius.all(
                   Radius.circular(20),
                 ),

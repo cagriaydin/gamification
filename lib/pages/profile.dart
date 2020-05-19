@@ -25,7 +25,8 @@ class ProfilePage extends StatelessWidget {
     ContentOption(title: 'Ödüllerim'),
   ];
 
-  ProfilePage({Key key, @required this.menuFunction, @required this.user}) : super(key: key);
+  ProfilePage({Key key, @required this.menuFunction, @required this.user})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +50,6 @@ class ProfilePage extends StatelessWidget {
         mainAxisSize: MainAxisSize.max,
         children: [
           Flexible(
-            flex: 2,
             child: BlurBackgroundImage(
               imageUrl: user.image,
               child: Column(
@@ -61,20 +61,32 @@ class ProfilePage extends StatelessWidget {
                     height: 16,
                   ),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      GradientText('%' + (user.percentage ?? 0).toString()),
+                      GradientText(
+                        '%' + (user.percentage ?? 0).toString(),
+                        fontSize: 30,
+                        fontWeight: FontWeight.w500,
+                      ),
                       BuildUserInfo(
                         showPercentage: true,
                         user: user,
-                        radius: size.height < 700 ? 50 : 70,
+                        radius: size.height < 700 ? 50 : 80,
                       ),
                       Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          GradientText((user.point ?? 0).toString()),
-                          GradientText('puan'),
+                          GradientText(
+                            (user.point ?? 0).toString(),
+                            fontSize: 40,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          Text(
+                            'puan',
+                            style: TextStyle(
+                                fontSize: 25, fontWeight: FontWeight.w300),
+                          ),
                         ],
                       ),
                     ],
@@ -84,13 +96,14 @@ class ProfilePage extends StatelessWidget {
             ),
           ),
           Flexible(
-            flex: 3,
             child: Column(
               mainAxisSize: MainAxisSize.max,
               children: [
                 Flexible(
                   child: Padding(
-                    padding: size.height < 600 ? const EdgeInsets.all(8) : const EdgeInsets.all(16.0),
+                    padding: size.height < 600
+                        ? const EdgeInsets.all(8)
+                        : const EdgeInsets.all(16.0),
                     child: ContentSelector(
                       onChange: onContentSelectorChange,
                       options: options,
@@ -106,14 +119,16 @@ class ProfilePage extends StatelessWidget {
                     children: [
                       Column(
                         mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Flexible(
                             child: GestureDetector(
                               onTap: () => pushLeaderBoardPage(context),
                               child: FutureBuilder<List<User>>(
-                                future: UserRepository.instance.getTopUserPointList(),
-                                builder: (BuildContext context, AsyncSnapshot<List<User>> snapshot) {
+                                future: UserRepository.instance
+                                    .getTopUserPointList(),
+                                builder: (BuildContext context,
+                                    AsyncSnapshot<List<User>> snapshot) {
                                   if (snapshot.hasData) {
                                     return LeaderBoard(
                                       list: snapshot.data
@@ -125,7 +140,9 @@ class ProfilePage extends StatelessWidget {
                                           .toList(),
                                     );
                                   } else {
-                                    return Center(child: CircularProgressIndicator(),);
+                                    return Center(
+                                      child: CircularProgressIndicator(),
+                                    );
                                   }
                                 },
                               ),
@@ -134,14 +151,22 @@ class ProfilePage extends StatelessWidget {
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: OutlineButton(
-                              child: Text('Lider Tablosunu Gör'),
+                              child: Text(
+                                'Lider Tablosunu Gör',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w300,
+                                  fontSize: 18,
+                                ),
+                              ),
                               textColor: Color(0xff2DB3C1),
                               borderSide: BorderSide(
                                 color: Color(0xff2DB3C1),
                                 style: BorderStyle.solid,
                                 width: 1,
                               ),
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(20))),
                               onPressed: () => pushLeaderBoardPage(context),
                             ),
                           )
@@ -159,7 +184,13 @@ class ProfilePage extends StatelessWidget {
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: OutlineButton(
-                              child: Text('Ödülleri Gör'),
+                              child: Text(
+                                'Ödülleri Gör',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w300,
+                                  fontSize: 18,
+                                ),
+                              ),
                               textColor: Color(0xff2DB3C1),
                               borderSide: BorderSide(
                                 color: Color(0xff2DB3C1),
@@ -232,10 +263,11 @@ class ProfilePage extends StatelessWidget {
   }
 
   onContentSelectorChange(ContentOption contentOption) {
-    WidgetsBinding.instance.addPostFrameCallback((_) => pageController.animateToPage(
-          contentOption.title == 'Liderler' ? 0 : 1,
-          duration: Duration(milliseconds: 300),
-          curve: Curves.easeOut,
-        ));
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) => pageController.animateToPage(
+              contentOption.title == 'Liderler' ? 0 : 1,
+              duration: Duration(milliseconds: 300),
+              curve: Curves.easeOut,
+            ));
   }
 }
