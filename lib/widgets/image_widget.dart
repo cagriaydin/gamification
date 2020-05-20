@@ -35,16 +35,26 @@ class _ImageWidgetState extends State<ImageWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(widget.isBoardItem ? 90 : 0),
-      child: base64 == null
-          ? Container(
-              child: Image.asset("assets/default-profile.png"),
-            )
-          : Image.memory(
-              Base64Codec().decode(base64),
-              fit: BoxFit.cover,
-            ),
-    );
+    try {
+      return ClipRRect(
+            borderRadius: BorderRadius.circular(widget.isBoardItem ? 90 : 0),
+            child: base64 == null
+                ? Container(
+                    child: Image.asset("assets/default-profile.png"),
+                  )
+                : Image.memory(
+                    Base64Codec().decode(base64),
+                    fit: BoxFit.cover,
+                  ),
+          );
+    } catch (e) {
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(widget.isBoardItem ? 90 : 0),
+        child: Container(
+          child: Image.asset("assets/default-profile.png"),
+        ),
+      );
+      print(e);
+    }
   }
 }

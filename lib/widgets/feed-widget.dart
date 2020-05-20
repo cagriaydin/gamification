@@ -28,7 +28,7 @@ class _FeedContentState extends State<FeedContent> {
       child: Padding(
         padding: const EdgeInsets.all(4.0),
         child: Container(
-          height: size.height / 2,
+          height: size.height / 1.8,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.only(
               topLeft: Radius.circular(20.0),
@@ -104,15 +104,12 @@ class _FeedContentState extends State<FeedContent> {
                           ),
                           Padding(
                             padding: const EdgeInsets.fromLTRB(32, 14, 32, 4),
-                            child: FittedBox(
-                              fit: BoxFit.fitHeight,
-                              child: Text(
-                                widget.feedItem.title,
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: Color(0xFF26315F),
-                                  fontSize: 35,
-                                ),
+                            child: Text(
+                              widget.feedItem.title,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Color(0xFF26315F),
+                                fontSize: 20,
                               ),
                             ),
                           ),
@@ -122,7 +119,7 @@ class _FeedContentState extends State<FeedContent> {
                           Expanded(
                             child: SingleChildScrollView(
                               child: Padding(
-                                padding: const EdgeInsets.fromLTRB(32, 8, 32, 20),
+                                padding: const EdgeInsets.fromLTRB(32, 8, 48, 20),
                                 child: Text(
                                   widget.feedItem.description,
                                   textAlign: TextAlign.center,

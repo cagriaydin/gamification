@@ -321,8 +321,10 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
                                     ],
                                   ),
                                 ),
-                                if(size.height > 600)
-                                  SizedBox(height: size.height / 10,),
+                                if (size.height > 600)
+                                  SizedBox(
+                                    height: size.height / 10,
+                                  ),
                                 Flexible(
                                   child: MediaQuery.removePadding(
                                     context: context,
@@ -338,41 +340,47 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
                                                   .skip(3)
                                                   .elementAt(index);
                                           return Padding(
-                                              padding: const EdgeInsets.fromLTRB(
-                                                  18, 0, 18, 0),
+                                              padding:
+                                                  const EdgeInsets.fromLTRB(
+                                                      18, 0, 18, 0),
                                               child: Container(
                                                 child: RankContent(
                                                     image: branchList
-                                                        .singleWhere((element) =>
-                                                            element.id ==
-                                                            item.branchId)
+                                                        .singleWhere(
+                                                            (element) =>
+                                                                element.id ==
+                                                                item.branchId)
                                                         .image,
-                                                    selfContent: item.branchId ==
+                                                    selfContent: item
+                                                            .branchId ==
                                                         AuthenticationService
                                                             .verifiedUser
                                                             .branchId,
                                                     point: item.point,
                                                     subTitle: branchList
-                                                        .singleWhere((element) =>
-                                                            element.id ==
-                                                            item.branchId)
+                                                        .singleWhere(
+                                                            (element) =>
+                                                                element.id ==
+                                                                item.branchId)
                                                         .name,
                                                     rank: index + 4),
                                                 decoration: item.branchId ==
                                                         AuthenticationService
-                                                            .verifiedUser.branchId
+                                                            .verifiedUser
+                                                            .branchId
                                                     ? BoxDecoration(
                                                         color: Colors.white,
                                                         borderRadius:
-                                                            BorderRadius.circular(
-                                                                12),
+                                                            BorderRadius
+                                                                .circular(12),
                                                         boxShadow: <BoxShadow>[
                                                           BoxShadow(
-                                                            color:
-                                                                Color(0xFFC2F6FC),
+                                                            color: Color(
+                                                                0xFFC2F6FC),
                                                             spreadRadius: 0,
                                                             blurRadius: 5,
-                                                            offset: Offset(0, 4),
+                                                            offset:
+                                                                Offset(0, 4),
                                                           ),
                                                         ],
                                                       )
@@ -401,8 +409,9 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
   }
 
   getMyRank() {
-    return userLeaderList.indexOf(userLeaderList.singleWhere(
+    int i = userLeaderList.indexOf(userLeaderList.singleWhere(
         (element) => element.userId == AuthenticationService.verifiedUser.id));
+    return i > 3 ? i : i+1;
   }
 
   onContentSelectorChange(ContentOption contentOption) {
