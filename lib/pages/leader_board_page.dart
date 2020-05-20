@@ -181,7 +181,7 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
                                         itemBuilder:
                                             (BuildContext context, int index) {
                                           UserLeaderBoard item = userLeaderList
-                                              .skip(3)
+                                              .skip(4)
                                               .elementAt(index);
                                           return Padding(
                                             padding: const EdgeInsets.fromLTRB(
@@ -341,8 +341,7 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
 
   getMyRank() {
     return userLeaderList.indexOf(userLeaderList.singleWhere((element) =>
-            element.userId == AuthenticationService.verifiedUser.id)) +
-        1;
+            element.userId == AuthenticationService.verifiedUser.id));
   }
 
   onContentSelectorChange(ContentOption contentOption) {
