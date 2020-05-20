@@ -103,7 +103,7 @@ class _FeedContentState extends State<FeedContent> {
                             height: 10,
                           ),
                           Padding(
-                            padding: const EdgeInsets.fromLTRB(4, 14, 4, 4),
+                            padding: const EdgeInsets.fromLTRB(32, 14, 32, 4),
                             child: FittedBox(
                               fit: BoxFit.fitHeight,
                               child: Text(
@@ -119,20 +119,24 @@ class _FeedContentState extends State<FeedContent> {
                           SizedBox(
                             height: 10,
                           ),
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(8, 8, 8, 20),
-                            child: Text(
-                              widget.feedItem.description,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w300,
-                                shadows: <Shadow>[
-                                  Shadow(
-                                    blurRadius: 40.0,
-                                    color: Color(0xFF2FB4C2),
-                                  )
-                                ],
+                          Expanded(
+                            child: SingleChildScrollView(
+                              child: Padding(
+                                padding: const EdgeInsets.fromLTRB(32, 8, 32, 20),
+                                child: Text(
+                                  widget.feedItem.description,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w300,
+                                    shadows: <Shadow>[
+                                      Shadow(
+                                        blurRadius: 40.0,
+                                        color: Color(0xFF2FB4C2).withOpacity(.4),
+                                      )
+                                    ],
+                                  ),
+                                ),
                               ),
                             ),
                           ),

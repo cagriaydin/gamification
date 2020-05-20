@@ -95,18 +95,21 @@ class _FeedPageState extends State<FeedPage> {
               child: feedItemList != null
                   ? ListView(
                       children: feedItemList
-                          .where((element) => element.itemType == selectedId)
-                          .map((feedItem) => FeedContent(
-                                feedItem: feedItem,
-                                isLiked: AuthenticationService
-                                    .verifiedUser.likedFeeds
-                                    .contains(feedItem.id),
-                                deleteItem: () {
-                                  setState(() {
-                                    feedItemList.remove(feedItem);
-                                  });
-                                },
-                              ))
+//                          .where((element) => element.itemType == selectedId)
+                          .map((feedItem) => Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: FeedContent(
+                                  feedItem: feedItem,
+                                  isLiked: AuthenticationService
+                                      .verifiedUser.likedFeeds
+                                      .contains(feedItem.id),
+                                  deleteItem: () {
+                                    setState(() {
+                                      feedItemList.remove(feedItem);
+                                    });
+                                  },
+                                ),
+                          ))
                           .toList(),
                     )
                   : Center(
