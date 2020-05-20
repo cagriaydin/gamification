@@ -12,7 +12,7 @@ import 'package:yorglass_ik/shared/custom_theme.dart';
 void main() => runApp(
       DevicePreview(
         builder: (context) => MyApp(),
-        enabled: true,
+        enabled: false,
       ),
     );
 
