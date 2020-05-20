@@ -11,6 +11,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:yorglass_ik/helpers/popup_helper.dart';
 import 'package:yorglass_ik/models/user-task.dart';
 import 'package:yorglass_ik/models/user.dart';
 import 'package:yorglass_ik/repositories/reward-repository.dart';
@@ -322,41 +323,43 @@ class _BuildTaskState extends State<BuildTask> {
     return Container(
       padding: EdgeInsets.only(
           left: widget.isLeft ? 16 : 0, right: widget.isLeft ? 0 : 16),
-      child: Center(
-        child: SingleChildScrollView(
-          child: Transform.scale(
-            alignment: Alignment.topCenter,
-            scale: size.height < 600 ? 0.7 : .95,
-            child: Stack(
-              children: [
-                Column(
-                  crossAxisAlignment: widget.isLeft
-                      ? CrossAxisAlignment.start
-                      : CrossAxisAlignment.end,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      widget.userTask.task.name,
-                      textAlign:
-                          widget.isLeft ? TextAlign.left : TextAlign.right,
-                    ),
-                    SizedBox(
-                      height: 18,
-                    ),
-                    Text(
-                      getIntervalText(),
-                      style: TextStyle(
-                          fontStyle: FontStyle.italic,
-                          color: Color(0xFF26315F).withOpacity(.6),
-                          fontWeight: FontWeight.w300),
-                    ),
-                    SizedBox(
-                      height: 8,
-                    ),
-                    GestureDetector(
-                      onDoubleTap: () => stepComplete(),
-                      behavior: HitTestBehavior.opaque,
-                      child: Opacity(
+      child: GestureDetector(
+        onDoubleTap: () => TaskRepository.instance.canUpdate(widget.userTask)
+            ? stepComplete()
+            : cantComplete(),
+        behavior: HitTestBehavior.opaque,
+        child: Center(
+          child: SingleChildScrollView(
+            child: Transform.scale(
+              alignment: Alignment.topCenter,
+              scale: size.height < 600 ? 0.7 : .95,
+              child: Stack(
+                children: [
+                  Column(
+                    crossAxisAlignment: widget.isLeft
+                        ? CrossAxisAlignment.start
+                        : CrossAxisAlignment.end,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        widget.userTask.task.name,
+                        textAlign:
+                            widget.isLeft ? TextAlign.left : TextAlign.right,
+                      ),
+                      SizedBox(
+                        height: 18,
+                      ),
+                      Text(
+                        getIntervalText(),
+                        style: TextStyle(
+                            fontStyle: FontStyle.italic,
+                            color: Color(0xFF26315F).withOpacity(.6),
+                            fontWeight: FontWeight.w300),
+                      ),
+                      SizedBox(
+                        height: 8,
+                      ),
+                      Opacity(
                         opacity: opacity(),
                         child: StepperLinearIndicator(
                           width: size.width / 2,
@@ -365,57 +368,19 @@ class _BuildTaskState extends State<BuildTask> {
                           currentCount: widget.userTask.count,
                         ),
                       ),
-                    ),
-                  ],
-                ),
-                if (!widget.isLeft)
-                  Positioned(
-                    bottom: 0,
-                    left: 8,
-                    child: ConfettiWidget(
-                      confettiController: confettiController,
-                      blastDirectionality: BlastDirectionality.explosive,
-                      blastDirection: 0,
-                      // radial value - LEFT
-                      particleDrag: 0.05,
-                      // apply drag to the confetti
-                      emissionFrequency: 0.05,
-                      // how often it should emit
-                      numberOfParticles: 20,
-                      // number of particles to emit
-                      gravity: 0.05,
-                      // gravity - or fall speed
-                      shouldLoop: false,
-                      child: Transform.rotate(
-                        angle: math.pi / 10,
-                        child: Column(
-                          children: [
-                            GradientText(
-                              '+' + widget.userTask.point.toString(),
-                              disabled: widget.userTask.complete == 0,
-                              fontSize: 20,
-                              fontWeight: FontWeight.w500,
-                            ),
-                            GradientText(
-                              'puan',
-                              disabled: widget.userTask.complete == 0,
-                              fontSize: 15,
-                              fontWeight: FontWeight.w300,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
+                    ],
                   ),
-                if (widget.isLeft)
-                  Positioned(
-                    bottom: 0,
-                    right: 8,
-                    child: Transform.rotate(
-                      angle: -math.pi / 10,
+                  if (!widget.isLeft)
+                    Positioned(
+                      bottom: 0,
+                      left: 8,
                       child: ConfettiWidget(
                         confettiController: confettiController,
-                        blastDirection: pi,
+                        blastDirectionality: BlastDirectionality.explosive,
+                        colors: [
+                          Color(0xff54B4BA),
+                        ],
+                        blastDirection: 0,
                         // radial value - LEFT
                         particleDrag: 0.05,
                         // apply drag to the confetti
@@ -426,26 +391,70 @@ class _BuildTaskState extends State<BuildTask> {
                         gravity: 0.05,
                         // gravity - or fall speed
                         shouldLoop: false,
-                        child: Column(
-                          children: [
-                            GradientText(
-                              '+' + widget.userTask.point.toString(),
-                              disabled: widget.userTask.complete == 0,
-                              fontSize: 20,
-                              fontWeight: FontWeight.w500,
-                            ),
-                            GradientText(
-                              'puan',
-                              disabled: widget.userTask.complete == 0,
-                              fontSize: 15,
-                              fontWeight: FontWeight.w300,
-                            ),
-                          ],
+                        child: Transform.rotate(
+                          angle: math.pi / 10,
+                          child: Column(
+                            children: [
+                              GradientText(
+                                '+' + widget.userTask.point.toString(),
+                                disabled: widget.userTask.complete == 0,
+                                fontSize: 20,
+                                fontWeight: FontWeight.w500,
+                              ),
+                              GradientText(
+                                'puan',
+                                disabled: widget.userTask.complete == 0,
+                                fontSize: 15,
+                                fontWeight: FontWeight.w300,
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
-                  )
-              ],
+                  if (widget.isLeft)
+                    Positioned(
+                      bottom: 0,
+                      right: 8,
+                      child: Transform.rotate(
+                        angle: -math.pi / 10,
+                        child: ConfettiWidget(
+                          confettiController: confettiController,
+                          blastDirection: pi,
+                          colors: [
+                            Color(0xff54B4BA),
+                          ],
+                          // radial value - LEFT
+                          particleDrag: 0.05,
+                          // apply drag to the confetti
+                          emissionFrequency: 0.05,
+                          // how often it should emit
+                          numberOfParticles: 20,
+                          // number of particles to emit
+                          gravity: 0.05,
+                          // gravity - or fall speed
+                          shouldLoop: false,
+                          child: Column(
+                            children: [
+                              GradientText(
+                                '+' + widget.userTask.point.toString(),
+                                disabled: widget.userTask.complete == 0,
+                                fontSize: 20,
+                                fontWeight: FontWeight.w500,
+                              ),
+                              GradientText(
+                                'puan',
+                                disabled: widget.userTask.complete == 0,
+                                fontSize: 15,
+                                fontWeight: FontWeight.w300,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    )
+                ],
+              ),
             ),
           ),
         ),
@@ -480,16 +489,20 @@ class _BuildTaskState extends State<BuildTask> {
       await TaskRepository.instance.updateUserTask(widget.userTask);
       if (widget.userTask.complete == 1) {
         confettiController.play();
-        await Future.delayed(Duration(milliseconds: 300));
+//        await Future.delayed(Duration(milliseconds: 300));
         if (widget.changePointCallback != null) widget.changePointCallback();
-        await Future.delayed(Duration(milliseconds: 1000));
-        confettiController.stop();
+//        await Future.delayed(Duration(milliseconds: 1000));
+//        confettiController.stop();
         setState(() {});
       }
     }
   }
 
   void taskComplete() {}
+
+  cantComplete() {
+    PopupHelper().showPopup(context, Text('Bugünkü hakkını doldurdun'));
+  }
 }
 
 class StepperLinearIndicator extends StatelessWidget {
@@ -511,13 +524,14 @@ class StepperLinearIndicator extends StatelessWidget {
     return Container(
       width: width,
       height: height,
-//      padding: EdgeInsets.all(5),
-      // decoration: BoxDecoration(
-      //   borderRadius: BorderRadius.all(Radius.circular(90)),
-      //   border: Border.all(
-      //     color: Color(0xff54B4BA),
-      //   ),
-      // ),
+//      padding: EdgeInsets.all(.05),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.all(Radius.circular(90)),
+        border: Border.all(
+          width: .5,
+          color: Color(0xff54B4BA).withOpacity(.5),
+        ),
+      ),
       child: Stack(
         fit: StackFit.expand,
         children: [
