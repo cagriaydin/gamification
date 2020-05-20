@@ -1,6 +1,7 @@
 import 'package:mysql1/mysql1.dart';
 import 'package:uuid/uuid.dart';
 import 'package:yorglass_ik/models/suggestion.dart';
+import 'package:yorglass_ik/repositories/task-repository.dart';
 import 'package:yorglass_ik/services/authentication-service.dart';
 import 'package:yorglass_ik/services/db-connection.dart';
 
@@ -48,5 +49,6 @@ class SuggestionRepository {
         suggestion.date.toUtc(),
       ],
     );
+    await TaskRepository.instance.updateLeaderboardPoint(10);
   }
 }

@@ -34,6 +34,14 @@ class _ProfilePageState extends State<ProfilePage> {
     ContentOption(title: 'Ödüllerim'),
   ];
 
+  var future;
+
+  @override
+  void initState() {
+    future = UserRepository.instance.getTopUserPointList();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     final padding = MediaQuery.of(context).padding;
@@ -120,6 +128,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 Expanded(
                   flex: 5,
                   child: PageView(
+//                    physics: NeverScrollableScrollPhysics(),
                     onPageChanged: (i) {
                       options.forEach((element) {
                         element.isActive = false;
@@ -138,8 +147,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             child: GestureDetector(
                               onTap: () => pushLeaderBoardPage(context),
                               child: FutureBuilder<List<User>>(
-                                future: UserRepository.instance
-                                    .getTopUserPointList(),
+                                future: future,
                                 builder: (BuildContext context,
                                     AsyncSnapshot<List<User>> snapshot) {
                                   if (snapshot.hasData) {
@@ -172,8 +180,9 @@ class _ProfilePageState extends State<ProfilePage> {
                                                 width: 1,
                                               ),
                                               shape: RoundedRectangleBorder(
-                                                  borderRadius: BorderRadius.all(
-                                                      Radius.circular(20))),
+                                                  borderRadius:
+                                                      BorderRadius.all(
+                                                          Radius.circular(20))),
                                               onPressed: () =>
                                                   pushLeaderBoardPage(context),
                                             ),
@@ -197,10 +206,10 @@ class _ProfilePageState extends State<ProfilePage> {
                           children: [
                             RewardCards(
                               reward: Reward(
-                                imageId: "c9a560ac-63f2-401b-8185-2bae139957ad",
-                                point: 0,
-                                likeCount: 0
-                              ),
+                                  imageId:
+                                      "c9a560ac-63f2-401b-8185-2bae139957ad",
+                                  point: 0,
+                                  likeCount: 0),
                             ),
                             Padding(
                               padding: const EdgeInsets.all(8.0),

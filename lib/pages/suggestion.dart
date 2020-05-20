@@ -104,7 +104,8 @@ class _SuggestionPageState extends State<SuggestionPage> {
                                     backgroundImage: AuthenticationService
                                                 .verifiedUser.image ==
                                             null
-                                        ? AssetImage("assets/default-profile.png")
+                                        ? AssetImage(
+                                            "assets/default-profile.png")
                                         : MemoryImage(
                                             base64.decode(AuthenticationService
                                                 .verifiedUser.image),
@@ -133,7 +134,8 @@ class _SuggestionPageState extends State<SuggestionPage> {
                                           .verifiedUser.branchName,
                                       style: TextStyle(
                                         fontSize: 12,
-                                        color: Color(0xff4BADBB).withOpacity(.6),
+                                        color:
+                                            Color(0xff4BADBB).withOpacity(.6),
                                       ),
                                     ),
                                   ],
@@ -238,6 +240,8 @@ class _SuggestionPageState extends State<SuggestionPage> {
         suggestion.title = titleController.text;
         suggestion.description = descriptionController.text;
         await SuggestionRepository.instance.sendSuggestion(suggestion);
+        titleController.text = '';
+        descriptionController.text = '';
         return PopupHelper().showPopup(
           context,
           Text(
