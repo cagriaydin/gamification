@@ -130,14 +130,40 @@ class ProfilePage extends StatelessWidget {
                                 builder: (BuildContext context,
                                     AsyncSnapshot<List<User>> snapshot) {
                                   if (snapshot.hasData) {
-                                    return LeaderBoard(
-                                      list: snapshot.data
-                                          .map((e) => LeaderBoardItem(
-                                                image: e.image,
-                                                point: e.point,
-                                                name: e.name,
-                                              ))
-                                          .toList(),
+                                    return Column(
+                                      children: [
+                                        LeaderBoard(
+                                          list: snapshot.data
+                                              .map((e) => LeaderBoardItem(
+                                                    image: e.image,
+                                                    point: e.point,
+                                                    name: e.name,
+                                                  ))
+                                              .toList(),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: OutlineButton(
+                                            child: Text(
+                                              'Lider Tablosunu Gör',
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.w300,
+                                                fontSize: 18,
+                                              ),
+                                            ),
+                                            textColor: Color(0xff2DB3C1),
+                                            borderSide: BorderSide(
+                                              color: Color(0xff2DB3C1),
+                                              style: BorderStyle.solid,
+                                              width: 1,
+                                            ),
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                BorderRadius.all(Radius.circular(20))),
+                                            onPressed: () => pushLeaderBoardPage(context),
+                                          ),
+                                        ),
+                                      ],
                                     );
                                   } else {
                                     return Center(
@@ -148,28 +174,6 @@ class ProfilePage extends StatelessWidget {
                               ),
                             ),
                           ),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: OutlineButton(
-                              child: Text(
-                                'Lider Tablosunu Gör',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w300,
-                                  fontSize: 18,
-                                ),
-                              ),
-                              textColor: Color(0xff2DB3C1),
-                              borderSide: BorderSide(
-                                color: Color(0xff2DB3C1),
-                                style: BorderStyle.solid,
-                                width: 1,
-                              ),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(20))),
-                              onPressed: () => pushLeaderBoardPage(context),
-                            ),
-                          )
                         ],
                       ),
                       Column(

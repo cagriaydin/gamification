@@ -121,7 +121,7 @@ class CustomDrawerState extends State<CustomDrawer>
 //    print('dy ' + details.globalPosition.dy.toString());
 
     bool isDragOpenFromLeft = animationController.isDismissed &&
-        details.globalPosition.dx < Offset.zero.dx + 30;
+        details.globalPosition.dx < Offset.zero.dx + 50;
     bool isDragFromRight = animationController.isCompleted &&
         details.globalPosition.dx > Offset.zero.dx + maxSlide;
 
