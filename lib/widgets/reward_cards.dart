@@ -30,7 +30,7 @@ class RewardCards extends StatelessWidget {
       );
     }
 
-    return GestureDetector(
+    final child = GestureDetector(
       onTap: () => pushRewardsPage(context),
       child: Stack(
         children: [
@@ -102,6 +102,7 @@ class RewardCards extends StatelessWidget {
                             reward.likeCount.toString(),
                             style: TextStyle(
                               color: Colors.white,
+                              fontSize: 15
                             ),
                           )
                         ],
@@ -118,6 +119,14 @@ class RewardCards extends StatelessWidget {
         ],
       ),
     );
+
+    if (size.height < 600) {
+      return Transform.scale(
+        scale: .9,
+        child: child,
+      );
+    } else
+      return child;
   }
 
   Future pushRewardsPage(BuildContext context) {

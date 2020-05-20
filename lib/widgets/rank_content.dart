@@ -76,7 +76,7 @@ class _RankContentState extends State<RankContent> {
                       Text(
                         widget.title,
                         style: TextStyle(
-                            fontSize: widget.selfContent ? 22 : 20,
+                            fontSize: widget.selfContent ? 16 : 14,
                             fontWeight: FontWeight.w300,
                             color: color),
                       ),
@@ -113,7 +113,7 @@ class _RankContentState extends State<RankContent> {
                         child: Text(
                           widget.subTitle,
                           style: TextStyle(
-                              fontSize: 20,
+                              fontSize: 15,
                               fontWeight: FontWeight.w300,
                               color: color),
                         ),

@@ -4,10 +4,12 @@ import 'package:yorglass_ik/widgets/flag_avatar.dart';
 
 class LeaderBoard extends StatelessWidget {
   final List<LeaderBoardItem> list;
+  final bool isLeaderBoard;
 
   const LeaderBoard({
     Key key,
     this.list,
+    this.isLeaderBoard = false,
   }) : super(key: key);
 
   @override
@@ -15,7 +17,8 @@ class LeaderBoard extends StatelessWidget {
     final size = MediaQuery.of(context).size;
     if (size.height < 600) {
       return Transform(
-        transform: Matrix4.identity()..scale(.9),
+        transform: Matrix4.identity()..scale(isLeaderBoard ? .85 : .75),
+        alignment: isLeaderBoard ? Alignment.topCenter : Alignment.center,
         child: buildLeaderBoard(),
       );
     } else {
@@ -27,6 +30,7 @@ class LeaderBoard extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.end,
       mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisSize: MainAxisSize.min,
       children: [
         Hero(
           tag: '2',

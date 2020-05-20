@@ -39,6 +39,10 @@ class _RewardsPageState extends State<RewardsPage> {
 
   @override
   Widget build(BuildContext context) {
+
+    //TODO: change Wip page later
+    return WorkingProgress();
+
     final size = MediaQuery.of(context).size;
     final padding = MediaQuery.of(context).padding;
     return Scaffold(
@@ -225,5 +229,26 @@ class _RewardsPageState extends State<RewardsPage> {
               duration: Duration(milliseconds: 300),
               curve: Curves.easeOut,
             ));
+  }
+}
+
+
+class WorkingProgress extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(),
+      body: Column(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.build,size: 40,color: Colors.black54,),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text('Sayfamız yapım aşamasındadır anlayışınız için teşekkür ederiz.',textAlign: TextAlign.center,),
+          ),
+        ],
+      ),
+    );
   }
 }

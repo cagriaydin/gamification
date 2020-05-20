@@ -74,17 +74,20 @@ class BuildUserInfo extends StatelessWidget {
             SizedBox(
               width: 8,
             ),
-            Text(
-              user.branchName.length > 20
-                  ? user.branchName.substring(0, 20) + '...'
-                  : user.branchName,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: isTaskPage ? 15 : 18,
-                fontWeight: isTaskPage ? FontWeight.w200 : FontWeight.w400,
-                color: isTaskPage ? Color(0xFF26315F) : Color(0xff4BADBB).withOpacity(.6),
+            Tooltip(
+              message: user.branchName,
+              child: Text(
+                user.branchName.length > 20
+                    ? user.branchName.substring(0, 20) + '...'
+                    : user.branchName,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: isTaskPage ? 15 : 18,
+                  fontWeight: isTaskPage ? FontWeight.w200 : FontWeight.w400,
+                  color: isTaskPage ? Color(0xFF26315F) : Color(0xff4BADBB).withOpacity(.6),
+                ),
+                overflow: TextOverflow.ellipsis,
               ),
-              overflow: TextOverflow.ellipsis,
             ),
           ],
         )

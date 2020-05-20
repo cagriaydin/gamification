@@ -21,7 +21,8 @@ class FlagAvatar extends StatelessWidget {
       this.rank,
       this.name,
       this.image64,
-      this.titleColor, this.branchName,
+      this.titleColor,
+      this.branchName,
       this.split = true})
       : super(key: key);
 
@@ -34,19 +35,19 @@ class FlagAvatar extends StatelessWidget {
         children: [
           name.isNotEmpty
               ? Text(
-            split
-                ? name.length > 10 ? name.split(" ").join("\n") : name
-                : name.length > 20
-                ? name.substring(
-                0, name.length > 15 ? 15 : name.length) +
-                '...'
-                : name,
-            style: TextStyle(
-              color: titleColor == null ? Colors.white : titleColor,
-              fontSize: 16,
-            ),
-            textAlign: TextAlign.center,
-          )
+                  split
+                      ? name.length > 10 ? name.split(" ").join("\n") : name
+                      : name.length > 20
+                          ? name.substring(
+                                  0, name.length > 15 ? 15 : name.length) +
+                              '...'
+                          : name,
+                  style: TextStyle(
+                    color: titleColor == null ? Colors.white : titleColor,
+                    fontSize: 16,
+                  ),
+                  textAlign: TextAlign.center,
+                )
               : Text(""),
           if (branchName != null)
             SizedBox(
@@ -78,6 +79,10 @@ class FlagAvatar extends StatelessWidget {
                 ),
               ],
             ),
+          if (name.isEmpty)
+            SizedBox(
+              height: 5,
+            ),
           Stack(
             alignment: Alignment.bottomCenter,
             children: [
@@ -87,8 +92,8 @@ class FlagAvatar extends StatelessWidget {
                 children: [
                   Padding(
                     padding: name.isNotEmpty
-                        ? const EdgeInsets.fromLTRB(8, 20, 8, 64)
-                        : const EdgeInsets.fromLTRB(8, 0, 8, 64),
+                        ? const EdgeInsets.fromLTRB(8, 20, 8, 60)
+                        : const EdgeInsets.fromLTRB(8, 0, 8, 60),
                     child: Material(
                       elevation: 5,
                       color: Colors.white,
@@ -115,8 +120,8 @@ class FlagAvatar extends StatelessWidget {
                     ),
                   if (rank != null)
                     Positioned(
-                      right: name.isNotEmpty ? 10 : 8,
-                      top: name.isNotEmpty ? 20 : 6,
+                      right: name.isNotEmpty ? getRadius(size) / 5 : 8,
+                      top: name.isNotEmpty ? getRadius(size) / 5 : 6,
                       child: Container(
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
@@ -170,7 +175,7 @@ class FlagAvatar extends StatelessWidget {
   }
 
   double getRadius(size) {
-    double currentSize = (size.height < 700 || size.width < 400) ? 50 : 60;
+    double currentSize = (size.height < 700 || size.width < 400) ? 45 : 60;
     if (rank == 1) {
       return currentSize;
     } else if (rank == 2) {

@@ -104,12 +104,15 @@ class _FeedContentState extends State<FeedContent> {
                           ),
                           Padding(
                             padding: const EdgeInsets.fromLTRB(4, 14, 4, 4),
-                            child: Text(
-                              widget.feedItem.title,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: Color(0xFF26315F),
-                                fontSize: 35,
+                            child: FittedBox(
+                              fit: BoxFit.fitHeight,
+                              child: Text(
+                                widget.feedItem.title,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: Color(0xFF26315F),
+                                  fontSize: 35,
+                                ),
                               ),
                             ),
                           ),
@@ -117,7 +120,7 @@ class _FeedContentState extends State<FeedContent> {
                             height: 10,
                           ),
                           Padding(
-                            padding: const EdgeInsets.fromLTRB(8, 8, 8, 38),
+                            padding: const EdgeInsets.fromLTRB(8, 8, 8, 20),
                             child: Text(
                               widget.feedItem.description,
                               textAlign: TextAlign.center,
