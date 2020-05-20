@@ -196,7 +196,7 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
                                                 int index) {
                                               UserLeaderBoard item =
                                                   userLeaderList
-                                                      .skip(3)
+                                                      .skip(4)
                                                       .elementAt(index);
                                               return Padding(
                                                 padding:
@@ -381,8 +381,7 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
 
   getMyRank() {
     return userLeaderList.indexOf(userLeaderList.singleWhere((element) =>
-            element.userId == AuthenticationService.verifiedUser.id)) +
-        1;
+            element.userId == AuthenticationService.verifiedUser.id));
   }
 
   onContentSelectorChange(ContentOption contentOption) {

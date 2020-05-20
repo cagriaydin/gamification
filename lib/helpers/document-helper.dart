@@ -3,6 +3,9 @@ import 'package:yorglass_ik/services/db-connection.dart';
 
 class DocumentHelper {
   Future<String> getPhoneWithRegNumber(String regNumber) async {
+    if(regNumber == ""){
+      return "";
+    }
     Results res = await DbConnection.query("SELECT phone FROM user WHERE code = ?", [int.parse(regNumber)]);
     if (res.toList().length > 0) {
       String phone = res.toList().first[0];
