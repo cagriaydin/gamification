@@ -30,6 +30,7 @@ class ContentSelector extends StatefulWidget {
     this.isLeaderBoard = false,
     this.paddingHorizontal = 24,
     this.customWidgetBuilder,
+    this.rowMainAxisAlignment = MainAxisAlignment.center,
     this.contentSelectorType = ContentSelectorType.feed,
     this.fontSize = 14,
   }) : super(key: key);
