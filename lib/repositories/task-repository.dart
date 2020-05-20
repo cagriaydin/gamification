@@ -109,7 +109,7 @@ class TaskRepository {
         createNewUserTask(task, userTaskList);
       }
     });
-    userTaskList.sort((a, b) => a.point.compareTo(b.point));
+    userTaskList.sort((a, b) => a.task.name.compareTo(b.task.name));
     _currentTasks.add(userTaskList);
     return userTaskList;
   }

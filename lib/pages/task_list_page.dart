@@ -13,6 +13,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:yorglass_ik/models/user-task.dart';
 import 'package:yorglass_ik/models/user.dart';
+import 'package:yorglass_ik/repositories/reward-repository.dart';
 import 'package:yorglass_ik/repositories/task-repository.dart';
 import 'package:yorglass_ik/services/authentication-service.dart';
 import 'package:yorglass_ik/widgets/build_user_info.dart';
@@ -37,8 +38,11 @@ class _TaskListPageState extends State<TaskListPage> {
   ValueNotifier<CrossFadeState> crossFade =
       ValueNotifier(CrossFadeState.showFirst);
 
+  var getActivePointFuture;
+
   @override
   void initState() {
+    getActivePointFuture = RewardRepository.instance.getActivePoint();
     controller.addListener(scrollControllerListener);
     TaskRepository.instance.getUserTasks();
     super.initState();
@@ -133,29 +137,29 @@ class _TaskListPageState extends State<TaskListPage> {
                           blurRadius: 4,
                           spreadRadius: 2)
                     ]),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    Column(
-                      children: [
-                        Flexible(
-                          child: GradientText(
+                child: FutureBuilder(
+                  future: getActivePointFuture,
+                  builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
+                    if (snapshot.hasData || snapshot.hasError) {
+                      return Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          GradientText(
                             (widget.user.point ?? 0).toString(),
-                            fontSize: 40,
                             fontWeight: FontWeight.w500,
+                            fontSize: 40,
                           ),
-                        ),
-                        Flexible(
-                          child: GradientText(
+                          GradientText(
                             'puan',
                             fontWeight: FontWeight.w300,
                             fontSize: 25,
                           ),
-                        ),
-                      ],
-                    ),
-                  ],
+                        ],
+                      );
+                    } else {
+                      return Center(child: CircularProgressIndicator());
+                    }
+                  },
                 ),
               ),
             ),
@@ -193,20 +197,30 @@ class _TaskListPageState extends State<TaskListPage> {
                       ),
                       Padding(
                         padding: const EdgeInsets.only(bottom: 90.0),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            GradientText(
-                              (widget.user.point ?? 0).toString(),
-                              fontWeight: FontWeight.w500,
-                              fontSize: 40,
-                            ),
-                            GradientText(
-                              'puan',
-                              fontWeight: FontWeight.w300,
-                              fontSize: 25,
-                            ),
-                          ],
+                        child: FutureBuilder(
+                          future: getActivePointFuture,
+                          builder: (BuildContext context,
+                              AsyncSnapshot<int> snapshot) {
+                            if (snapshot.hasData || snapshot.hasError) {
+                              return Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  GradientText(
+                                    (widget.user.point ?? 0).toString(),
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 40,
+                                  ),
+                                  GradientText(
+                                    'puan',
+                                    fontWeight: FontWeight.w300,
+                                    fontSize: 25,
+                                  ),
+                                ],
+                              );
+                            } else {
+                              return Center(child: CircularProgressIndicator());
+                            }
+                          },
                         ),
                       )
                     ],
@@ -257,8 +271,15 @@ class _TaskListPageState extends State<TaskListPage> {
   ) {
     return BuildTask(
       userTask: userTasks.elementAt(index),
+      changePointCallback: changePointCallback,
       isLeft: index % 2 != 0,
     );
+  }
+
+  changePointCallback() {
+    setState(() {
+      getActivePointFuture = RewardRepository.instance.getActivePoint();
+    });
   }
 }
 
@@ -266,10 +287,13 @@ class BuildTask extends StatefulWidget {
   final UserTask userTask;
   final bool isLeft;
 
+  final Function changePointCallback;
+
   const BuildTask({
     Key key,
     this.userTask,
     this.isLeft = true,
+    this.changePointCallback,
   }) : super(key: key);
 
   @override
@@ -300,8 +324,9 @@ class _BuildTaskState extends State<BuildTask> {
           left: widget.isLeft ? 16 : 0, right: widget.isLeft ? 0 : 16),
       child: Center(
         child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
+          child: Transform.scale(
+            alignment: Alignment.topCenter,
+            scale: size.height < 600 ? 0.7 : .95,
             child: Stack(
               children: [
                 Column(
@@ -329,10 +354,7 @@ class _BuildTaskState extends State<BuildTask> {
                       height: 8,
                     ),
                     GestureDetector(
-                      onDoubleTap: () =>
-                          TaskRepository.instance.canUpdate(widget.userTask)
-                              ? stepComplete()
-                              : null,
+                      onDoubleTap: () => stepComplete(),
                       behavior: HitTestBehavior.opaque,
                       child: Opacity(
                         opacity: opacity(),
@@ -349,7 +371,7 @@ class _BuildTaskState extends State<BuildTask> {
                 if (!widget.isLeft)
                   Positioned(
                     bottom: 0,
-                    left: 40,
+                    left: 8,
                     child: ConfettiWidget(
                       confettiController: confettiController,
                       blastDirectionality: BlastDirectionality.explosive,
@@ -388,7 +410,7 @@ class _BuildTaskState extends State<BuildTask> {
                 if (widget.isLeft)
                   Positioned(
                     bottom: 0,
-                    right: 40,
+                    right: 8,
                     child: Transform.rotate(
                       angle: -math.pi / 10,
                       child: ConfettiWidget(
@@ -458,8 +480,9 @@ class _BuildTaskState extends State<BuildTask> {
       await TaskRepository.instance.updateUserTask(widget.userTask);
       if (widget.userTask.complete == 1) {
         confettiController.play();
-        await AuthenticationService.instance.verifyUser();
-        await Future.delayed(Duration(milliseconds: 500));
+        await Future.delayed(Duration(milliseconds: 300));
+        if (widget.changePointCallback != null) widget.changePointCallback();
+        await Future.delayed(Duration(milliseconds: 1000));
         confettiController.stop();
         setState(() {});
       }
