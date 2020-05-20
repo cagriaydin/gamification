@@ -196,7 +196,7 @@ class _PhoneValidationPageState extends State<PhoneValidationPage> {
   verifyPhone(context) async {
     String phoneNumber = await StringHelper.getPhoneWithRegNumber(
         registrationNumberController.text);
-    if (phoneNumber != "") {
+    if (phoneNumber != "" && phoneNumber != null) {
       setState(() {
         isLoading = true;
       });
