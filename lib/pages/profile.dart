@@ -177,6 +177,7 @@ class ProfilePage extends StatelessWidget {
                           Flexible(
                             child: RewardCards(
                               reward: Reward(
+                                imageId: "c9a560ac-63f2-401b-8185-2bae139957ad",
                                 point: 25000,
                               ),
                             ),

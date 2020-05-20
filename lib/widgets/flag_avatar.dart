@@ -1,14 +1,18 @@
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:yorglass_ik/widgets/flag_point.dart';
 
 class FlagAvatar extends StatelessWidget {
   final String imageUrl;
+  final Uint8List image64;
   final int point;
   final int rank;
   final String name;
   final String branchName;
+  final Color titleColor;
+  final bool split;
 
   const FlagAvatar(
       {Key key,
@@ -16,7 +20,9 @@ class FlagAvatar extends StatelessWidget {
       this.point,
       this.rank,
       this.name,
-      this.branchName})
+      this.image64,
+      this.titleColor, this.branchName,
+      this.split = true})
       : super(key: key);
 
   @override
@@ -28,13 +34,19 @@ class FlagAvatar extends StatelessWidget {
         children: [
           name.isNotEmpty
               ? Text(
-                  name.length > 9 ? name.split(" ").join("\n") : name,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                  ),
-                  textAlign: TextAlign.center,
-                )
+            split
+                ? name.length > 10 ? name.split(" ").join("\n") : name
+                : name.length > 20
+                ? name.substring(
+                0, name.length > 15 ? 15 : name.length) +
+                '...'
+                : name,
+            style: TextStyle(
+              color: titleColor == null ? Colors.white : titleColor,
+              fontSize: 16,
+            ),
+            textAlign: TextAlign.center,
+          )
               : Text(""),
           if (branchName != null)
             SizedBox(
@@ -147,7 +159,9 @@ class FlagAvatar extends StatelessWidget {
   Object backgroundImage() {
     try {
       return imageUrl == null
-          ? AssetImage("assets/default-profile.png")
+          ? (image64 == null
+              ? AssetImage("assets/default-profile.png")
+              : MemoryImage(image64))
           : MemoryImage(base64.decode(imageUrl));
     } catch (e) {
       print(e);

@@ -1,10 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:math' as math;
+import 'dart:math';
 import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:after_layout/after_layout.dart';
+import 'package:confetti/confetti.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -28,7 +30,7 @@ class TaskListPage extends StatefulWidget {
 class _TaskListPageState extends State<TaskListPage> {
   List<UserTask> userTasks;
 
-  ScrollController controller;
+  ScrollController controller = ScrollController();
 
   final double kEffectHeight = 100;
 
@@ -37,7 +39,6 @@ class _TaskListPageState extends State<TaskListPage> {
 
   @override
   void initState() {
-    controller = ScrollController();
     controller.addListener(scrollControllerListener);
     TaskRepository.instance.getUserTasks();
     super.initState();
@@ -72,7 +73,7 @@ class _TaskListPageState extends State<TaskListPage> {
   @override
   void dispose() {
     controller.removeListener(scrollControllerListener);
-    controller.dispose();
+//    controller.dispose();
     super.dispose();
   }
 
@@ -276,6 +277,21 @@ class BuildTask extends StatefulWidget {
 }
 
 class _BuildTaskState extends State<BuildTask> {
+  ConfettiController confettiController;
+
+  @override
+  void initState() {
+    confettiController =
+        ConfettiController(duration: const Duration(seconds: 10));
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    confettiController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -313,7 +329,10 @@ class _BuildTaskState extends State<BuildTask> {
                       height: 8,
                     ),
                     GestureDetector(
-                      onDoubleTap: () => stepComplete(),
+                      onDoubleTap: () =>
+                          TaskRepository.instance.canUpdate(widget.userTask)
+                              ? stepComplete()
+                              : null,
                       behavior: HitTestBehavior.opaque,
                       child: Opacity(
                         opacity: opacity(),
@@ -331,23 +350,38 @@ class _BuildTaskState extends State<BuildTask> {
                   Positioned(
                     bottom: 0,
                     left: 40,
-                    child: Transform.rotate(
-                      angle: math.pi / 10,
-                      child: Column(
-                        children: [
-                          GradientText(
-                            '+' + widget.userTask.point.toString(),
-                            disabled: widget.userTask.complete == 0,
-                            fontSize: 20,
-                            fontWeight: FontWeight.w500,
-                          ),
-                          GradientText(
-                            'puan',
-                            disabled: widget.userTask.complete == 0,
-                            fontSize: 15,
-                            fontWeight: FontWeight.w300,
-                          ),
-                        ],
+                    child: ConfettiWidget(
+                      confettiController: confettiController,
+                      blastDirectionality: BlastDirectionality.explosive,
+                      blastDirection: 0,
+                      // radial value - LEFT
+                      particleDrag: 0.05,
+                      // apply drag to the confetti
+                      emissionFrequency: 0.05,
+                      // how often it should emit
+                      numberOfParticles: 20,
+                      // number of particles to emit
+                      gravity: 0.05,
+                      // gravity - or fall speed
+                      shouldLoop: false,
+                      child: Transform.rotate(
+                        angle: math.pi / 10,
+                        child: Column(
+                          children: [
+                            GradientText(
+                              '+' + widget.userTask.point.toString(),
+                              disabled: widget.userTask.complete == 0,
+                              fontSize: 20,
+                              fontWeight: FontWeight.w500,
+                            ),
+                            GradientText(
+                              'puan',
+                              disabled: widget.userTask.complete == 0,
+                              fontSize: 15,
+                              fontWeight: FontWeight.w300,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -357,21 +391,35 @@ class _BuildTaskState extends State<BuildTask> {
                     right: 40,
                     child: Transform.rotate(
                       angle: -math.pi / 10,
-                      child: Column(
-                        children: [
-                          GradientText(
-                            '+' + widget.userTask.point.toString(),
-                            disabled: widget.userTask.complete == 0,
-                            fontSize: 20,
-                            fontWeight: FontWeight.w500,
-                          ),
-                          GradientText(
-                            'puan',
-                            disabled: widget.userTask.complete == 0,
-                            fontSize: 15,
-                            fontWeight: FontWeight.w300,
-                          ),
-                        ],
+                      child: ConfettiWidget(
+                        confettiController: confettiController,
+                        blastDirection: pi,
+                        // radial value - LEFT
+                        particleDrag: 0.05,
+                        // apply drag to the confetti
+                        emissionFrequency: 0.05,
+                        // how often it should emit
+                        numberOfParticles: 20,
+                        // number of particles to emit
+                        gravity: 0.05,
+                        // gravity - or fall speed
+                        shouldLoop: false,
+                        child: Column(
+                          children: [
+                            GradientText(
+                              '+' + widget.userTask.point.toString(),
+                              disabled: widget.userTask.complete == 0,
+                              fontSize: 20,
+                              fontWeight: FontWeight.w500,
+                            ),
+                            GradientText(
+                              'puan',
+                              disabled: widget.userTask.complete == 0,
+                              fontSize: 15,
+                              fontWeight: FontWeight.w300,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   )
@@ -406,11 +454,15 @@ class _BuildTaskState extends State<BuildTask> {
   }
 
   Future<void> stepComplete() async {
-    await TaskRepository.instance.updateUserTask(widget.userTask);
-    if (widget.userTask.complete == 1) {
-      await AuthenticationService.instance.verifyUser();
-      await Future.delayed(Duration(milliseconds: 500));
-      setState(() {});
+    if (TaskRepository.instance.canUpdate(widget.userTask)) {
+      await TaskRepository.instance.updateUserTask(widget.userTask);
+      if (widget.userTask.complete == 1) {
+        confettiController.play();
+        await AuthenticationService.instance.verifyUser();
+        await Future.delayed(Duration(milliseconds: 500));
+        confettiController.stop();
+        setState(() {});
+      }
     }
   }
 
@@ -511,6 +563,8 @@ class _TaskListBuilderState extends State<TaskListBuilder>
 
   Timer _debounce;
 
+  var lastPlace = GlobalKey();
+
   ScrollController get controller => widget.controller;
 
   int position = 0;
@@ -552,6 +606,7 @@ class _TaskListBuilderState extends State<TaskListBuilder>
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return SingleChildScrollView(
+      key: lastPlace,
       physics: BouncingScrollPhysics(),
       controller: controller,
       child: Container(
@@ -635,10 +690,10 @@ class _TaskListBuilderState extends State<TaskListBuilder>
   }
 
   @override
-  void afterFirstLayout(BuildContext context) {
+  Future<void> afterFirstLayout(BuildContext context) async {
     final size = MediaQuery.of(context).size;
     customPaintSize = size;
-    final box = customPaintKey.currentContext.findRenderObject() as RenderBox;
+    final box = lastPlace.currentContext.findRenderObject() as RenderBox;
     initialPos = box.localToGlobal(Offset.zero);
     widget.crossFadeNotifier.addListener(crossFadeListener);
     animateToIndex(0);
@@ -646,9 +701,8 @@ class _TaskListBuilderState extends State<TaskListBuilder>
 
   void crossFadeListener() async {
     if (_debounce?.isActive ?? false) _debounce.cancel();
-    _debounce = Timer(const Duration(milliseconds: 500), () async {
-      await Future.delayed(const Duration(milliseconds: 500));
-      final box = customPaintKey.currentContext.findRenderObject() as RenderBox;
+    _debounce = Timer(const Duration(milliseconds: 1000), () async {
+      final box = lastPlace.currentContext.findRenderObject() as RenderBox;
       initialPos = box.localToGlobal(Offset.zero);
       animateToIndex(position);
     });
