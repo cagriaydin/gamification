@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:yorglass_ik/pages/bottom_navigation.dart';
 import 'package:yorglass_ik/pages/suggestion.dart';
+import 'package:yorglass_ik/pages/task_list_page.dart';
 import 'package:yorglass_ik/services/authentication-service.dart';
 import 'package:yorglass_ik/widgets/custom_drawer/custom_drawer.dart';
 
@@ -34,10 +35,10 @@ class _HomePageState extends State<HomePage> {
             color: Colors.white,
             boxShadow: [
               BoxShadow(
-                spreadRadius: 20,
+                spreadRadius: 40,
                 color: Color(0xffD1F7FB),
                 offset: new Offset(0, 0),
-                blurRadius: 20,
+                blurRadius: 40,
               ),
             ],
           ),
@@ -59,16 +60,19 @@ class _HomePageState extends State<HomePage> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
                     Container(
-                      height: size.width / 4,
-                      width: size.width / 4,
+                      height: size.width / 3,
+                      width: size.width / 3,
                       decoration: BoxDecoration(
                         border: Border.all(color: Colors.white, width: 2.0),
-                        borderRadius: new BorderRadius.all(new Radius.circular(60)),
+                        borderRadius:
+                            new BorderRadius.all(new Radius.circular(90)),
                         image: DecorationImage(
-                          fit: BoxFit.fill,
-                          image: AuthenticationService.verifiedUser.image == null
+                          fit: BoxFit.cover,
+                          image: AuthenticationService.verifiedUser.image ==
+                                  null
                               ? AssetImage("assets/default-profile.png")
-                              : MemoryImage(base64.decode(AuthenticationService.verifiedUser.image)),
+                              : MemoryImage(base64.decode(
+                                  AuthenticationService.verifiedUser.image)),
                         ),
                       ),
                     ),
@@ -76,13 +80,26 @@ class _HomePageState extends State<HomePage> {
                     Text(
                       AuthenticationService.verifiedUser.name,
                       style: TextStyle(
-                        fontSize: 24,
+                        fontSize: 30,
+                        color: Theme.of(context).accentColor,
+                        shadows: <Shadow>[
+                          Shadow(
+                            blurRadius: 4.0,
+                            color: Color(0xFFE0ECF4),
+                          )
+                        ],
                       ),
                     ),
                     SizedBox(height: 16),
-                    Text(
-                      AuthenticationService.verifiedUser.branchName[0].toUpperCase() + AuthenticationService.verifiedUser.branchName.substring(1).toLowerCase() + ' İşletmesi',
-                      style: TextStyle(fontSize: 18, color: Color(0xff4BADBB)),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        AuthenticationService.verifiedUser.branchName,
+                        style: TextStyle(
+                            fontSize: 20,
+                            color: Color(0xff4BADBB).withOpacity(.6)),
+                            textAlign: TextAlign.center,
+                      ),
                     ),
                     SizedBox(
                       height: 20,
@@ -94,8 +111,17 @@ class _HomePageState extends State<HomePage> {
                         MenuButton(
                           text: "Görevlerim",
                           icon: Icons.assistant_photo,
-                          count: 3,
-                          click: () => AuthenticationService.instance.signOut(),
+                          count: AuthenticationService.verifiedUser.taskCount,
+                          click: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (BuildContext context) {
+                                return TaskListPage(
+                                  user: AuthenticationService.verifiedUser,
+                                );
+                              },
+                            ),
+                          ),
                         ),
                         MenuButton(
                             text: "Önerilerim",
@@ -106,21 +132,24 @@ class _HomePageState extends State<HomePage> {
                                     builder: (context) => SuggestionPage(),
                                   ),
                                 )),
-                        MenuButton(
-                          text: "KVKK Onayı",
-                          icon: Icons.insert_drive_file,
-                          click: () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => SuggestionPage(),
-                            ),
-                          ),
-                        ),
+                        // MenuButton(
+                        //   text: "KVKK Onayı",
+                        //   icon: Icons.insert_drive_file,
+                        //   click: () => Navigator.push(
+                        //     context,
+                        //     MaterialPageRoute(
+                        //       builder: (context) => SuggestionPage(),
+                        //     ),
+                        //   ),
+                        // ),
                       ],
                     )
                   ],
                 ),
-                MenuButton(text: "Çıkış", icon: Icons.power_settings_new, click: () => AuthenticationService.instance.signOut()),
+                MenuButton(
+                    text: "Çıkış",
+                    icon: Icons.power_settings_new,
+                    click: () => AuthenticationService.instance.signOut()),
               ],
             ),
           ),
@@ -135,6 +164,7 @@ class MenuButton extends StatelessWidget {
   final IconData icon;
   final Function click;
   final int count;
+
   const MenuButton({
     this.text,
     this.icon,
@@ -166,6 +196,12 @@ class MenuButton extends StatelessWidget {
                     text,
                     style: TextStyle(
                       fontSize: 20,
+                      shadows: <Shadow>[
+                        Shadow(
+                          blurRadius: 4.0,
+                          color: Color(0xFFE0ECF4),
+                        )
+                      ],
                     ),
                   ),
                 )
@@ -176,13 +212,13 @@ class MenuButton extends StatelessWidget {
         if (count != null)
           Positioned(
             right: 50,
-            top: 10,
+            top: 5,
             child: Container(
               width: 22,
               height: 22,
               padding: EdgeInsets.all(3),
               decoration: BoxDecoration(
-                color: Colors.red,
+                color: Color(0xFFF90A60),
                 borderRadius: BorderRadius.all(
                   Radius.circular(20),
                 ),

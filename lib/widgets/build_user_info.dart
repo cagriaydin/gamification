@@ -7,11 +7,13 @@ import 'package:yorglass_ik/models/user.dart';
 class BuildUserInfo extends StatelessWidget {
   const BuildUserInfo({
     Key key,
+    this.isTaskPage = false,
     @required this.user,
     this.radius,
     this.showPercentage = false,
   }) : super(key: key);
 
+  final bool isTaskPage;
   final User user;
   final double radius;
   final bool showPercentage;
@@ -22,10 +24,13 @@ class BuildUserInfo extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
+        SizedBox(
+          height: 36,
+        ),
         Stack(
           children: [
             Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(20.0),
               child: CircleAvatar(
                 radius: radius ?? 70,
                 backgroundImage: user.image == null
@@ -36,10 +41,10 @@ class BuildUserInfo extends StatelessWidget {
             if (showPercentage)
               Positioned.fill(
                 child: CircularPercentIndicator(
-                  radius: (radius + 70) ?? 160.0,
+                  radius: (radius + 80) ?? 160.0,
                   lineWidth: 10.0,
                   animation: true,
-                  percent: (user.percentage ?? 0)* 1/100,
+                  percent: (user.percentage ?? 0) * 1 / 100,
                   circularStrokeCap: CircularStrokeCap.round,
                   backgroundColor: Colors.white,
                   progressColor: Color(0xff2DB3C1),
@@ -52,28 +57,37 @@ class BuildUserInfo extends StatelessWidget {
           user.name,
           textAlign: TextAlign.center,
           style: TextStyle(
-            color: Color(0xff26315F),
-            fontWeight: FontWeight.w500,
-          ),
+              color: Color(0xff26315F),
+              fontWeight: FontWeight.w500,
+              fontSize: 24),
           overflow: TextOverflow.ellipsis,
+        ),
+        SizedBox(
+          height: 7,
         ),
         Row(
           children: [
             Image.asset(
-              "assets/blue_pin.png",
-              scale: 4,
+              isTaskPage ? "assets/darkblue_pin.png" : "assets/blue_pin.png",
+              scale: isTaskPage ? 5 : 4,
             ),
             SizedBox(
-              height: 8,
+              width: 8,
             ),
-            Text(
-              user.branchName,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Color(0xff3FC1C9),
-                fontWeight: FontWeight.w300,
+            Tooltip(
+              message: user.branchName,
+              child: Text(
+                user.branchName.length > 20
+                    ? user.branchName.substring(0, 20) + '...'
+                    : user.branchName,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: isTaskPage ? 15 : 18,
+                  fontWeight: isTaskPage ? FontWeight.w200 : FontWeight.w400,
+                  color: isTaskPage ? Color(0xFF26315F) : Color(0xff4BADBB).withOpacity(.6),
+                ),
+                overflow: TextOverflow.ellipsis,
               ),
-              overflow: TextOverflow.ellipsis,
             ),
           ],
         )

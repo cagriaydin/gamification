@@ -5,6 +5,7 @@ import 'package:yorglass_ik/enums/authentication-enum.dart';
 import 'package:yorglass_ik/enums/verification-status-enum.dart';
 import 'package:yorglass_ik/models/authentication-status.dart';
 import 'package:yorglass_ik/models/user.dart';
+import 'package:yorglass_ik/repositories/task-repository.dart';
 import 'package:yorglass_ik/repositories/user_repository.dart';
 
 class AuthenticationService {
@@ -12,8 +13,7 @@ class AuthenticationService {
 
   AuthenticationService._privateConstructor();
 
-  static final AuthenticationService _instance =
-      AuthenticationService._privateConstructor();
+  static final AuthenticationService _instance = AuthenticationService._privateConstructor();
 
   static AuthenticationService get instance => _instance;
 
@@ -31,6 +31,7 @@ class AuthenticationService {
     } else {
       verifiedUser = user;
     }
+    await TaskRepository.instance.updateUserInfo();
     return user;
   }
 
@@ -61,10 +62,8 @@ class AuthenticationService {
     }
   }
 
-  Future<VerificationStatusEnum> signInWithOTP(
-      String smsCode, String verId) async {
-    AuthCredential _authCredential = PhoneAuthProvider.getCredential(
-        verificationId: verId, smsCode: smsCode);
+  Future<VerificationStatusEnum> signInWithOTP(String smsCode, String verId) async {
+    AuthCredential _authCredential = PhoneAuthProvider.getCredential(verificationId: verId, smsCode: smsCode);
     VerificationStatusEnum status = await signIn(_authCredential);
     return status;
   }
@@ -73,31 +72,22 @@ class AuthenticationService {
     await firebaseAuthInstance.signOut();
   }
 
-  verifyPhone(String phoneNo, BuildContext context,
-      Function callback(AuthenticationStatus authenticationStatus)) async {
+  verifyPhone(String phoneNo, BuildContext context, Function callback(AuthenticationStatus authenticationStatus)) async {
     AuthenticationStatus status;
     final PhoneVerificationCompleted verified = (AuthCredential auth) {
-      status =
-          AuthenticationStatus(authenticationEnum: AuthenticationEnum.success);
+      status = AuthenticationStatus(authenticationEnum: AuthenticationEnum.success);
       callback(status);
     };
-    final PhoneVerificationFailed verificationFailed =
-        (AuthException authException) {
-      status = AuthenticationStatus(
-          authenticationEnum: AuthenticationEnum.fail,
-          exceptionCode: authException.code);
+    final PhoneVerificationFailed verificationFailed = (AuthException authException) {
+      status = AuthenticationStatus(authenticationEnum: AuthenticationEnum.fail, exceptionCode: authException.code);
       callback(status);
     };
     final PhoneCodeSent smsSent = (String verId, [int forceResend]) {
-      status = AuthenticationStatus(
-          authenticationEnum: AuthenticationEnum.smsSent,
-          verificationId: verId);
+      status = AuthenticationStatus(authenticationEnum: AuthenticationEnum.smsSent, verificationId: verId);
       callback(status);
     };
     final PhoneCodeAutoRetrievalTimeout autoTimeout = (String verId) {
-      status = AuthenticationStatus(
-          authenticationEnum: AuthenticationEnum.timeout,
-          verificationId: verId);
+      status = AuthenticationStatus(authenticationEnum: AuthenticationEnum.timeout, verificationId: verId);
       callback(status);
     };
 

@@ -5,7 +5,6 @@ import 'package:yorglass_ik/repositories/feed-repository.dart';
 import 'package:yorglass_ik/services/authentication-service.dart';
 import 'package:yorglass_ik/widgets/feed-widget.dart';
 import 'package:yorglass_ik/models/content_option.dart';
-import 'package:yorglass_ik/widgets/content_selector.dart';
 
 class FeedPage extends StatefulWidget {
   final Function menuFunction;
@@ -31,7 +30,10 @@ class _FeedPageState extends State<FeedPage> {
               selectedId = element.id;
             }
             _options.add(
-              ContentOption(title: element.title, isActive: types.indexOf(element) == 0, count: value.where((e) => e.itemType == element.id).length),
+              ContentOption(
+                  title: element.title,
+                  isActive: types.indexOf(element) == 0,
+                  count: value.where((e) => e.itemType == element.id).length),
             );
           });
         });
@@ -64,7 +66,8 @@ class _FeedPageState extends State<FeedPage> {
             padding: const EdgeInsets.only(right: 20),
             child: Icon(
               Icons.search,
-              color: Theme.of(context).primaryColor,
+              // NEXT RELEASE
+              color: Theme.of(context).primaryColor.withOpacity(0),
               size: 30,
             ),
           ),
@@ -74,32 +77,44 @@ class _FeedPageState extends State<FeedPage> {
         padding: const EdgeInsets.only(top: 16),
         child: Column(
           children: <Widget>[
-            Flexible(
-              child: ContentSelector(
-                onChange: (ContentOption currentContentOption) {
-                  setState(() => selectedId = feedTypes.firstWhere((element) => element.title == currentContentOption.title).id);
-                },
-                options: _options,
-              ),
-            ),
+            // NEXT RELEASE
+
+            // Flexible(
+            //   child: ContentSelector(
+            //     onChange: (ContentOption currentContentOption) {
+            //       setState(() => selectedId = feedTypes
+            //           .firstWhere((element) =>
+            //               element.title == currentContentOption.title)
+            //           .id);
+            //     },
+            //     options: _options,
+            //   ),
+            // ),
             Expanded(
               flex: 10,
-              child: ListView(
-                children: feedItemList != null
-                    ? feedItemList
-                        .where((element) => element.itemType == selectedId)
-                        .map((feedItem) => FeedContent(
-                              feedItem: feedItem,
-                              isLiked: AuthenticationService.verifiedUser.likedFeeds.contains(feedItem.id),
-                              deleteItem: () {
-                                setState(() {
-                                  feedItemList.remove(feedItem);
-                                });
-                              },
-                            ))
-                        .toList()
-                    : [],
-              ),
+              child: feedItemList != null
+                  ? ListView(
+                      children: feedItemList
+//                          .where((element) => element.itemType == selectedId)
+                          .map((feedItem) => Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: FeedContent(
+                                  feedItem: feedItem,
+                                  isLiked: AuthenticationService
+                                      .verifiedUser.likedFeeds
+                                      .contains(feedItem.id),
+                                  deleteItem: () {
+                                    setState(() {
+                                      feedItemList.remove(feedItem);
+                                    });
+                                  },
+                                ),
+                          ))
+                          .toList(),
+                    )
+                  : Center(
+                      child: CircularProgressIndicator(),
+                    ),
             ),
           ],
         ),

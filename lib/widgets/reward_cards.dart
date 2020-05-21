@@ -30,12 +30,12 @@ class RewardCards extends StatelessWidget {
       );
     }
 
-    return GestureDetector(
+    final child = GestureDetector(
       onTap: () => pushRewardsPage(context),
       child: Stack(
         children: [
           Positioned(
-            top: cardPadding + 30,
+            top: cardPadding + 40,
             left: cardPadding,
             child: Transform.scale(
               scale: 0.8,
@@ -43,7 +43,7 @@ class RewardCards extends StatelessWidget {
                 width: width,
                 height: width,
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(8)),
+                  borderRadius: BorderRadius.all(Radius.circular(5)),
                   gradient: getGradient(
                       firstColor: Color(0xffA7C9CC),
                       lastColor: Color(0xffCFD4D6)),
@@ -52,7 +52,7 @@ class RewardCards extends StatelessWidget {
             ),
           ),
           Positioned(
-            top: cardPadding + 16,
+            top: cardPadding + 20,
             left: cardPadding,
             child: Transform.scale(
               scale: 0.9,
@@ -92,7 +92,7 @@ class RewardCards extends StatelessWidget {
                     FlagAvatar(
                       name: "",
                       point: reward.point,
-                      imageUrl: reward.image,
+                      imageUrl: reward.imageId,
                     ),
                     Positioned(
                       child: Column(
@@ -102,11 +102,12 @@ class RewardCards extends StatelessWidget {
                             reward.likeCount.toString(),
                             style: TextStyle(
                               color: Colors.white,
+                              fontSize: 15
                             ),
                           )
                         ],
                       ),
-                      bottom: 16,
+                      bottom: 5,
                       right: 8,
                     ),
                   ],
@@ -118,6 +119,14 @@ class RewardCards extends StatelessWidget {
         ],
       ),
     );
+
+    if (size.height < 600) {
+      return Transform.scale(
+        scale: .9,
+        child: child,
+      );
+    } else
+      return child;
   }
 
   Future pushRewardsPage(BuildContext context) {

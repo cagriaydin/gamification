@@ -20,8 +20,6 @@ class CustomDrawer extends StatefulWidget {
 
 class CustomDrawerState extends State<CustomDrawer>
     with SingleTickerProviderStateMixin {
-  bool isOpen = true;
-
   AnimationController animationController;
 
   double maxSlide;
@@ -79,8 +77,12 @@ class CustomDrawerState extends State<CustomDrawer>
                   alignment: Alignment.centerLeft,
                   child: GestureDetector(
                     behavior: HitTestBehavior.opaque,
-                    onTap: () => !isOpen ? closeDrawer() : null,
-                    child: widget.bodyBuilder,
+                    onTap: () =>
+                        !animationController.isDismissed ? closeDrawer() : null,
+                    child: IgnorePointer(
+                      ignoring: !animationController.isDismissed,
+                      child: widget.bodyBuilder,
+                    ),
                   ),
                 ),
               ],
@@ -93,24 +95,25 @@ class CustomDrawerState extends State<CustomDrawer>
   }
 
   toggle() {
-    if (animationController.isDismissed) {
-      isOpen = false;
-    } else {
-      isOpen = true;
-    }
-    return animationController.isDismissed
+    animationController.isDismissed
         ? animationController.forward()
         : animationController.reverse();
   }
 
   void openDrawer() {
-    isOpen = true;
     animationController.forward();
   }
 
   void closeDrawer() {
-    isOpen = false;
     animationController.reverse();
+  }
+
+  void setStateIfMounted(Function function) {
+    if (mounted) {
+      setState(() {
+        function();
+      });
+    }
   }
 
   void onHorizontalDragStart(DragStartDetails details) {
@@ -118,7 +121,7 @@ class CustomDrawerState extends State<CustomDrawer>
 //    print('dy ' + details.globalPosition.dy.toString());
 
     bool isDragOpenFromLeft = animationController.isDismissed &&
-        details.globalPosition.dx < Offset.zero.dx + 30;
+        details.globalPosition.dx < Offset.zero.dx + 50;
     bool isDragFromRight = animationController.isCompleted &&
         details.globalPosition.dx > Offset.zero.dx + maxSlide;
 

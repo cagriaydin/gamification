@@ -19,16 +19,17 @@ class BlurBackgroundImage extends StatelessWidget {
       fit: StackFit.expand,
       children: [
         Opacity(
-            opacity: .3,
-            child: FittedBox(
-              alignment: Alignment.topCenter,
-              fit: BoxFit.fitWidth,
-              child: imageUrl == null
-                  ? Image.asset("assets/default-profile.png")
-                  : Image.memory(
-                      base64.decode(imageUrl),
-                    ),
-            )),
+          opacity: .3,
+          child: imageUrl == null
+              ? Image.asset(
+                  "assets/default-profile.png",
+                  fit: BoxFit.fitWidth,
+                )
+              : Image.memory(
+                  base64.decode(imageUrl),
+                  fit: BoxFit.fitWidth,
+                ),
+        ),
         BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
           child: Container(
@@ -37,9 +38,10 @@ class BlurBackgroundImage extends StatelessWidget {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  Colors.white.withOpacity(.3),
                   Colors.white.withOpacity(.1),
                   Colors.white.withOpacity(.3),
+                  Colors.white.withOpacity(.5),
+                  Colors.white,
                 ],
               ),
             ),

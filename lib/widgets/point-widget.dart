@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:yorglass_ik/widgets/gradient_text.dart';
 
 class PointBuilder extends StatelessWidget {
   final String point;
@@ -12,25 +13,16 @@ class PointBuilder extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        Text(
+        GradientText(
           "+ " + point,
-          style: TextStyle(
-            shadows: <Shadow>[
-              Shadow(
-                blurRadius: 10.0,
-                color: color,
-              )
-            ],
-            fontWeight: FontWeight.w500,
-            fontSize: 40,
-          ),
+          fontSize: 40,
         ),
         Text(
           "puan",
           style: TextStyle(
             shadows: <Shadow>[
               Shadow(
-                blurRadius: 10.0,
+                blurRadius: 20.0,
                 color: color,
               )
             ],

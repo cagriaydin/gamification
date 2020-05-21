@@ -87,16 +87,16 @@ class _MyAppState extends State<MyApp> {
                   backgroundColor: Colors.white70,
                 ),
               ),
-              SizedBox(
-                height: 20,
-              ),
-              Text(
-                "Lütfen bağlantınızı kontrol ediniz...",
-                style: TextStyle(
-                  fontSize: 18,
-                  fontStyle: FontStyle.italic,
-                ),
-              )
+//              SizedBox(
+//                height: 20,
+//              ),
+//              Text(
+//                "Lütfen bağlantınızı kontrol ediniz...",
+//                style: TextStyle(
+//                  fontSize: 18,
+//                  fontStyle: FontStyle.italic,
+//                ),
+//              )
             ],
           );
   }

@@ -11,25 +11,21 @@ String branchLeaderBoardToJson(BranchLeaderBoard data) =>
     json.encode(data.toJson());
 
 class BranchLeaderBoard {
-  String id;
   String branchId;
   int point;
 
   BranchLeaderBoard({
-    this.id,
     this.branchId,
     this.point,
   });
 
   factory BranchLeaderBoard.fromJson(Map<String, dynamic> json) =>
       BranchLeaderBoard(
-        id: json["id"],
         branchId: json["branchId"],
         point: json["point"],
       );
 
   Map<String, dynamic> toJson() => {
-        "id": id,
         "branchId": branchId,
         "point": point,
       };
