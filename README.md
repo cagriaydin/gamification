@@ -14,7 +14,7 @@ First change `assets/app_icon.png` than run following command
     flutter pub run flutter_launcher_icons:main
 
 ## Changing Splash icon
-First change `assets/network_icon.png` than run following command
+First change `assets/splash_icon.png` than run following command
     
     flutter clean
 
