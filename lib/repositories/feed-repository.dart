@@ -11,7 +11,9 @@ import 'package:yorglass_ik/services/db-connection.dart';
 class FeedRepository {
   static final FeedRepository _instance = FeedRepository._privateConstructor();
 
-  FeedRepository._privateConstructor();
+  FeedRepository._privateConstructor() {
+    getFeed();
+  }
 
   static FeedRepository get instance => _instance;
 

@@ -121,16 +121,16 @@ class FeedContent extends StatelessWidget {
                     ),
                   ),
                 ),
-                Positioned(
-                  right: 0,
-                  child: IconButton(
-                    color: Colors.white,
-                    icon: Icon(Icons.close),
-                    onPressed: () {
-                      FeedRepository.instance.deleteFeed(feedItem.id).then((value) => deleteItem());
-                    },
-                  ),
-                ),
+                // Positioned(
+                //   right: 0,
+                //   child: IconButton(
+                //     color: Colors.white,
+                //     icon: Icon(Icons.close),
+                //     onPressed: () {
+                //       FeedRepository.instance.deleteFeed(feedItem.id).then((value) => deleteItem());
+                //     },
+                //   ),
+                // ),
                 LikeWidget(feedItem: feedItem)
               ],
             ),

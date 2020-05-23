@@ -9,7 +9,6 @@ class FeedPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    FeedRepository.instance.getFeed();
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
