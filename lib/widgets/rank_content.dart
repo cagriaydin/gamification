@@ -62,7 +62,6 @@ class _RankContentState extends State<RankContent> {
                     padding: const EdgeInsets.all(2.0),
                     child: ImageWidget(
                       id: widget.image,
-                      isBoardItem: true,
                     )),
               ),
             ),

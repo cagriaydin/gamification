@@ -14,6 +14,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:yorglass_ik/helpers/popup_helper.dart';
 import 'package:yorglass_ik/models/user-task.dart';
 import 'package:yorglass_ik/models/user.dart';
+import 'package:yorglass_ik/repositories/image-repository.dart';
 import 'package:yorglass_ik/repositories/reward-repository.dart';
 import 'package:yorglass_ik/repositories/task-repository.dart';
 import 'package:yorglass_ik/services/authentication-service.dart';
@@ -623,9 +624,11 @@ class _TaskListBuilderState extends State<TaskListBuilder>
     super.initState();
   }
 
-  void decodeImage() {
+  Future<void> decodeImage() async {
     try {
-      decodedImage = base64.decode(AuthenticationService.verifiedUser.image);
+      var image = await ImageRepository.instance
+          .getImage64(AuthenticationService.verifiedUser.image);
+      decodedImage = base64.decode(image);
     } catch (e) {
       print(e);
     }
@@ -741,7 +744,7 @@ class _TaskListBuilderState extends State<TaskListBuilder>
     _debounce = Timer(const Duration(milliseconds: 1000), () async {
       final box = lastPlace.currentContext.findRenderObject() as RenderBox;
       initialPos = box.localToGlobal(Offset.zero);
-      animateToIndex(position);
+//      animateToIndex(position);
     });
   }
 
