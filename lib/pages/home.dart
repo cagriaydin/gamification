@@ -87,23 +87,6 @@ class _HomePageState extends State<HomePage> {
                         child: Text(
                           AuthenticationService.verifiedUser.branchName,
                           style: TextStyle(
-                            fontSize: 30,
-                            color: Theme.of(context).accentColor,
-                            shadows: <Shadow>[
-                              Shadow(
-                                blurRadius: 4.0,
-                                color: Color(0xFFE0ECF4),
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 16),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          AuthenticationService.verifiedUser.branchName,
-                          style: TextStyle(
                               fontSize: 20,
                               color: Color(0xff4BADBB).withOpacity(.6)),
                           textAlign: TextAlign.center,
