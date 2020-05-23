@@ -91,7 +91,7 @@ class RewardCards extends StatelessWidget {
                   children: [
                     Center(
                       child: FlagAvatar(
-                        radius: 40,
+                        radius: 25,
                         name: "",
                         point: reward.point,
                         imageId: reward.imageId,
