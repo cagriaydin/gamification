@@ -7,6 +7,7 @@ import 'package:yorglass_ik/models/reward.dart';
 import 'package:yorglass_ik/models/user.dart';
 import 'package:yorglass_ik/pages/leader_board_page.dart';
 import 'package:yorglass_ik/pages/rewards_page.dart';
+import 'package:yorglass_ik/repositories/branch_repository.dart';
 import 'package:yorglass_ik/repositories/user_repository.dart';
 import 'package:yorglass_ik/widgets/blur_background_image.dart';
 import 'package:yorglass_ik/widgets/build_user_info.dart';
@@ -156,6 +157,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                           context,
                                           MaterialPageRoute(
                                             builder: (BuildContext context) {
+                                              BranchRepository.instance;
                                               List<LeaderBoardItem> newList =
                                                   snapshot.data
                                                       .map((e) =>
@@ -210,6 +212,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                                   MaterialPageRoute(
                                                     builder:
                                                         (BuildContext context) {
+                                                      BranchRepository.instance;
                                                       List<LeaderBoardItem>
                                                           newList = snapshot
                                                               .data
