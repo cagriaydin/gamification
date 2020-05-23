@@ -6,6 +6,7 @@ import 'package:yorglass_ik/pages/suggestion.dart';
 import 'package:yorglass_ik/pages/task_list_page.dart';
 import 'package:yorglass_ik/services/authentication-service.dart';
 import 'package:yorglass_ik/widgets/custom_drawer/custom_drawer.dart';
+import 'package:yorglass_ik/widgets/image_widget.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -62,19 +63,7 @@ class _HomePageState extends State<HomePage> {
                     Container(
                       height: size.width / 3,
                       width: size.width / 3,
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.white, width: 2.0),
-                        borderRadius:
-                            new BorderRadius.all(new Radius.circular(90)),
-                        image: DecorationImage(
-                          fit: BoxFit.cover,
-                          image: AuthenticationService.verifiedUser.image ==
-                                  null
-                              ? AssetImage("assets/default-profile.png")
-                              : MemoryImage(base64.decode(
-                                  AuthenticationService.verifiedUser.image)),
-                        ),
-                      ),
+                      child: ImageWidget(id: AuthenticationService.verifiedUser.image),
                     ),
                     SizedBox(height: 16),
                     Text(

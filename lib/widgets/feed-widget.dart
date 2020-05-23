@@ -53,6 +53,7 @@ class FeedContent extends StatelessWidget {
                     alignment: Alignment.topCenter,
                     child: ImageWidget(
                       id: feedItem.imageId,
+                      borderRadius: BorderRadius.all(Radius.circular(0)),
                     ),
                   ),
                 ),

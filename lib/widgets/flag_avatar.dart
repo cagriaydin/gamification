@@ -1,11 +1,11 @@
-import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:yorglass_ik/widgets/flag_point.dart';
+import 'package:yorglass_ik/widgets/get_circle_avatar.dart';
 
 class FlagAvatar extends StatelessWidget {
-  final String imageUrl;
+  final String imageId;
   final Uint8List image64;
   final int point;
   final int rank;
@@ -14,16 +14,19 @@ class FlagAvatar extends StatelessWidget {
   final Color titleColor;
   final bool split;
 
+  final double radius;
+
   const FlagAvatar(
       {Key key,
-      this.imageUrl,
+      this.imageId,
       this.point,
       this.rank,
       this.name,
       this.image64,
       this.titleColor,
       this.branchName,
-      this.split = true})
+      this.split = true,
+      this.radius})
       : super(key: key);
 
   @override
@@ -101,9 +104,9 @@ class FlagAvatar extends StatelessWidget {
                           BorderRadius.all(Radius.circular(getRadius(size))),
                       child: Padding(
                         padding: const EdgeInsets.all(3.0),
-                        child: CircleAvatar(
-                          radius: getRadius(size),
-                          backgroundImage: backgroundImage(),
+                        child: GetCircleAvatar(
+                          radius: radius ?? getRadius(size),
+                          imageId: imageId,
                         ),
                       ),
                     ),
@@ -161,21 +164,21 @@ class FlagAvatar extends StatelessWidget {
     return EdgeInsets.fromLTRB(8, 8, 8, 64);
   }
 
-  Object backgroundImage() {
-    try {
-      return imageUrl == null
-          ? (image64 == null
-              ? AssetImage("assets/default-profile.png")
-              : MemoryImage(image64))
-          : MemoryImage(base64.decode(imageUrl));
-    } catch (e) {
-      print(e);
-      return AssetImage("assets/default-profile.png");
-    }
-  }
+//  Object backgroundImage() {
+//    try {
+//      return imageUrl == null
+//          ? (image64 == null
+//              ? AssetImage("assets/default-profile.png")
+//              : MemoryImage(image64))
+//          : MemoryImage(base64.decode(imageUrl));
+//    } catch (e) {
+//      print(e);
+//      return AssetImage("assets/default-profile.png");
+//    }
+//  }
 
   double getRadius(size) {
-    double currentSize = (size.height < 700 || size.width < 400) ? 45 : 60;
+    double currentSize = (size.height < 700 || size.width < 400) ? 90 : 70;
     if (rank == 1) {
       return currentSize;
     } else if (rank == 2) {

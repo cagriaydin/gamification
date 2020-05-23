@@ -28,6 +28,7 @@ class BlurBackgroundImage extends StatelessWidget {
               : Image.memory(
                   base64.decode(imageUrl),
                   fit: BoxFit.fitWidth,
+                  gaplessPlayback: true,
                 ),
         ),
         BackdropFilter(

@@ -89,10 +89,13 @@ class RewardCards extends StatelessWidget {
                 backgroundChild: Stack(
                   alignment: Alignment.center,
                   children: [
-                    FlagAvatar(
-                      name: "",
-                      point: reward.point,
-                      imageUrl: reward.imageId,
+                    Center(
+                      child: FlagAvatar(
+                        radius: 40,
+                        name: "",
+                        point: reward.point,
+                        imageId: reward.imageId,
+                      ),
                     ),
                     Positioned(
                       child: Column(
