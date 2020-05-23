@@ -26,16 +26,21 @@ class CustomDrawerState extends State<CustomDrawer>
 
   bool _canBeDragged;
 
+  CurvedAnimation curved;
+
   @override
   void initState() {
     animationController =
-        AnimationController(vsync: this, duration: Duration(milliseconds: 400));
+        AnimationController(vsync: this, duration: Duration(milliseconds: 200));
 //    animationController.addListener(() {
 //      /// Since it is using GlobalKey This trigger is needed.
 //      setState(() {});
 //    });
-//    Animation curved =
-//        CurvedAnimation(parent: animationController, curve: Curves.easeInCubic);
+    curved = CurvedAnimation(
+      parent: animationController,
+      curve: Curves.easeOut,
+      reverseCurve: Curves.easeIn,
+    );
 
     super.initState();
   }
@@ -89,7 +94,7 @@ class CustomDrawerState extends State<CustomDrawer>
               ],
             );
           },
-          animation: animationController,
+          animation: curved,
         ),
       ),
     );

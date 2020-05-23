@@ -35,7 +35,9 @@ class _HomePageState extends State<HomePage> {
               drawerController: drawerController,
             ),
             decoration: BoxDecoration(
-              color: Colors.white,
+                color: Colors.white,
+//                border: Border.all(color: Color(0xffD1F7FB),width: 5)
+                //TODO: as performance improvements remove shodows if needed
               boxShadow: [
                 BoxShadow(
                   spreadRadius: 40,
