@@ -12,9 +12,10 @@ import 'package:yorglass_ik/repositories/user_repository.dart';
 import 'package:yorglass_ik/widgets/blur_background_image.dart';
 import 'package:yorglass_ik/widgets/build_user_info.dart';
 import 'package:yorglass_ik/widgets/content_selector.dart';
-import 'package:yorglass_ik/widgets/gradient_text.dart';
 import 'package:yorglass_ik/widgets/leader_board.dart';
 import 'package:yorglass_ik/widgets/reward_cards.dart';
+import 'package:yorglass_ik/widgets/user_percentage.dart';
+import 'package:yorglass_ik/widgets/user_point.dart';
 
 class ProfilePage extends StatefulWidget {
   final Function menuFunction;
@@ -76,11 +77,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      GradientText(
-                        '%' + (widget.user.percentage ?? 0).toString(),
-                        fontSize: 30,
-                        fontWeight: FontWeight.w500,
-                      ),
+                      UserPercentage(),
                       BuildUserInfo(
                         showPercentage: true,
                         user: widget.user,
@@ -88,20 +85,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                       FittedBox(
                         fit: BoxFit.fitWidth,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            GradientText(
-                              (widget.user.point ?? 0).toString(),
-                              fontWeight: FontWeight.w500,
-                            ),
-                            Text(
-                              'puan',
-                              style: TextStyle(
-                                  fontSize: 25, fontWeight: FontWeight.w300),
-                            ),
-                          ],
-                        ),
+                        child: UserPoint(),
                       ),
                     ],
                   ),
@@ -218,7 +202,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                                               .data
                                                               .map((e) =>
                                                                   LeaderBoardItem(
-                                                                    imageId: e.image,
+                                                                    imageId:
+                                                                        e.image,
                                                                     point:
                                                                         e.point,
                                                                     name:

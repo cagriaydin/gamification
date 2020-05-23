@@ -11,15 +11,17 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:provider/provider.dart';
 import 'package:yorglass_ik/helpers/popup_helper.dart';
 import 'package:yorglass_ik/models/user-task.dart';
 import 'package:yorglass_ik/models/user.dart';
 import 'package:yorglass_ik/repositories/image-repository.dart';
-import 'package:yorglass_ik/repositories/reward-repository.dart';
 import 'package:yorglass_ik/repositories/task-repository.dart';
 import 'package:yorglass_ik/services/authentication-service.dart';
 import 'package:yorglass_ik/widgets/build_user_info.dart';
 import 'package:yorglass_ik/widgets/gradient_text.dart';
+import 'package:yorglass_ik/widgets/user_percentage.dart';
+import 'package:yorglass_ik/widgets/user_point.dart';
 
 class TaskListPage extends StatefulWidget {
   final User user;
@@ -40,11 +42,8 @@ class _TaskListPageState extends State<TaskListPage> {
   ValueNotifier<CrossFadeState> crossFade =
       ValueNotifier(CrossFadeState.showFirst);
 
-  var getActivePointFuture;
-
   @override
   void initState() {
-    getActivePointFuture = RewardRepository.instance.getActivePoint();
     controller.addListener(scrollControllerListener);
     TaskRepository.instance.getUserTasks();
     super.initState();
@@ -139,30 +138,7 @@ class _TaskListPageState extends State<TaskListPage> {
                           blurRadius: 4,
                           spreadRadius: 2)
                     ]),
-                child: FutureBuilder(
-                  future: getActivePointFuture,
-                  builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
-                    if (snapshot.hasData || snapshot.hasError) {
-                      return Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          GradientText(
-                            (widget.user.point ?? 0).toString(),
-                            fontWeight: FontWeight.w500,
-                            fontSize: 40,
-                          ),
-                          GradientText(
-                            'puan',
-                            fontWeight: FontWeight.w300,
-                            fontSize: 25,
-                          ),
-                        ],
-                      );
-                    } else {
-                      return Center(child: CircularProgressIndicator());
-                    }
-                  },
-                ),
+                child: UserPoint(),
               ),
             ),
             firstChild: Container(
@@ -176,22 +152,7 @@ class _TaskListPageState extends State<TaskListPage> {
                     children: [
                       Padding(
                         padding: const EdgeInsets.only(top: 90),
-                        child: Row(
-                          children: [
-                            GradientText(
-                              '%',
-                              fontWeight: FontWeight.w300,
-                              fontSize: 30,
-                            ),
-                            SizedBox(
-                              width: 10,
-                            ),
-                            GradientText(
-                              (widget.user.percentage ?? 0).toString(),
-                              fontSize: 30,
-                            ),
-                          ],
-                        ),
+                        child: UserPercentage(),
                       ),
                       BuildUserInfo(
                         user: widget.user,
@@ -199,31 +160,7 @@ class _TaskListPageState extends State<TaskListPage> {
                       ),
                       Padding(
                         padding: const EdgeInsets.only(bottom: 90.0),
-                        child: FutureBuilder(
-                          future: getActivePointFuture,
-                          builder: (BuildContext context,
-                              AsyncSnapshot<int> snapshot) {
-                            if (snapshot.hasData || snapshot.hasError) {
-                              return Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  GradientText(
-                                    (widget.user.point ?? 0).toString(),
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 40,
-                                  ),
-                                  GradientText(
-                                    'puan',
-                                    fontWeight: FontWeight.w300,
-                                    fontSize: 25,
-                                  ),
-                                ],
-                              );
-                            } else {
-                              return Center(child: CircularProgressIndicator());
-                            }
-                          },
-                        ),
+                        child: UserPoint(),
                       )
                     ],
                   ),
@@ -273,15 +210,8 @@ class _TaskListPageState extends State<TaskListPage> {
   ) {
     return BuildTask(
       userTask: userTasks.elementAt(index),
-      changePointCallback: changePointCallback,
       isLeft: index % 2 != 0,
     );
-  }
-
-  changePointCallback() {
-    setState(() {
-      getActivePointFuture = RewardRepository.instance.getActivePoint();
-    });
   }
 }
 
@@ -326,7 +256,7 @@ class _BuildTaskState extends State<BuildTask> {
           left: widget.isLeft ? 16 : 0, right: widget.isLeft ? 0 : 16),
       child: GestureDetector(
         onDoubleTap: () => TaskRepository.instance.canUpdate(widget.userTask)
-            ? stepComplete()
+            ? stepComplete(context)
             : cantComplete(),
         behavior: HitTestBehavior.opaque,
         child: Center(
@@ -485,16 +415,17 @@ class _BuildTaskState extends State<BuildTask> {
     }
   }
 
-  Future<void> stepComplete() async {
+  Future<void> stepComplete(BuildContext context) async {
     if (TaskRepository.instance.canUpdate(widget.userTask)) {
       await TaskRepository.instance.updateUserTask(widget.userTask);
       if (widget.userTask.complete == 1) {
         confettiController.play();
+        context.read<User>().updatePoint();
 //        await Future.delayed(Duration(milliseconds: 300));
-        if (widget.changePointCallback != null) widget.changePointCallback();
+//        if (widget.changePointCallback != null) widget.changePointCallback();
 //        await Future.delayed(Duration(milliseconds: 1000));
 //        confettiController.stop();
-        setState(() {});
+//        setState(() {});
       }
     }
   }

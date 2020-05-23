@@ -2,15 +2,18 @@
 //
 //     final user = userFromJson(jsonString);
 
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:meta/meta.dart';
 import 'dart:convert';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:meta/meta.dart';
+import 'package:yorglass_ik/services/authentication-service.dart';
 
 User userFromJson(String str) => User.fromMap(json.decode(str));
 
 String userToJson(User data) => json.encode(data.toMap());
 
-class User {
+class User extends ChangeNotifier {
   String id;
   String name;
   String branchName;
@@ -88,15 +91,25 @@ class User {
         id: snapshot.data["id"] == null ? null : snapshot.data["id"],
         name: snapshot.data["name"] == null ? null : snapshot.data["name"],
         point: snapshot.data["point"] == null ? null : snapshot.data["point"],
-        percentage: snapshot.data["percentage"] == null ? null : snapshot.data["percentage"],
-        taskCount: snapshot.data["taskCount"] == null ? null : snapshot.data["taskCount"],
-        branchName: snapshot.data["branchName"] == null ? null : snapshot.data["branchName"],
-        branchId: snapshot.data["branchId"] == null ? null : snapshot.data["branchId"],
+        percentage: snapshot.data["percentage"] == null
+            ? null
+            : snapshot.data["percentage"],
+        taskCount: snapshot.data["taskCount"] == null
+            ? null
+            : snapshot.data["taskCount"],
+        branchName: snapshot.data["branchName"] == null
+            ? null
+            : snapshot.data["branchName"],
+        branchId: snapshot.data["branchId"] == null
+            ? null
+            : snapshot.data["branchId"],
         phone: snapshot.data["phone"] == null ? null : snapshot.data["phone"],
         code: snapshot.data["code"] == null ? null : snapshot.data["code"],
         image: snapshot.data["image"] == null ? null : snapshot.data["image"],
-        likedFeeds: List<String>.from(snapshot.data["likedFeeds"].map((x) => x)),
-        deletedFeeds: List<String>.from(snapshot.data["deletedFeeds"].map((x) => x)),
+        likedFeeds:
+            List<String>.from(snapshot.data["likedFeeds"].map((x) => x)),
+        deletedFeeds:
+            List<String>.from(snapshot.data["deletedFeeds"].map((x) => x)),
       );
 
   Map<String, dynamic> toMap() => {
@@ -113,6 +126,15 @@ class User {
         "likedFeeds": List<dynamic>.from(likedFeeds.map((x) => x)),
         "deletedFeeds": List<dynamic>.from(deletedFeeds.map((x) => x)),
       };
+
+  updatePoint() async {
+//    point = await RewardRepository.instance.getActivePoint();
+    var newUser = (await AuthenticationService.instance.verifyUser());
+    this.point = newUser.point;
+    this.percentage = newUser.percentage;
+    this.taskCount = newUser.taskCount;
+    notifyListeners();
+  }
 }
 
 //{

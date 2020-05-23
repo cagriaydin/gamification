@@ -3,8 +3,9 @@ import 'dart:async';
 import 'package:connectivity/connectivity.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:yorglass_ik/models/user.dart';
 import 'package:yorglass_ik/pages/home.dart';
-
 import 'package:yorglass_ik/pages/welcome.dart';
 import 'package:yorglass_ik/services/authentication-service.dart';
 import 'package:yorglass_ik/shared/custom_theme.dart';
@@ -24,11 +25,13 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   bool loggedIn;
   bool hasConnection = false;
+
   @override
   void initState() {
     // AuthenticationService().signOut();
     listenConnection();
-    AuthenticationService.firebaseAuthInstance.onAuthStateChanged.listen((event) {
+    AuthenticationService.firebaseAuthInstance.onAuthStateChanged
+        .listen((event) {
       if (event != null) {
         AuthenticationService.instance.verifyUser().then((user) {
           if (user != null) {
@@ -47,7 +50,8 @@ class _MyAppState extends State<MyApp> {
         });
       }
     });
-    Future.delayed(Duration(seconds: 5)).then((val) => setState(() => loggedIn = loggedIn == null ? false : loggedIn));
+    Future.delayed(Duration(seconds: 5)).then((val) =>
+        setState(() => loggedIn = loggedIn == null ? false : loggedIn));
     super.initState();
   }
 
