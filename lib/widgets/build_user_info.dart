@@ -26,7 +26,7 @@ class BuildUserInfo extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         SizedBox(
-          height: 36,
+          height: size.height < 600 ? 8 : 36,
         ),
         Stack(
           children: [
