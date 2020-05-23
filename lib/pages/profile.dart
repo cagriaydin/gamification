@@ -7,6 +7,7 @@ import 'package:yorglass_ik/models/reward.dart';
 import 'package:yorglass_ik/models/user.dart';
 import 'package:yorglass_ik/pages/leader_board_page.dart';
 import 'package:yorglass_ik/pages/rewards_page.dart';
+import 'package:yorglass_ik/repositories/branch_repository.dart';
 import 'package:yorglass_ik/repositories/user_repository.dart';
 import 'package:yorglass_ik/widgets/blur_background_image.dart';
 import 'package:yorglass_ik/widgets/build_user_info.dart';
@@ -110,10 +111,10 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
           Flexible(
             child: Column(
-              mainAxisSize: MainAxisSize.max,
+              mainAxisSize: MainAxisSize.min,
               children: [
                 Flexible(
-                  flex: size.height < 600 ? 2 : 1,
+                  flex: size.height < 600 ? 3 : 2,
                   child: Padding(
                     padding: size.height < 600
                         ? const EdgeInsets.all(8)
@@ -126,7 +127,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                 ),
                 Expanded(
-                  flex: 5,
+                  flex: 10,
                   child: PageView(
 //                    physics: NeverScrollableScrollPhysics(),
                     onPageChanged: (i) {
@@ -156,6 +157,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                           context,
                                           MaterialPageRoute(
                                             builder: (BuildContext context) {
+                                              BranchRepository.instance;
                                               List<LeaderBoardItem> newList =
                                                   snapshot.data
                                                       .map((e) =>
@@ -210,6 +212,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                                   MaterialPageRoute(
                                                     builder:
                                                         (BuildContext context) {
+                                                      BranchRepository.instance;
                                                       List<LeaderBoardItem>
                                                           newList = snapshot
                                                               .data

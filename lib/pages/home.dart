@@ -50,96 +50,118 @@ class _HomePageState extends State<HomePage> {
           child: Container(
             width: (size.width / 3) * 1.7,
             padding: EdgeInsets.only(top: 50, bottom: 50),
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Column(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    Container(
-                      height: size.width / 3,
-                      width: size.width / 3,
-                      child: ImageWidget(id: AuthenticationService.verifiedUser.image),
-                    ),
-                    SizedBox(height: 16),
-                    Text(
-                      AuthenticationService.verifiedUser.name,
-                      style: TextStyle(
-                        fontSize: 30,
-                        color: Theme.of(context).accentColor,
-                        shadows: <Shadow>[
-                          Shadow(
-                            blurRadius: 4.0,
-                            color: Color(0xFFE0ECF4),
-                          )
-                        ],
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Column(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Container(
+                        height: size.width / 3,
+                        width: size.width / 3,
+                        child: ImageWidget(
+                            id: AuthenticationService.verifiedUser.image),
                       ),
-                    ),
-                    SizedBox(height: 16),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        AuthenticationService.verifiedUser.branchName,
+                      SizedBox(height: 16),
+                      Text(
+                        AuthenticationService.verifiedUser.name,
                         style: TextStyle(
-                            fontSize: 20,
-                            color: Color(0xff4BADBB).withOpacity(.6)),
-                            textAlign: TextAlign.center,
+                          fontSize: 30,
+                          color: Theme.of(context).accentColor,
+                          shadows: <Shadow>[
+                            Shadow(
+                              blurRadius: 4.0,
+                              color: Color(0xFFE0ECF4),
+                            )
+                          ],
+                        ),
                       ),
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Column(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: <Widget>[
-                        MenuButton(
-                          text: "Görevlerim",
-                          icon: Icons.assistant_photo,
-                          count: AuthenticationService.verifiedUser.taskCount,
-                          click: () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (BuildContext context) {
-                                return TaskListPage(
-                                  user: AuthenticationService.verifiedUser,
-                                );
-                              },
-                            ),
+                      SizedBox(height: 16),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          AuthenticationService.verifiedUser.branchName,
+                          style: TextStyle(
+                            fontSize: 30,
+                            color: Theme.of(context).accentColor,
+                            shadows: <Shadow>[
+                              Shadow(
+                                blurRadius: 4.0,
+                                color: Color(0xFFE0ECF4),
+                              )
+                            ],
                           ),
                         ),
-                        MenuButton(
+                      ),
+                      SizedBox(height: 16),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          AuthenticationService.verifiedUser.branchName,
+                          style: TextStyle(
+                              fontSize: 20,
+                              color: Color(0xff4BADBB).withOpacity(.6)),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Column(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          MenuButton(
+                            text: "Görevlerim",
+                            icon: Icons.assistant_photo,
+                            count:
+                                AuthenticationService.verifiedUser.taskCount,
+                            click: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (BuildContext context) {
+                                  return TaskListPage(
+                                    user: AuthenticationService.verifiedUser,
+                                  );
+                                },
+                              ),
+                            ),
+                          ),
+                          MenuButton(
                             text: "Önerilerim",
                             icon: Icons.question_answer,
                             click: () => Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => SuggestionPage(),
-                                  ),
-                                )),
-                        // MenuButton(
-                        //   text: "KVKK Onayı",
-                        //   icon: Icons.insert_drive_file,
-                        //   click: () => Navigator.push(
-                        //     context,
-                        //     MaterialPageRoute(
-                        //       builder: (context) => SuggestionPage(),
-                        //     ),
-                        //   ),
-                        // ),
-                      ],
-                    )
-                  ],
-                ),
-                MenuButton(
-                    text: "Çıkış",
-                    icon: Icons.power_settings_new,
-                    click: () => AuthenticationService.instance.signOut()),
-              ],
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => SuggestionPage(),
+                              ),
+                            ),
+                          ),
+                          // MenuButton(
+                          //   text: "KVKK Onayı",
+                          //   icon: Icons.insert_drive_file,
+                          //   click: () => Navigator.push(
+                          //     context,
+                          //     MaterialPageRoute(
+                          //       builder: (context) => SuggestionPage(),
+                          //     ),
+                          //   ),
+                          // ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  MenuButton(
+                      text: "Çıkış",
+                      icon: Icons.power_settings_new,
+                      click: () => AuthenticationService.instance.signOut()),
+                ],
+              ),
             ),
           ),
         );
@@ -200,7 +222,7 @@ class MenuButton extends StatelessWidget {
         ),
         if (count != null)
           Positioned(
-            right: 50,
+            left: 160,
             top: 5,
             child: Container(
               width: 22,
