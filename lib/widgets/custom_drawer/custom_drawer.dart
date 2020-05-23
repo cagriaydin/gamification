@@ -57,6 +57,7 @@ class CustomDrawerState extends State<CustomDrawer>
       onHorizontalDragEnd: onHorizontalDragEnd,
       child: Scaffold(
         body: AnimatedBuilder(
+          child: widget.bodyBuilder,
           builder: (BuildContext context, Widget child) {
             final slide = maxSlide * animationController.value;
 //            print(animationController.value);
@@ -81,7 +82,7 @@ class CustomDrawerState extends State<CustomDrawer>
                         !animationController.isDismissed ? closeDrawer() : null,
                     child: IgnorePointer(
                       ignoring: !animationController.isDismissed,
-                      child: widget.bodyBuilder,
+                      child: child,
                     ),
                   ),
                 ),
