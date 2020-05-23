@@ -7,6 +7,7 @@ import 'package:yorglass_ik/models/suggestion.dart';
 import 'package:yorglass_ik/repositories/suggestion_repository.dart';
 import 'package:yorglass_ik/services/authentication-service.dart';
 import 'package:yorglass_ik/shared/custom_box_shadow.dart';
+import 'package:yorglass_ik/widgets/get_circle_avatar.dart';
 import 'package:yorglass_ik/widgets/loading_builder.dart';
 import 'package:yorglass_ik/widgets/outcome-button.dart';
 import 'package:yorglass_ik/widgets/point-widget.dart';
@@ -105,19 +106,10 @@ class _SuggestionPageState extends State<SuggestionPage> {
                                         Container(
                                           width: 100,
                                           height: 100,
-                                          child: CircleAvatar(
-                                            backgroundImage: AuthenticationService
-                                                        .verifiedUser.image ==
-                                                    null
-                                                ? AssetImage(
-                                                    "assets/default-profile.png")
-                                                : MemoryImage(
-                                                    base64.decode(
-                                                        AuthenticationService
-                                                            .verifiedUser
-                                                            .image),
-                                                  ),
-                                          ),
+                                          child: GetCircleAvatar(
+                                            imageId:AuthenticationService.verifiedUser.image,
+                                            radius: 40,
+                                          )
                                         ),
                                         SizedBox(height: 10),
                                         Text(
