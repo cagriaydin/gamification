@@ -15,8 +15,6 @@ class ImageRepository {
 
   Future<Image> getImage(String id) async {
     try {
-      print('id : ' + id);
-      print('id contains: ' + storedImage.containsKey(id).toString());
       if (!storedImage.containsKey(id)) {
         Results res =
             await DbConnection.query('SELECT * FROM images WHERE id = ?', [id]);
@@ -32,7 +30,6 @@ class ImageRepository {
           storedImage[data.id] = data;
         }
       }
-      print('storage id : ' + storedImage[id].base64);
       return storedImage[id];
     } catch (e) {
       print(e);

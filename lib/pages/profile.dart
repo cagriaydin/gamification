@@ -178,7 +178,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                           LeaderBoard(
                                             list: snapshot.data
                                                 .map((e) => LeaderBoardItem(
-                                                      imageId: e.id,
+                                                      imageId: e.image,
                                                       point: e.point,
                                                       name: e.name,
                                                     ))

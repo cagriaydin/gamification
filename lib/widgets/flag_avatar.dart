@@ -14,6 +14,8 @@ class FlagAvatar extends StatelessWidget {
   final Color titleColor;
   final bool split;
 
+  final double radius;
+
   const FlagAvatar(
       {Key key,
       this.imageId,
@@ -23,7 +25,8 @@ class FlagAvatar extends StatelessWidget {
       this.image64,
       this.titleColor,
       this.branchName,
-      this.split = true})
+      this.split = true,
+      this.radius})
       : super(key: key);
 
   @override
@@ -101,7 +104,10 @@ class FlagAvatar extends StatelessWidget {
                           BorderRadius.all(Radius.circular(getRadius(size))),
                       child: Padding(
                         padding: const EdgeInsets.all(3.0),
-                        child: GetCircleAvatar(radius: getRadius(size), imageId: imageId,),
+                        child: GetCircleAvatar(
+                          radius: radius ?? getRadius(size),
+                          imageId: imageId,
+                        ),
                       ),
                     ),
                   ),

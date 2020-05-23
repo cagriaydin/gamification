@@ -3,8 +3,6 @@ import 'package:yorglass_ik/models/user.dart';
 import 'package:yorglass_ik/models/user_leader_board.dart';
 import 'package:mysql1/mysql1.dart';
 import 'package:yorglass_ik/repositories/branch_repository.dart';
-import 'package:yorglass_ik/repositories/image-repository.dart';
-import 'package:yorglass_ik/models/image.dart';
 import 'package:yorglass_ik/repositories/task-repository.dart';
 import 'package:yorglass_ik/services/db-connection.dart';
 
