@@ -20,12 +20,13 @@ class BuildUserInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         SizedBox(
-          height: 36,
+          height: size.height < 600 ? 8 : 36,
         ),
         Stack(
           children: [
@@ -84,7 +85,9 @@ class BuildUserInfo extends StatelessWidget {
                 style: TextStyle(
                   fontSize: isTaskPage ? 15 : 18,
                   fontWeight: isTaskPage ? FontWeight.w200 : FontWeight.w400,
-                  color: isTaskPage ? Color(0xFF26315F) : Color(0xff4BADBB).withOpacity(.6),
+                  color: isTaskPage
+                      ? Color(0xFF26315F)
+                      : Color(0xff4BADBB).withOpacity(.6),
                 ),
                 overflow: TextOverflow.ellipsis,
               ),
