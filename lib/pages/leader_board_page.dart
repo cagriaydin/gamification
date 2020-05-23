@@ -1,3 +1,4 @@
+import 'package:fetch_more/fetch_more.dart';
 import 'package:flutter/material.dart';
 import 'package:yorglass_ik/models/branch.dart';
 import 'package:yorglass_ik/models/branch_leader_board.dart';
@@ -39,14 +40,16 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
 
   var future;
 
+  int limit = 10;
+
   @override
   void initState() {
     future = Future.wait([
       BranchRepository.instance.getBoardPointList(),
       BranchRepository.instance.getTopBranchPointList(),
       BranchRepository.instance.getBranchList(),
-      UserRepository.instance.getUserList(limit: 10),
-      UserRepository.instance.getUserPointList(limit: 10),
+      UserRepository.instance.getUserList(limit: limit),
+      UserRepository.instance.getUserPointList(limit: limit),
     ]);
     super.initState();
   }
@@ -200,76 +203,73 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
                                         child: MediaQuery.removePadding(
                                           context: context,
                                           removeTop: true,
-                                          child: ListView.builder(
-                                              controller: scrollController,
-                                              scrollDirection: Axis.vertical,
-                                              itemCount: userLeaderList.length,
-                                              itemBuilder:
-                                                  (BuildContext context,
-                                                      int index) {
-                                                UserLeaderBoard item =
-                                                    userLeaderList
-                                                        .elementAt(index);
-                                                return Padding(
-                                                  padding:
-                                                      const EdgeInsets.fromLTRB(
-                                                          18, 0, 18, 0),
-                                                  child: Container(
-                                                    decoration: item.userId ==
-                                                            AuthenticationService
-                                                                .verifiedUser.id
-                                                        ? BoxDecoration(
-                                                            color: Colors.white,
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        12),
-                                                            boxShadow: <
-                                                                BoxShadow>[
-                                                              BoxShadow(
-                                                                color: Color(
-                                                                    0xFFC2F6FC),
-                                                                spreadRadius: 0,
-                                                                blurRadius: 5,
-                                                                offset: Offset(
-                                                                    0, 4),
-                                                              ),
-                                                            ],
-                                                          )
-                                                        : BoxDecoration(),
-                                                    child: RankContent(
-                                                      image: userList
-                                                          .singleWhere(
-                                                              (element) =>
-                                                                  element.id ==
-                                                                  item.userId)
-                                                          .image,
-                                                      selfContent: item
-                                                              .userId ==
+                                          child: FetchMoreBuilder(
+                                            dataFetcher: dataFetcher,
+                                            itemBuilder: (BuildContext context,
+                                                List<dynamic> list, int index) {
+                                              UserLeaderBoard item =
+                                                  list.elementAt(index);
+                                              return Padding(
+                                                padding:
+                                                    const EdgeInsets.fromLTRB(
+                                                        18, 0, 18, 0),
+                                                child: Container(
+                                                  decoration: item.userId ==
                                                           AuthenticationService
-                                                              .verifiedUser.id,
-                                                      title: userList
-                                                          .singleWhere(
-                                                              (element) =>
-                                                                  element.id ==
-                                                                  item.userId)
-                                                          .name,
-                                                      subTitle: branchList
-                                                          .singleWhere((element) =>
-                                                              element.id ==
-                                                              (userList
-                                                                  .singleWhere((element) =>
-                                                                      element
-                                                                          .id ==
-                                                                      item.userId)
-                                                                  .branchId))
-                                                          .name,
-                                                      rank: index + 1,
-                                                      point: item.point,
-                                                    ),
+                                                              .verifiedUser.id
+                                                      ? BoxDecoration(
+                                                          color: Colors.white,
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(12),
+                                                          boxShadow: <
+                                                              BoxShadow>[
+                                                            BoxShadow(
+                                                              color: Color(
+                                                                  0xFFC2F6FC),
+                                                              spreadRadius: 0,
+                                                              blurRadius: 5,
+                                                              offset:
+                                                                  Offset(0, 4),
+                                                            ),
+                                                          ],
+                                                        )
+                                                      : BoxDecoration(),
+                                                  child: RankContent(
+                                                    image: userList
+                                                        .singleWhere(
+                                                            (element) =>
+                                                                element.id ==
+                                                                item.userId)
+                                                        .image,
+                                                    selfContent: item.userId ==
+                                                        AuthenticationService
+                                                            .verifiedUser.id,
+                                                    title: userList
+                                                        .singleWhere(
+                                                            (element) =>
+                                                                element.id ==
+                                                                item.userId)
+                                                        .name,
+                                                    subTitle: branchList
+                                                        .singleWhere((element) =>
+                                                            element.id ==
+                                                            (userList
+                                                                .singleWhere(
+                                                                    (element) =>
+                                                                        element
+                                                                            .id ==
+                                                                        item.userId)
+                                                                .branchId))
+                                                        .name,
+                                                    rank: index + 1,
+                                                    point: item.point,
                                                   ),
-                                                );
-                                              }),
+                                                ),
+                                              );
+                                            },
+                                            limit: limit,
+                                          ),
                                         ),
                                       )
                                     ],
@@ -421,5 +421,19 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
               duration: Duration(milliseconds: 300),
               curve: Curves.easeOut,
             ));
+  }
+
+  Future<List> dataFetcher(int index, int limit) async {
+    if (index == 0) return userLeaderList;
+    var leaderBoardList = new List<UserLeaderBoard>();
+    userList.addAll(
+      await UserRepository.instance.getUserList(limit: limit, offset: index),
+    );
+
+    leaderBoardList.addAll(
+      await UserRepository.instance
+          .getUserPointList(limit: limit, offset: index),
+    );
+    return leaderBoardList;
   }
 }

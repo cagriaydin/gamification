@@ -30,6 +30,7 @@ dependencies:
   rxdart: ^0.24.1
   mysql1: 0.17.1
   uuid: 2.0.4
+  fetch_more: ^2.0.0
 
 dev_dependencies:
   flutter_test:

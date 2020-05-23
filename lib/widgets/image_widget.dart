@@ -43,7 +43,7 @@ class ImageWidget extends StatelessWidget {
                       ? Image.asset("assets/default-profile.png")
                       : Image.memory(
                           snapshot.data.decodedImage,
-                          fit: BoxFit.fill,
+                          fit: BoxFit.cover,
                           gaplessPlayback: true,
                         ),
                 );
