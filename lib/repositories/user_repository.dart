@@ -14,7 +14,7 @@ class UserRepository {
   static UserRepository get instance => _instance;
 
   Future<List<UserLeaderBoard>> getUserPointList({int limit, int offset}) async {
-    Results res = await DbConnection.query("SELECT * FROM leaderboard where enddate IS NULL ORDER BY point DESC" + (limit != null ? (" LIMIT " + limit.toString()) : "") + (offset != null ? (" OFFSET " + offset.toString()) : ""));
+    Results res = await DbConnection.query("SELECT * FROM leaderboard, user WHERE enddate IS NULL AND user.id = leaderboard.userid ORDER BY point DESC, user.name" + (limit != null ? (" LIMIT " + limit.toString()) : "") + (offset != null ? (" OFFSET " + offset.toString()) : ""));
     List<UserLeaderBoard> list = [];
     if (res.length > 0) {
       forEach(res, (element) {
@@ -26,7 +26,7 @@ class UserRepository {
 
   Future<List<User>> getUserList({int limit, int offset}) async {
     List<Branch> bList = await BranchRepository.instance.getBranchList();
-    Results res = await DbConnection.query("SELECT user.*, lb.point FROM user, leaderboard as lb WHERE user.id = lb.userid AND lb.enddate IS NULL ORDER BY lb.point DESC" + (limit != null ? (" LIMIT " + limit.toString()) : "") + (offset != null ? (" OFFSET " + offset.toString()) : ""));
+    Results res = await DbConnection.query("SELECT user.*, lb.point FROM user, leaderboard as lb WHERE user.id = lb.userid AND lb.enddate IS NULL ORDER BY lb.point DESC, user.name" + (limit != null ? (" LIMIT " + limit.toString()) : "") + (offset != null ? (" OFFSET " + offset.toString()) : ""));
     List<User> list = [];
     if (res.length > 0) {
       for (Row element in res) {
