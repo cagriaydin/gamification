@@ -67,7 +67,7 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
             "assets/board-background.png",
             width: size.width,
             height: size.height / 2,
-            fit: BoxFit.fitWidth,
+            fit: BoxFit.fill,
           ),
         ),
         Scaffold(
