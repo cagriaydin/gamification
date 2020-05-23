@@ -45,8 +45,8 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
       BranchRepository.instance.getBoardPointList(),
       BranchRepository.instance.getTopBranchPointList(),
       BranchRepository.instance.getBranchList(),
-      UserRepository.instance.getUserList(),
-      UserRepository.instance.getUserPointList(),
+      UserRepository.instance.getUserList(limit: 10),
+      UserRepository.instance.getUserPointList(limit: 10),
     ]);
     super.initState();
   }
@@ -67,7 +67,7 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
             "assets/board-background.png",
             width: size.width,
             height: size.height / 2,
-            fit: BoxFit.fitWidth,
+            fit: BoxFit.fill,
           ),
         ),
         Scaffold(
@@ -203,14 +203,12 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
                                           child: ListView.builder(
                                               controller: scrollController,
                                               scrollDirection: Axis.vertical,
-                                              itemCount:
-                                                  userLeaderList.length - 3,
+                                              itemCount: userLeaderList.length,
                                               itemBuilder:
                                                   (BuildContext context,
                                                       int index) {
                                                 UserLeaderBoard item =
                                                     userLeaderList
-                                                        .skip(4)
                                                         .elementAt(index);
                                                 return Padding(
                                                   padding:
@@ -266,7 +264,7 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
                                                                       item.userId)
                                                                   .branchId))
                                                           .name,
-                                                      rank: index + 4,
+                                                      rank: index + 1,
                                                       point: item.point,
                                                     ),
                                                   ),
@@ -413,7 +411,7 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
   getMyRank() {
     int i = userLeaderList.indexOf(userLeaderList.singleWhere(
         (element) => element.userId == AuthenticationService.verifiedUser.id));
-    return i > 3 ? i : i+1;
+    return i > 3 ? i : i + 1;
   }
 
   onContentSelectorChange(ContentOption contentOption) {
