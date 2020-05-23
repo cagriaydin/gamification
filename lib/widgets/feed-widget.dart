@@ -63,6 +63,7 @@ class _FeedContentState extends State<FeedContent> {
                       alignment: Alignment.topCenter,
                       child: ImageWidget(
                         id: widget.feedItem.imageId,
+                        borderRadius: BorderRadius.all(Radius.circular(0)),
                       ),
                     ),
                   ),

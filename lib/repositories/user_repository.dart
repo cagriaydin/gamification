@@ -79,10 +79,6 @@ class UserRepository {
   Future<User> _fillUser(Results res, bool detailed) async {
     if (res.length > 0) {
       User user = User(id: res.single[0], name: res.single[1], branchId: res.single[3], phone: res.single[2], code: res.single[4], image: res.single[5]);
-      if (user.image != null) {
-        Image userImage = await ImageRepository.instance.getImage(res.single[5]);
-        user.image = userImage.base64;
-      }
       Branch b = await BranchRepository.instance.getBranch(user.branchId);
       user.branchName = b.name;
       if (detailed) {

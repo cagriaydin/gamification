@@ -144,20 +144,41 @@ class _ProfilePageState extends State<ProfilePage> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Expanded(
-                            child: GestureDetector(
-                              onTap: () => pushLeaderBoardPage(context),
-                              child: FutureBuilder<List<User>>(
-                                future: future,
-                                builder: (BuildContext context,
-                                    AsyncSnapshot<List<User>> snapshot) {
-                                  if (snapshot.hasData) {
-                                    return SingleChildScrollView(
+                            child: FutureBuilder<List<User>>(
+                              future: future,
+                              builder: (BuildContext context,
+                                  AsyncSnapshot<List<User>> snapshot) {
+                                if (snapshot.hasData) {
+                                  return SingleChildScrollView(
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (BuildContext context) {
+                                              List<LeaderBoardItem> newList =
+                                                  snapshot.data
+                                                      .map((e) =>
+                                                          LeaderBoardItem(
+                                                            imageId: e.image,
+                                                            point: e.point,
+                                                            name: e.name,
+                                                            branchName:
+                                                                e.branchName,
+                                                          ))
+                                                      .toList();
+                                              return LeaderBoardPage(
+                                                  leaderBoardUsers: newList);
+                                            },
+                                          ),
+                                        );
+                                      },
                                       child: Column(
                                         children: [
                                           LeaderBoard(
                                             list: snapshot.data
                                                 .map((e) => LeaderBoardItem(
-                                                      image: e.image,
+                                                      imageId: e.id,
                                                       point: e.point,
                                                       name: e.name,
                                                     ))
@@ -183,20 +204,45 @@ class _ProfilePageState extends State<ProfilePage> {
                                                   borderRadius:
                                                       BorderRadius.all(
                                                           Radius.circular(20))),
-                                              onPressed: () =>
-                                                  pushLeaderBoardPage(context),
+                                              onPressed: () {
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder:
+                                                        (BuildContext context) {
+                                                      List<LeaderBoardItem>
+                                                          newList = snapshot
+                                                              .data
+                                                              .map((e) =>
+                                                                  LeaderBoardItem(
+                                                                    imageId: e.image,
+                                                                    point:
+                                                                        e.point,
+                                                                    name:
+                                                                        e.name,
+                                                                    branchName:
+                                                                        e.branchName,
+                                                                  ))
+                                                              .toList();
+                                                      return LeaderBoardPage(
+                                                          leaderBoardUsers:
+                                                              newList);
+                                                    },
+                                                  ),
+                                                );
+                                              },
                                             ),
                                           ),
                                         ],
                                       ),
-                                    );
-                                  } else {
-                                    return Center(
-                                      child: CircularProgressIndicator(),
-                                    );
-                                  }
-                                },
-                              ),
+                                    ),
+                                  );
+                                } else {
+                                  return Center(
+                                    child: CircularProgressIndicator(),
+                                  );
+                                }
+                              },
                             ),
                           ),
                         ],
@@ -247,43 +293,6 @@ class _ProfilePageState extends State<ProfilePage> {
         ],
       ),
     );
-  }
-
-  void pushLeaderBoardPage(BuildContext context) {
-    UserRepository.instance.getTopUserPointList().then((userTopList) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (BuildContext context) {
-            return LeaderBoardPage(
-              leaderBoard: LeaderBoard(
-                list: [
-                  LeaderBoardItem(
-                    image: userTopList[0].image,
-                    point: userTopList[0].point,
-                    name: userTopList[0].name,
-                    branchName: userTopList[0].branchName,
-                  ),
-                  LeaderBoardItem(
-                    image: userTopList[1].image,
-                    point: userTopList[1].point,
-                    name: userTopList[1].name,
-                    branchName: userTopList[0].branchName,
-                  ),
-                  LeaderBoardItem(
-                    image: userTopList[2].image,
-                    point: userTopList[2].point,
-                    name: userTopList[2].name,
-                    branchName: userTopList[0].branchName,
-                  ),
-                ],
-                isLeaderBoard: true,
-              ),
-            );
-          },
-        ),
-      );
-    });
   }
 
   Future pushRewardsPage(BuildContext context) {

@@ -35,7 +35,7 @@ class LeaderBoard extends StatelessWidget {
         Hero(
           tag: '2',
           child: FlagAvatar(
-            imageUrl: list.elementAt(1).image,
+            imageId: list.elementAt(1).imageId,
             name: list.elementAt(1).name,
             point: list.elementAt(1).point ?? 0,
             rank: 2,
@@ -45,7 +45,7 @@ class LeaderBoard extends StatelessWidget {
         Hero(
           tag: '1',
           child: FlagAvatar(
-            imageUrl: list.elementAt(0).image,
+            imageId: list.elementAt(0).imageId,
             name: list.elementAt(0).name,
             point: list.elementAt(0).point ?? 0,
             rank: 1,
@@ -55,7 +55,7 @@ class LeaderBoard extends StatelessWidget {
         Hero(
           tag: '3',
           child: FlagAvatar(
-            imageUrl: list.elementAt(2).image,
+            imageId: list.elementAt(2).imageId,
             name: list.elementAt(2).name,
             point: list.elementAt(2).point ?? 0,
             rank: 3,

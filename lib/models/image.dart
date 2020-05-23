@@ -2,8 +2,10 @@
 //
 //     final image = imageFromJson(jsonString);
 
-import 'package:meta/meta.dart';
 import 'dart:convert';
+import 'dart:typed_data';
+
+import 'package:meta/meta.dart';
 
 Image imageFromJson(String str) => Image.fromMap(json.decode(str));
 
@@ -16,6 +18,7 @@ class Image {
   String base64Prefix;
   String suffix;
   String alt;
+  Uint8List decodedImage;
 
   Image({
     @required this.id,

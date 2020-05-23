@@ -13,10 +13,10 @@ import 'package:yorglass_ik/widgets/leader_board.dart';
 import 'package:yorglass_ik/widgets/rank_content.dart';
 
 class LeaderBoardPage extends StatefulWidget {
-  final LeaderBoard leaderBoard;
+  final List<LeaderBoardItem> leaderBoardUsers;
   bool isSelfCardVisible = true;
 
-  LeaderBoardPage({Key key, this.leaderBoard}) : super(key: key);
+  LeaderBoardPage({Key key, this.leaderBoardUsers}) : super(key: key);
 
   @override
   _LeaderBoardPageState createState() => _LeaderBoardPageState();
@@ -109,7 +109,9 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
                       Column(
                         children: [
                           Container(
-                            child: widget.leaderBoard,
+                            child: LeaderBoard(
+                              list: widget.leaderBoardUsers,
+                            ),
                           ),
                           if (size.height > 600)
                             SizedBox(
@@ -302,19 +304,19 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
                                     list: [
                                       LeaderBoardItem(
                                         name: "",
-                                        image: branchTopList[0].image,
+                                        imageId: branchTopList[0].image,
                                         point: branchTopList[0].point,
                                         branchName: branchTopList[0].name,
                                       ),
                                       LeaderBoardItem(
                                         name: "",
-                                        image: branchTopList[1].image,
+                                        imageId: branchTopList[1].image,
                                         point: branchTopList[1].point,
                                         branchName: branchTopList[1].name,
                                       ),
                                       LeaderBoardItem(
                                         name: "",
-                                        image: branchTopList[2].image,
+                                        imageId: branchTopList[2].image,
                                         point: branchTopList[2].point,
                                         branchName: branchTopList[2].name,
                                       ),
