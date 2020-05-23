@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:yorglass_ik/models/user.dart';
 import 'package:yorglass_ik/pages/feed.dart';
 import 'package:yorglass_ik/pages/profile.dart';
 import 'package:yorglass_ik/services/authentication-service.dart';
@@ -45,11 +44,16 @@ class _BottomNavigationState extends State<BottomNavigation> {
         backgroundColor: Colors.white,
         showElevation: true,
         // use this to remove appBar's elevation
-        onItemSelected: (index) => setState(() {
-          _selectedIndex = index;
-          _pageController.animateToPage(index,
-              duration: Duration(milliseconds: 300), curve: Curves.ease);
-        }),
+        onItemSelected: (index) {
+          if (_selectedIndex == index) {
+            return;
+          }
+          setState(() {
+            _selectedIndex = index;
+            _pageController.animateToPage(index,
+                duration: Duration(milliseconds: 300), curve: Curves.ease);
+          });
+        },
         items: [
           BottomNavyBarItem(
             icon: Icon(Icons.notifications_none),
@@ -69,6 +73,9 @@ class _BottomNavigationState extends State<BottomNavigation> {
         physics: NeverScrollableScrollPhysics(),
         controller: _pageController,
         onPageChanged: (index) {
+          if (_selectedIndex == index) {
+            return;
+          }
           setState(() => _selectedIndex = index);
           if (_selectedIndex != 1) {
             _isEditMode = false;

@@ -34,35 +34,26 @@ class LeaderBoard extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Hero(
-            tag: '2',
-            child: FlagAvatar(
-              imageId: list.elementAt(1).imageId,
-              name: list.elementAt(1).name,
-              point: list.elementAt(1).point ?? 0,
-              rank: 2,
-              branchName: list.elementAt(1).branchName,
-            ),
+          FlagAvatar(
+            imageId: list.elementAt(1).imageId,
+            name: list.elementAt(1).name,
+            point: list.elementAt(1).point ?? 0,
+            rank: 2,
+            branchName: list.elementAt(1).branchName,
           ),
-          Hero(
-            tag: '1',
-            child: FlagAvatar(
-              imageId: list.elementAt(0).imageId,
-              name: list.elementAt(0).name,
-              point: list.elementAt(0).point ?? 0,
-              rank: 1,
-              branchName: list.elementAt(1).branchName,
-            ),
+          FlagAvatar(
+            imageId: list.elementAt(0).imageId,
+            name: list.elementAt(0).name,
+            point: list.elementAt(0).point ?? 0,
+            rank: 1,
+            branchName: list.elementAt(1).branchName,
           ),
-          Hero(
-            tag: '3',
-            child: FlagAvatar(
-              imageId: list.elementAt(2).imageId,
-              name: list.elementAt(2).name,
-              point: list.elementAt(2).point ?? 0,
-              rank: 3,
-              branchName: list.elementAt(1).branchName,
-            ),
+          FlagAvatar(
+            imageId: list.elementAt(2).imageId,
+            name: list.elementAt(2).name,
+            point: list.elementAt(2).point ?? 0,
+            rank: 3,
+            branchName: list.elementAt(1).branchName,
           ),
         ],
       ),
