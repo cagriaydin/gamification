@@ -1,7 +1,6 @@
 import 'package:mysql1/mysql1.dart';
 import 'package:yorglass_ik/models/branch.dart';
 import 'package:yorglass_ik/models/branch_leader_board.dart';
-import 'package:yorglass_ik/repositories/image-repository.dart';
 import 'package:yorglass_ik/repositories/task-repository.dart';
 import 'package:yorglass_ik/services/db-connection.dart';
 
@@ -31,7 +30,7 @@ class BranchRepository {
         list.add(Branch(
           id: element[0],
           name: element[1],
-          image: element[2] != null ? (await ImageRepository.instance.getImage64(element[2])) : element[2],
+          image: element[2],
           employeeCount: element[3],
           color: element[4],
           point: element[5],
@@ -56,7 +55,7 @@ class BranchRepository {
     return Branch(
       id: res.single[0],
       name: res.single[1],
-      image: res.single[2] != null ? (await ImageRepository.instance.getImage64(res.single[2])) : res.single[2],
+      image: res.single[2],
       employeeCount: res.single[3],
       color: res.single[4],
       point: res.single[5],
