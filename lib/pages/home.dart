@@ -49,108 +49,110 @@ class _HomePageState extends State<HomePage> {
           child: Container(
             width: (size.width / 3) * 1.7,
             padding: EdgeInsets.only(top: 50, bottom: 50),
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Column(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    Container(
-                      height: size.width / 3,
-                      width: size.width / 3,
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.white, width: 2.0),
-                        borderRadius:
-                            new BorderRadius.all(new Radius.circular(90)),
-                        image: DecorationImage(
-                          fit: BoxFit.cover,
-                          image: AuthenticationService.verifiedUser.image ==
-                                  null
-                              ? AssetImage("assets/default-profile.png")
-                              : MemoryImage(base64.decode(
-                                  AuthenticationService.verifiedUser.image)),
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 16),
-                    Text(
-                      AuthenticationService.verifiedUser.name,
-                      style: TextStyle(
-                        fontSize: 30,
-                        color: Theme.of(context).accentColor,
-                        shadows: <Shadow>[
-                          Shadow(
-                            blurRadius: 4.0,
-                            color: Color(0xFFE0ECF4),
-                          )
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: 16),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        AuthenticationService.verifiedUser.branchName,
-                        style: TextStyle(
-                            fontSize: 20,
-                            color: Color(0xff4BADBB).withOpacity(.6)),
-                            textAlign: TextAlign.center,
-                      ),
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Column(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: <Widget>[
-                        MenuButton(
-                          text: "Görevlerim",
-                          icon: Icons.assistant_photo,
-                          count: AuthenticationService.verifiedUser.taskCount,
-                          click: () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (BuildContext context) {
-                                return TaskListPage(
-                                  user: AuthenticationService.verifiedUser,
-                                );
-                              },
-                            ),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Column(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Container(
+                        height: size.width / 3,
+                        width: size.width / 3,
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.white, width: 2.0),
+                          borderRadius:
+                              new BorderRadius.all(new Radius.circular(90)),
+                          image: DecorationImage(
+                            fit: BoxFit.cover,
+                            image: AuthenticationService.verifiedUser.image ==
+                                    null
+                                ? AssetImage("assets/default-profile.png")
+                                : MemoryImage(base64.decode(
+                                    AuthenticationService.verifiedUser.image)),
                           ),
                         ),
-                        MenuButton(
-                            text: "Önerilerim",
-                            icon: Icons.question_answer,
+                      ),
+                      SizedBox(height: 16),
+                      Text(
+                        AuthenticationService.verifiedUser.name,
+                        style: TextStyle(
+                          fontSize: 30,
+                          color: Theme.of(context).accentColor,
+                          shadows: <Shadow>[
+                            Shadow(
+                              blurRadius: 4.0,
+                              color: Color(0xFFE0ECF4),
+                            )
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: 16),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          AuthenticationService.verifiedUser.branchName,
+                          style: TextStyle(
+                              fontSize: 20,
+                              color: Color(0xff4BADBB).withOpacity(.6)),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Column(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          MenuButton(
+                            text: "Görevlerim",
+                            icon: Icons.assistant_photo,
+                            count: AuthenticationService.verifiedUser.taskCount,
                             click: () => Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => SuggestionPage(),
-                                  ),
-                                )),
-                        // MenuButton(
-                        //   text: "KVKK Onayı",
-                        //   icon: Icons.insert_drive_file,
-                        //   click: () => Navigator.push(
-                        //     context,
-                        //     MaterialPageRoute(
-                        //       builder: (context) => SuggestionPage(),
-                        //     ),
-                        //   ),
-                        // ),
-                      ],
-                    )
-                  ],
-                ),
-                MenuButton(
-                    text: "Çıkış",
-                    icon: Icons.power_settings_new,
-                    click: () => AuthenticationService.instance.signOut()),
-              ],
+                              context,
+                              MaterialPageRoute(
+                                builder: (BuildContext context) {
+                                  return TaskListPage(
+                                    user: AuthenticationService.verifiedUser,
+                                  );
+                                },
+                              ),
+                            ),
+                          ),
+                          MenuButton(
+                              text: "Önerilerim",
+                              icon: Icons.question_answer,
+                              click: () => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => SuggestionPage(),
+                                    ),
+                                  )),
+                          // MenuButton(
+                          //   text: "KVKK Onayı",
+                          //   icon: Icons.insert_drive_file,
+                          //   click: () => Navigator.push(
+                          //     context,
+                          //     MaterialPageRoute(
+                          //       builder: (context) => SuggestionPage(),
+                          //     ),
+                          //   ),
+                          // ),
+                        ],
+                      )
+                    ],
+                  ),
+                  MenuButton(
+                      text: "Çıkış",
+                      icon: Icons.power_settings_new,
+                      click: () => AuthenticationService.instance.signOut()),
+                ],
+              ),
             ),
           ),
         );
