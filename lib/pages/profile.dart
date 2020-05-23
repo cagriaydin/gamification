@@ -110,10 +110,10 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
           Flexible(
             child: Column(
-              mainAxisSize: MainAxisSize.max,
+              mainAxisSize: MainAxisSize.min,
               children: [
                 Flexible(
-                  flex: size.height < 600 ? 2 : 1,
+                  flex: size.height < 600 ? 3 : 2,
                   child: Padding(
                     padding: size.height < 600
                         ? const EdgeInsets.all(8)
@@ -126,7 +126,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                 ),
                 Expanded(
-                  flex: 5,
+                  flex: 10,
                   child: PageView(
 //                    physics: NeverScrollableScrollPhysics(),
                     onPageChanged: (i) {
