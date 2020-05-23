@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:yorglass_ik/enums/verification-status-enum.dart';
 import 'package:yorglass_ik/pages/home.dart';
 import 'package:yorglass_ik/services/authentication-service.dart';
+import 'package:yorglass_ik/widgets/loading_builder.dart';
 import 'package:yorglass_ik/widgets/outcome-button.dart';
 
 class ValidationCodePage extends StatefulWidget {
@@ -170,26 +171,7 @@ class _ValidationCodePageState extends State<ValidationCodePage> {
                 ),
               ),
             )
-          : Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  CircularProgressIndicator(
-                    backgroundColor: Colors.white70,
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Text(
-                    "Giriş Yapılıyor...",
-                    style: TextStyle(
-                      fontStyle: FontStyle.italic,
-                      fontSize: 24,
-                    ),
-                  )
-                ],
-              ),
-            ),
+          : LoadingBuilder(text: "Giriş Yapılıyor...",)
     );
   }
 
