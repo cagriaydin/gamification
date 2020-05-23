@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:yorglass_ik/models/user.dart';
+import 'package:yorglass_ik/widgets/build_circular_percentage.dart';
 
 import 'get_circle_avatar.dart';
 
@@ -36,15 +36,8 @@ class BuildUserInfo extends StatelessWidget {
             ),
             if (showPercentage)
               Positioned.fill(
-                child: CircularPercentIndicator(
-                  radius: (radius + 80) ?? 160.0,
-                  lineWidth: 10.0,
-                  animation: true,
-                  percent: (user.percentage ?? 0) * 1 / 100,
-                  circularStrokeCap: CircularStrokeCap.round,
-                  backgroundColor: Colors.white,
-                  progressColor: Color(0xff2DB3C1),
-                  curve: Curves.easeOut,
+                child: BuildCircularPercentage(
+                  radius: radius,
                 ),
               ),
           ],

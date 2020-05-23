@@ -65,7 +65,7 @@ class _TaskListPageState extends State<TaskListPage> {
         }
       }
       if (controller.offset <= controller.position.minScrollExtent &&
-          controller.offset < -150) {
+          controller.offset < -100) {
         if (crossFade.value != CrossFadeState.showFirst) {
           setState(() {
             crossFade.value = CrossFadeState.showFirst;
