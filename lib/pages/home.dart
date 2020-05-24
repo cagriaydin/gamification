@@ -1,5 +1,11 @@
+import 'dart:convert';
+
+import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/material.dart';
+import 'package:get_version/get_version.dart';
+import 'package:open_appstore/open_appstore.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:yorglass_ik/models/user.dart';
 import 'package:yorglass_ik/pages/bottom_navigation.dart';
 import 'package:yorglass_ik/pages/suggestion.dart';
@@ -19,6 +25,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     drawerController = GlobalKey<CustomDrawerState>();
+    handleRemoteConfig(context);
     super.initState();
   }
 
@@ -35,9 +42,9 @@ class _HomePageState extends State<HomePage> {
               drawerController: drawerController,
             ),
             decoration: BoxDecoration(
-                color: Colors.white,
+              color: Colors.white,
 //                border: Border.all(color: Color(0xffD1F7FB),width: 5)
-                //TODO: as performance improvements remove shodows if needed
+              //TODO: as performance improvements remove shodows if needed
               boxShadow: [
                 BoxShadow(
                   spreadRadius: 40,
@@ -164,6 +171,140 @@ class _HomePageState extends State<HomePage> {
         }),
       ),
     );
+  }
+
+  handleRemoteConfig(BuildContext context) async {
+    final RemoteConfig remoteConfig = await RemoteConfig.instance;
+    await remoteConfig.fetch(expiration: Duration(minutes: 1));
+    await remoteConfig.activateFetched();
+    var map = jsonDecode(remoteConfig.getString('app_version'));
+    var currentVersion = await GetVersion.projectVersion;
+    final sharedPref = await SharedPreferences.getInstance();
+    sharedPref.setBool(map['version'], false);
+    if (map['version'] != currentVersion) {
+      if (!map['forced'] &&
+          sharedPref.getBool(map['version']) != null &&
+          sharedPref.getBool(map['version'])) {
+        return;
+      }
+      if (!map['forced']) {
+        sharedPref.setBool(map['version'], true);
+      }
+      await Future.delayed(Duration(milliseconds: 2000));
+      final title = map['forced']
+          ? 'You have to update the App'
+          : 'New version available';
+      showDialog(
+        context: context,
+        barrierDismissible: !map['forced'],
+        useRootNavigator: false,
+        builder: (context) {
+          return WillPopScope(
+            onWillPop: () async {
+//                if (!map['forced']) {
+//                  sharedPref.remove(map['version']);
+//                }
+
+              if (!map['forced']) {
+                sharedPref.setBool(map['version'], false);
+              }
+              return !map['forced'];
+            },
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Material(
+                  borderRadius: BorderRadius.all(Radius.circular(8)),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Text(
+                              title,
+                              style: Theme.of(context).textTheme.display1,
+                            ),
+                          ),
+                          Row(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: <Widget>[
+                              if (!map['forced'])
+                                Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(10)),
+                                  ),
+                                  child: Material(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(10)),
+                                    child: InkWell(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(10)),
+                                      onTap: () {
+                                        if (!map['forced']) {
+                                          sharedPref.remove(map['version']);
+                                        }
+                                        return Navigator.pop(context);
+                                      },
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(12.0),
+                                        child: Text('Do not show it again'),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              Container(
+                                decoration: BoxDecoration(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10)),
+                                ),
+                                child: Material(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10)),
+                                  child: InkWell(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(10)),
+                                    onTap: () {
+                                      OpenAppstore.launch(
+                                        androidAppId: 'com.ciplidev.network_up',
+                                        iOSAppId: '1499186365',
+                                      );
+                                      if (!map['forced']) {
+                                        sharedPref.setBool(
+                                            map['version'], false);
+                                        Navigator.pop(context);
+                                      }
+                                    },
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(12.0),
+                                      child: Text('Update the App!'),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: 16,
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
+      );
+    }
   }
 }
 
