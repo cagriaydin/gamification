@@ -301,7 +301,7 @@ class _BuildTaskState extends State<BuildTask> {
         if (!widget.isLeft)
           Positioned(
             bottom: 32,
-            right: 0,
+            right: 2,
             child: Opacity(
               opacity: opacity(),
               child: ButtonTheme(
@@ -363,7 +363,7 @@ class _BuildTaskState extends State<BuildTask> {
         if (widget.isLeft)
           Positioned(
             bottom: 36,
-            left: 0,
+            left: 2,
             child: Opacity(
               opacity: opacity(),
               child: ButtonTheme(
