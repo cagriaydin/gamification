@@ -20,7 +20,7 @@ class RewardCards extends StatelessWidget {
   Widget build(BuildContext context) {
     final double cardPadding = 16.0;
     final size = MediaQuery.of(context).size;
-    final width = size.width / 2.2;
+    final width = size.width / 2;
     final theme = Theme.of(context);
 
     LinearGradient getGradient({

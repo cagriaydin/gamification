@@ -11,7 +11,7 @@ class FlagPoint extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    final scale = size.height < 600 ? 1.2 : 1.5;
+    final scale = size.height < 600 ? .8 : 1.3;
     return Transform.scale(
       scale: scale,
       child: DefaultTextStyle(
@@ -23,7 +23,7 @@ class FlagPoint extends StatelessWidget {
           child: Container(
             decoration: BoxDecoration(
               image: DecorationImage(
-                // scale: scale,
+//                scale: scale,
                 image: AssetImage('assets/flag.png'),
                 fit: BoxFit.contain,
               ),

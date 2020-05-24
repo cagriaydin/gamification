@@ -169,6 +169,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                       child: Column(
                                         children: [
                                           LeaderBoard(
+                                            isLeaderBoard: true,
                                             list: snapshot.data
                                                 .map((e) => LeaderBoardItem(
                                                       imageId: e.image,
@@ -243,40 +244,44 @@ class _ProfilePageState extends State<ProfilePage> {
                         ],
                       ),
                       SingleChildScrollView(
-                        child: Column(
-                          children: [
-                            RewardCards(
-                              reward: Reward(
-                                  imageId:
-                                      "c9a560ac-63f2-401b-8185-2bae139957ad",
-                                  point: 0,
-                                  likeCount: 0),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: OutlineButton(
-                                child: Text(
-                                  'Ödülleri Gör',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w300,
-                                    fontSize: 18,
-                                  ),
-                                ),
-                                textColor: Color(0xff2DB3C1),
-                                borderSide: BorderSide(
-                                  color: Color(0xff2DB3C1),
-                                  style: BorderStyle.solid,
-                                  width: 1,
-                                ),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(20),
-                                  ),
-                                ),
-                                onPressed: () => pushRewardsPage(context),
+                        child: Transform.scale(
+                          scale: size.height < 600 ? .7 : 1,
+                          alignment: Alignment.topCenter,
+                          child: Column(
+                            children: [
+                              RewardCards(
+                                reward: Reward(
+                                    imageId:
+                                        "c9a560ac-63f2-401b-8185-2bae139957ad",
+                                    point: 0,
+                                    likeCount: 0),
                               ),
-                            ),
-                          ],
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: OutlineButton(
+                                  child: Text(
+                                    'Ödülleri Gör',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w300,
+                                      fontSize: 18,
+                                    ),
+                                  ),
+                                  textColor: Color(0xff2DB3C1),
+                                  borderSide: BorderSide(
+                                    color: Color(0xff2DB3C1),
+                                    style: BorderStyle.solid,
+                                    width: 1,
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(20),
+                                    ),
+                                  ),
+                                  onPressed: () => pushRewardsPage(context),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ],
