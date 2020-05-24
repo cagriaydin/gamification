@@ -1,21 +1,59 @@
 import 'dart:async';
 
+import 'package:catcher/core/catcher.dart';
+import 'package:catcher/handlers/console_handler.dart';
+import 'package:catcher/handlers/slack_handler.dart';
+import 'package:catcher/mode/dialog_report_mode.dart';
+import 'package:catcher/mode/silent_report_mode.dart';
+import 'package:catcher/model/catcher_options.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:yorglass_ik/helpers/statusbar-helper.dart';
 import 'package:yorglass_ik/pages/home.dart';
 import 'package:yorglass_ik/pages/welcome.dart';
 import 'package:yorglass_ik/services/authentication-service.dart';
 import 'package:yorglass_ik/shared/custom_theme.dart';
 
-void main() => runApp(
-      DevicePreview(
-        builder: (context) => MyApp(),
-        enabled: false,
+void main() {
+  CatcherOptions debugOptions = CatcherOptions(
+    SilentReportMode(),
+    [
+      ConsoleHandler(),
+      SlackHandler(
+        "https://hooks.slack.com/services/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",
+        "#app_errors",
+        username: "Yorglass",
+        enableDeviceParameters: true,
+        enableApplicationParameters: true,
+        enableCustomParameters: true,
+        enableStackTrace: true,
+        printLogs: true,
       ),
-    );
+    ],
+  );
+
+  /// Release configuration. Same as above, but once user accepts dialog, user will be propmpted to send email with crash to support.
+  CatcherOptions releaseOptions = CatcherOptions(
+    SilentReportMode(),
+    [
+      ConsoleHandler(),
+      SlackHandler(
+        "https://hooks.slack.com/services/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",
+        "#app_errors",
+        username: "Yorglass",
+        enableDeviceParameters: true,
+        enableApplicationParameters: true,
+        enableCustomParameters: true,
+        enableStackTrace: true,
+        printLogs: true,
+      ),
+    ],
+  );
+
+  /// STEP 2. Pass your root widget (MyApp) along with Catcher configuration:
+  Catcher(MyApp(), debugConfig: debugOptions, releaseConfig: releaseOptions);
+}
 
 class MyApp extends StatefulWidget {
   @override
@@ -50,6 +88,7 @@ class _MyAppState extends State<MyApp> {
         });
       }
     });
+    Future.delayed(Duration(seconds: 2)).then((val) => Catcher.sendTestException());
     Future.delayed(Duration(seconds: 5)).then((val) => setState(() => loggedIn = loggedIn == null ? false : loggedIn));
     super.initState();
   }
@@ -103,14 +142,24 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      locale: DevicePreview.of(context).locale,
+      navigatorKey: Catcher.navigatorKey,
+      // locale: DevicePreview.of(context).locale,
       // <--- Add the locale
-      builder: DevicePreview.appBuilder,
+      //builder: DevicePreview.appBuilder,
+      builder: (BuildContext context, Widget widget) {
+        Catcher.addDefaultErrorWidget(
+          showStacktrace: true,
+          title: "Error Occured",
+          description: "Error Description",
+          maxWidthForSmallMode: 150,
+        );
+        return widget;
+      },
       // <--- Add the builder
       debugShowCheckedModeBanner: false,
       theme: customTheme,
       home: Scaffold(
-        body: getMainPage(loggedIn, hasConnection),
+        body: Expanded(child: getMainPage(loggedIn, hasConnection)),
       ),
     );
   }
