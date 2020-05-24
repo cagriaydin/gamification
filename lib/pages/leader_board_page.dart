@@ -14,7 +14,7 @@ import 'package:yorglass_ik/widgets/leader_board.dart';
 import 'package:yorglass_ik/widgets/rank_content.dart';
 
 class LeaderBoardPage extends StatefulWidget {
-  final List<LeaderBoardItem> leaderBoardUsers;
+  List<LeaderBoardItem> leaderBoardUsers;
   bool isSelfCardVisible = true;
 
   LeaderBoardPage({Key key, this.leaderBoardUsers}) : super(key: key);
@@ -42,6 +42,8 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
 
   int limit = 10;
 
+  int myRank = 0;
+
   @override
   void initState() {
     future = Future.wait([
@@ -49,8 +51,9 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
       BranchRepository.instance.getTopBranchPointList(),
       BranchRepository.instance.getBranchList(),
       UserRepository.instance.getUserList(limit: limit),
-      UserRepository.instance.getUserPointList(limit: limit),
+      UserRepository.instance.getUserPointList(limit: limit)
     ]);
+    getMyRank();
     super.initState();
   }
 
@@ -153,37 +156,12 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
                                           child: Container(
                                             margin: EdgeInsets.all(11),
                                             child: RankContent(
-                                              image: userList
-                                                  .singleWhere((element) =>
-                                                      element.id ==
-                                                      AuthenticationService
-                                                          .verifiedUser.id)
-                                                  .image,
+                                              image: AuthenticationService.verifiedUser.image,
                                               selfContent: true,
-                                              title: userList
-                                                  .singleWhere((element) =>
-                                                      element.id ==
-                                                      AuthenticationService
-                                                          .verifiedUser.id)
-                                                  .name,
-                                              rank: getMyRank(),
-                                              point: userLeaderList
-                                                  .singleWhere((element) =>
-                                                      element.userId ==
-                                                      AuthenticationService
-                                                          .verifiedUser.id)
-                                                  .point,
-                                              subTitle: branchList
-                                                  .singleWhere((element) =>
-                                                      element.id ==
-                                                      (userList
-                                                          .singleWhere((element) =>
-                                                              element.id ==
-                                                              AuthenticationService
-                                                                  .verifiedUser
-                                                                  .id)
-                                                          .branchId))
-                                                  .name,
+                                              title: AuthenticationService.verifiedUser.name,
+                                              rank: myRank,
+                                              point: AuthenticationService.verifiedUser.point,
+                                              subTitle: AuthenticationService.verifiedUser.branchName,
                                             ),
                                             decoration: BoxDecoration(
                                               color: Colors.white,
@@ -223,7 +201,7 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
                                                                 AuthenticationService
                                                                     .verifiedUser
                                                                     .id &&
-                                                            getMyRank() > 10
+                                                            myRank > 10
                                                         ? BoxDecoration(
                                                             color: Colors.white,
                                                             borderRadius:
@@ -417,10 +395,13 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
     );
   }
 
-  getMyRank() {
-    int i = userLeaderList.indexOf(userLeaderList.singleWhere(
-        (element) => element.userId == AuthenticationService.verifiedUser.id));
-    return i > 3 ? i : i + 1;
+  getMyRank() async {
+    List<UserLeaderBoard> userList = await UserRepository.instance.getUserPointList();
+
+    UserLeaderBoard user = userList.singleWhere((element) => element.userId == AuthenticationService.verifiedUser.id);
+
+    int i = userList.indexOf(user);
+    myRank = i > 3 ? i : i + 1;
   }
 
   onContentSelectorChange(ContentOption contentOption) {
