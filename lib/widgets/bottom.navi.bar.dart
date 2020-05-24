@@ -2,6 +2,7 @@ library bottom_navy_bar;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 
 class BottomNavyBar extends StatelessWidget {
   final int selectedIndex;

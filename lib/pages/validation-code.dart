@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:provider/provider.dart';
 import 'package:yorglass_ik/enums/verification-status-enum.dart';
+import 'package:yorglass_ik/helpers/statusbar-helper.dart';
 import 'package:yorglass_ik/pages/home.dart';
 import 'package:yorglass_ik/services/authentication-service.dart';
 import 'package:yorglass_ik/widgets/loading_builder.dart';
@@ -9,7 +11,9 @@ import 'package:yorglass_ik/widgets/outcome-button.dart';
 class ValidationCodePage extends StatefulWidget {
   String verificationId;
 
-  ValidationCodePage({this.verificationId});
+  ValidationCodePage({this.verificationId}) {
+    StatusbarHelper.setSatusBar();
+  }
 
   @override
   _ValidationCodePageState createState() => _ValidationCodePageState();
@@ -35,8 +39,7 @@ class _ValidationCodePageState extends State<ValidationCodePage> {
     final mediaQuery = MediaQuery.of(context);
     final double width = size.width;
     final double height = size.height;
-    final bodyHeight =
-        height - (mediaQuery.padding.bottom + mediaQuery.padding.top);
+    final bodyHeight = height - (mediaQuery.padding.bottom + mediaQuery.padding.top);
     return Scaffold(
         key: _scaffOldState,
         body: !hasLoading
@@ -54,8 +57,7 @@ class _ValidationCodePageState extends State<ValidationCodePage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           Padding(
-                            padding:
-                                const EdgeInsets.only(top: 20.0, bottom: 20.0),
+                            padding: const EdgeInsets.only(top: 20.0, bottom: 20.0),
                             child: Center(
                               child: Image.asset(
                                 "assets/yorglass.png",
@@ -92,11 +94,9 @@ class _ValidationCodePageState extends State<ValidationCodePage> {
                                     child: Text(
                                       "Telefonunuza\nGönderdiğimiz Kodu\nGiriniz",
                                       style: TextStyle(
-                                        fontSize:
-                                            (height * 0.04).toInt().toDouble(),
+                                        fontSize: (height * 0.04).toInt().toDouble(),
                                         fontWeight: FontWeight.bold,
-                                        color:
-                                            Theme.of(context).primaryColorDark,
+                                        color: Theme.of(context).primaryColorDark,
                                       ),
                                     ),
                                   ),
@@ -119,14 +119,8 @@ class _ValidationCodePageState extends State<ValidationCodePage> {
                                     TextField(
                                       controller: codeController,
                                       onTap: () async {
-                                        await Future.delayed(
-                                            Duration(milliseconds: 400));
-                                        _controller.animateTo(
-                                            _controller
-                                                .position.maxScrollExtent,
-                                            duration:
-                                                Duration(milliseconds: 250),
-                                            curve: Curves.ease);
+                                        await Future.delayed(Duration(milliseconds: 400));
+                                        _controller.animateTo(_controller.position.maxScrollExtent, duration: Duration(milliseconds: 250), curve: Curves.ease);
                                       },
                                       decoration: InputDecoration(
                                           counterText: "",
@@ -142,18 +136,12 @@ class _ValidationCodePageState extends State<ValidationCodePage> {
                                       keyboardType: TextInputType.number,
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
-                                        fontSize:
-                                            (height * 0.04).toInt().toDouble(),
+                                        fontSize: (height * 0.04).toInt().toDouble(),
                                       ),
                                     ),
                                     Container(
                                       height: 1,
-                                      decoration: BoxDecoration(
-                                          gradient: LinearGradient(colors: [
-                                        Theme.of(context).primaryColor,
-                                        Theme.of(context).primaryColor,
-                                        Colors.white
-                                      ])),
+                                      decoration: BoxDecoration(gradient: LinearGradient(colors: [Theme.of(context).primaryColor, Theme.of(context).primaryColor, Colors.white])),
                                     )
                                   ],
                                 ),
@@ -184,8 +172,7 @@ class _ValidationCodePageState extends State<ValidationCodePage> {
     setState(() {
       hasLoading = true;
     });
-    VerificationStatusEnum status = await AuthenticationService.instance
-        .signInWithOTP(codeController.text, widget.verificationId);
+    VerificationStatusEnum status = await AuthenticationService.instance.signInWithOTP(codeController.text, widget.verificationId);
     switch (status) {
       case VerificationStatusEnum.ok:
         pushToLandingPage(context);
@@ -217,8 +204,7 @@ class _ValidationCodePageState extends State<ValidationCodePage> {
       context,
       MaterialPageRoute(
         builder: (BuildContext context) {
-          return ChangeNotifierProvider.value(
-              value: AuthenticationService.verifiedUser, child: HomePage());
+          return ChangeNotifierProvider.value(value: AuthenticationService.verifiedUser, child: HomePage());
         },
       ),
       (Route<dynamic> route) => false,
