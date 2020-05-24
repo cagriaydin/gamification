@@ -25,7 +25,8 @@ class LeaderBoardPage extends StatefulWidget {
 }
 
 class _LeaderBoardPageState extends State<LeaderBoardPage> {
-  final PageController pageController = PageController(initialPage: 0);
+  final PageController pageController =
+      PageController(initialPage: 0, keepPage: true);
   final ScrollController scrollController = ScrollController();
 
   final List<ContentOption> options = [
