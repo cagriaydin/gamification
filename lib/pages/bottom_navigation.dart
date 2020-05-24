@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:yorglass_ik/helpers/statusbar-helper.dart';
 import 'package:yorglass_ik/pages/feed.dart';
 import 'package:yorglass_ik/pages/profile.dart';
 import 'package:yorglass_ik/services/authentication-service.dart';
@@ -26,6 +27,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
 
   @override
   void initState() {
+    StatusbarHelper.setSatusBar();
     super.initState();
     _pageController = PageController();
   }

@@ -16,6 +16,8 @@ class FlagAvatar extends StatelessWidget {
 
   final double radius;
 
+  final bool isLeaderBoard;
+
   const FlagAvatar(
       {Key key,
       this.imageId,
@@ -26,7 +28,8 @@ class FlagAvatar extends StatelessWidget {
       this.titleColor,
       this.branchName,
       this.split = true,
-      this.radius})
+      this.radius,
+      this.isLeaderBoard = false})
       : super(key: key);
 
   @override
@@ -90,7 +93,9 @@ class FlagAvatar extends StatelessWidget {
                 alignment: Alignment.topCenter,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(8, 20, 8, 80),
+                    padding: isLeaderBoard
+                        ? const EdgeInsets.fromLTRB(8, 20, 8, 80)
+                        : const EdgeInsets.fromLTRB(8, 20, 8, 60),
                     child: Material(
                       elevation: 5,
                       color: Colors.white,

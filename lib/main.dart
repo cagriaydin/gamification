@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:connectivity/connectivity.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:yorglass_ik/models/user.dart';
+import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
+import 'package:yorglass_ik/helpers/statusbar-helper.dart';
 import 'package:yorglass_ik/pages/home.dart';
 import 'package:yorglass_ik/pages/welcome.dart';
 import 'package:yorglass_ik/services/authentication-service.dart';
@@ -28,10 +28,10 @@ class _MyAppState extends State<MyApp> {
 
   @override
   void initState() {
+    StatusbarHelper.setSatusBar();
     // AuthenticationService().signOut();
     listenConnection();
-    AuthenticationService.firebaseAuthInstance.onAuthStateChanged
-        .listen((event) {
+    AuthenticationService.firebaseAuthInstance.onAuthStateChanged.listen((event) {
       if (event != null) {
         AuthenticationService.instance.verifyUser().then((user) {
           if (user != null) {
@@ -50,22 +50,19 @@ class _MyAppState extends State<MyApp> {
         });
       }
     });
-    Future.delayed(Duration(seconds: 5)).then((val) =>
-        setState(() => loggedIn = loggedIn == null ? false : loggedIn));
+    Future.delayed(Duration(seconds: 5)).then((val) => setState(() => loggedIn = loggedIn == null ? false : loggedIn));
     super.initState();
   }
 
   Future<bool> hasInternet() async {
     var connectivityResult = await (Connectivity().checkConnectivity());
-    return connectivityResult == ConnectivityResult.mobile ||
-        connectivityResult == ConnectivityResult.wifi;
+    return connectivityResult == ConnectivityResult.mobile || connectivityResult == ConnectivityResult.wifi;
   }
 
   void listenConnection() async {
     hasConnection = await this.hasInternet();
     Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
-      if (result == ConnectivityResult.mobile ||
-          result == ConnectivityResult.wifi) {
+      if (result == ConnectivityResult.mobile || result == ConnectivityResult.wifi) {
         setState(() {
           hasConnection = true;
         });
@@ -79,9 +76,7 @@ class _MyAppState extends State<MyApp> {
 
   Widget getMainPage(bool loggedIn, bool hasConnection) {
     return hasConnection
-        ? loggedIn == null
-            ? Container()
-            : (loggedIn ? HomePage() : WelcomePage())
+        ? loggedIn == null ? Container() : (loggedIn ? HomePage() : WelcomePage())
         : Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:yorglass_ik/enums/authentication-enum.dart';
+import 'package:yorglass_ik/helpers/statusbar-helper.dart';
 import 'package:yorglass_ik/helpers/string-helper.dart';
 import 'package:yorglass_ik/pages/validation-code.dart';
 import 'package:yorglass_ik/services/authentication-service.dart';
@@ -23,6 +24,7 @@ class _PhoneValidationPageState extends State<PhoneValidationPage> {
 
   @override
   void initState() {
+    StatusbarHelper.setSatusBar();
     super.initState();
     isLoading = false;
   }
