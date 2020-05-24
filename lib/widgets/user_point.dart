@@ -10,7 +10,7 @@ class UserPoint extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
+    final size = MediaQuery.of(context).size * MediaQuery.of(context).devicePixelRatio;
     var selectUserPoint = context.select((User value) => value.point);
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
