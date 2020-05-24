@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:yorglass_ik/pages/feed.dart';
 import 'package:yorglass_ik/pages/profile.dart';
-import 'package:yorglass_ik/services/authentication-service.dart';
 import 'package:yorglass_ik/widgets/bottom.navi.bar.dart';
 import 'package:yorglass_ik/widgets/custom_drawer/custom_drawer.dart';
 
@@ -87,7 +86,6 @@ class _BottomNavigationState extends State<BottomNavigation> {
           ),
           ProfilePage(
             menuFunction: toggleDrawer,
-            user: AuthenticationService.verifiedUser,
           ),
         ],
       ),
