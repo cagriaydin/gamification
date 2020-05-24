@@ -272,9 +272,7 @@ class _BuildTaskState extends State<BuildTask> {
                       textAlign:
                           widget.isLeft ? TextAlign.left : TextAlign.right,
                     ),
-                    SizedBox(
-                      height: 18,
-                    ),
+                    SizedBox(height: 4,),
                     Text(
                       getIntervalText(),
                       style: TextStyle(
