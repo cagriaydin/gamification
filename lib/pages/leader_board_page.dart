@@ -138,14 +138,14 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
                                       if (widget.isSelfCardVisible)
                                         GestureDetector(
                                           onTap: () {
-                                            scrollController.animateTo(
-                                              75 *
-                                                  double.tryParse(
-                                                      (getMyRank() - 3)
-                                                          .toString()),
-                                              duration: Duration(seconds: 1),
-                                              curve: Curves.fastOutSlowIn,
-                                            );
+                                            // scrollController.animateTo(
+                                            //   75 *
+                                            //       double.tryParse(
+                                            //           (getMyRank() - 3)
+                                            //               .toString()),
+                                            //   duration: Duration(seconds: 1),
+                                            //   curve: Curves.fastOutSlowIn,
+                                            // );
                                             setState(() {
                                               widget.isSelfCardVisible = false;
                                             });
@@ -210,61 +210,69 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
                                                 List<dynamic> list, int index) {
                                               UserLeaderBoard item =
                                                   list.elementAt(index);
-                                              return Padding(
-                                                padding:
-                                                    const EdgeInsets.fromLTRB(
-                                                        18, 0, 18, 0),
-                                                child: Container(
-                                                  decoration: item.userId ==
+                                              return Visibility(
+                                                visible: index != 0 &&
+                                                    index != 1 &&
+                                                    index != 2,
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.fromLTRB(
+                                                          18, 0, 18, 0),
+                                                  child: Container(
+                                                    decoration: item.userId ==
+                                                                AuthenticationService
+                                                                    .verifiedUser
+                                                                    .id &&
+                                                            getMyRank() > 10
+                                                        ? BoxDecoration(
+                                                            color: Colors.white,
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        12),
+                                                            boxShadow: <
+                                                                BoxShadow>[
+                                                              BoxShadow(
+                                                                color: Color(
+                                                                    0xFFC2F6FC),
+                                                                spreadRadius: 0,
+                                                                blurRadius: 5,
+                                                                offset: Offset(
+                                                                    0, 4),
+                                                              ),
+                                                            ],
+                                                          )
+                                                        : BoxDecoration(),
+                                                    child: RankContent(
+                                                      image: userList
+                                                          .singleWhere(
+                                                              (element) =>
+                                                                  element.id ==
+                                                                  item.userId)
+                                                          .image,
+                                                      selfContent: item
+                                                              .userId ==
                                                           AuthenticationService
-                                                              .verifiedUser.id
-                                                      ? BoxDecoration(
-                                                          color: Colors.white,
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(12),
-                                                          boxShadow: <
-                                                              BoxShadow>[
-                                                            BoxShadow(
-                                                              color: Color(
-                                                                  0xFFC2F6FC),
-                                                              spreadRadius: 0,
-                                                              blurRadius: 5,
-                                                              offset:
-                                                                  Offset(0, 4),
-                                                            ),
-                                                          ],
-                                                        )
-                                                      : BoxDecoration(),
-                                                  child: RankContent(
-                                                    image: userList
-                                                        .singleWhere(
-                                                            (element) =>
-                                                                element.id ==
-                                                                item.userId)
-                                                        .image,
-                                                    selfContent: item.userId ==
-                                                        AuthenticationService
-                                                            .verifiedUser.id,
-                                                    title: userList
-                                                        .singleWhere(
-                                                            (element) =>
-                                                                element.id ==
-                                                                item.userId)
-                                                        .name,
-                                                    subTitle: branchList
-                                                        .singleWhere((element) =>
-                                                            element.id ==
-                                                            (userList
-                                                                .singleWhere(
-                                                                    (element) =>
-                                                                        element
-                                                                            .id ==
-                                                                        item.userId)
-                                                                .branchId))
-                                                        .name,
-                                                    rank: index + 1,
-                                                    point: item.point,
+                                                              .verifiedUser.id,
+                                                      title: userList
+                                                          .singleWhere(
+                                                              (element) =>
+                                                                  element.id ==
+                                                                  item.userId)
+                                                          .name,
+                                                      subTitle: branchList
+                                                          .singleWhere((element) =>
+                                                              element.id ==
+                                                              (userList
+                                                                  .singleWhere((element) =>
+                                                                      element
+                                                                          .id ==
+                                                                      item.userId)
+                                                                  .branchId))
+                                                          .name,
+                                                      rank: index + 1,
+                                                      point: item.point,
+                                                    ),
                                                   ),
                                                 ),
                                               );
@@ -425,7 +433,17 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
   }
 
   Future<List> dataFetcher(int index, int limit) async {
-    if (index == 0) return userLeaderList;
+    if (index == 0) {
+      if (userList.length > 10) {
+        userList = new List<User>();
+        userList.addAll(
+          await UserRepository.instance
+              .getUserList(limit: limit, offset: index),
+        );
+      }
+      return userLeaderList;
+    }
+
     var leaderBoardList = new List<UserLeaderBoard>();
     userList.addAll(
       await UserRepository.instance.getUserList(limit: limit, offset: index),

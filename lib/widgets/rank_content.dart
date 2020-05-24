@@ -128,7 +128,7 @@ class _RankContentState extends State<RankContent> {
                 Text(
                   widget.point.toString(),
                   style: TextStyle(
-                      fontSize: widget.selfContent ? 30 : 25,
+                      fontSize: widget.selfContent ? 29 : 25,
                       fontWeight: FontWeight.w300,
                       color: color),
                 ),
