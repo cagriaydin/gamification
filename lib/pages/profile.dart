@@ -309,7 +309,7 @@ class BuildProfileInfo extends StatelessWidget {
                   child: BuildUserInfo(
                     showPercentage: true,
                     user: user,
-                    radius: size.height < 700 ? 50 : 60,
+                    radius: size.height < 700 ? 45 : 55,
                   ),
                 ),
                 FittedBox(
