@@ -6,6 +6,7 @@ import 'package:catcher/handlers/slack_handler.dart';
 import 'package:catcher/mode/silent_report_mode.dart';
 import 'package:catcher/model/catcher_options.dart';
 import 'package:connectivity/connectivity.dart';
+// import 'package:device_preview/device_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:yorglass_ik/helpers/statusbar-helper.dart';
 import 'package:yorglass_ik/pages/home.dart';
@@ -13,7 +14,14 @@ import 'package:yorglass_ik/pages/welcome.dart';
 import 'package:yorglass_ik/services/authentication-service.dart';
 import 'package:yorglass_ik/shared/custom_theme.dart';
 
-void main() {
+void main() 
+// => runApp(
+//       DevicePreview(
+//         builder: (context) => MyApp(),
+//         enabled: false,
+//       ),
+//     );
+{
   CatcherOptions debugOptions = CatcherOptions(
     SilentReportMode(),
     [
