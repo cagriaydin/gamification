@@ -95,8 +95,8 @@ class FlagAvatar extends StatelessWidget {
                 children: [
                   Padding(
                     padding: name.isNotEmpty
-                        ? const EdgeInsets.fromLTRB(8, 20, 8, 60)
-                        : const EdgeInsets.fromLTRB(8, 0, 8, 60),
+                        ? const EdgeInsets.fromLTRB(8, 20, 8, 80)
+                        : const EdgeInsets.fromLTRB(8, 0, 8, 80),
                     child: Material(
                       elevation: 5,
                       color: Colors.white,

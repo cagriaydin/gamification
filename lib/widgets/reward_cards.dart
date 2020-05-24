@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:yorglass_ik/models/reward.dart';
 import 'package:yorglass_ik/pages/rewards_page.dart';
@@ -7,11 +8,17 @@ import 'package:yorglass_ik/widgets/flag_avatar.dart';
 class RewardCards extends StatelessWidget {
   final Reward reward;
 
-  const RewardCards({Key key, @required this.reward}) : super(key: key);
+  final double scale;
+
+  const RewardCards({
+    Key key,
+    @required this.reward,
+    this.scale = 1,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final double cardPadding = 32.0;
+    final double cardPadding = 16.0;
     final size = MediaQuery.of(context).size;
     final width = size.width / 2.2;
     final theme = Theme.of(context);
@@ -103,10 +110,7 @@ class RewardCards extends StatelessWidget {
                           Icon(Icons.favorite),
                           Text(
                             reward.likeCount.toString(),
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 15
-                            ),
+                            style: TextStyle(color: Colors.white, fontSize: 15),
                           )
                         ],
                       ),
@@ -125,7 +129,7 @@ class RewardCards extends StatelessWidget {
 
     if (size.height < 600) {
       return Transform.scale(
-        scale: .9,
+        scale: scale ?? .7,
         child: child,
       );
     } else

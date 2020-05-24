@@ -185,7 +185,7 @@ class _ContentSelectorState extends State<ContentSelector>
                         color: contentOption.isActive
                             ? widget.activeColor
                             : widget.disabledColor.withOpacity(.6),
-                        fontSize: contentOption.isActive ? 24 : 20,
+                        fontSize: contentOption.isActive ? 20 : 18,
                         fontWeight: FontWeight.w400,
                       ),
                     ),
@@ -213,7 +213,7 @@ class _ContentSelectorState extends State<ContentSelector>
                                   contentOption.isActive
                                       ? (widget.isLeaderBoard
                                           ? Colors.white
-                                          : Colors.blue)
+                                          : widget.activeColor)
                                       : Colors.transparent,
                                   widget.isLeaderBoard || contentOption.isActive
                                       ? Colors.white10

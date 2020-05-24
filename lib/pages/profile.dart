@@ -46,8 +46,12 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    final padding = MediaQuery.of(context).padding;
-    final size = MediaQuery.of(context).size;
+    final padding = MediaQuery
+        .of(context)
+        .padding;
+    final size = MediaQuery
+        .of(context)
+        .size;
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
@@ -78,10 +82,15 @@ class _ProfilePageState extends State<ProfilePage> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       UserPercentage(),
-                      BuildUserInfo(
-                        showPercentage: true,
-                        user: widget.user,
-                        radius: size.height < 700 ? 50 : 80,
+                      Container(
+                        child: Transform.scale(
+                          scale: size.height < 600 ? .6: .9,
+                          child: BuildUserInfo(
+                            showPercentage: true,
+                            user: widget.user,
+                            radius: size.height < 700 ? 50 : 80,
+                          ),
+                        ),
                       ),
                       FittedBox(
                         fit: BoxFit.fitWidth,
@@ -119,7 +128,9 @@ class _ProfilePageState extends State<ProfilePage> {
                         element.isActive = false;
                       });
                       setState(() {
-                        options.elementAt(i).isActive = true;
+                        options
+                            .elementAt(i)
+                            .isActive = true;
                       });
                     },
                     controller: pageController,
@@ -143,16 +154,16 @@ class _ProfilePageState extends State<ProfilePage> {
                                             builder: (BuildContext context) {
                                               BranchRepository.instance;
                                               List<LeaderBoardItem> newList =
-                                                  snapshot.data
-                                                      .map((e) =>
-                                                          LeaderBoardItem(
-                                                            imageId: e.image,
-                                                            point: e.point,
-                                                            name: e.name,
-                                                            branchName:
-                                                                e.branchName,
-                                                          ))
-                                                      .toList();
+                                              snapshot.data
+                                                  .map((e) =>
+                                                  LeaderBoardItem(
+                                                    imageId: e.image,
+                                                    point: e.point,
+                                                    name: e.name,
+                                                    branchName:
+                                                    e.branchName,
+                                                  ))
+                                                  .toList();
                                               return LeaderBoardPage(
                                                   leaderBoardUsers: newList);
                                             },
@@ -163,11 +174,12 @@ class _ProfilePageState extends State<ProfilePage> {
                                         children: [
                                           LeaderBoard(
                                             list: snapshot.data
-                                                .map((e) => LeaderBoardItem(
-                                                      imageId: e.image,
-                                                      point: e.point,
-                                                      name: e.name,
-                                                    ))
+                                                .map((e) =>
+                                                LeaderBoardItem(
+                                                  imageId: e.image,
+                                                  point: e.point,
+                                                  name: e.name,
+                                                ))
                                                 .toList(),
                                           ),
                                           Padding(
@@ -188,8 +200,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                               ),
                                               shape: RoundedRectangleBorder(
                                                   borderRadius:
-                                                      BorderRadius.all(
-                                                          Radius.circular(20))),
+                                                  BorderRadius.all(
+                                                      Radius.circular(20))),
                                               onPressed: () {
                                                 Navigator.push(
                                                   context,
@@ -198,23 +210,23 @@ class _ProfilePageState extends State<ProfilePage> {
                                                         (BuildContext context) {
                                                       BranchRepository.instance;
                                                       List<LeaderBoardItem>
-                                                          newList = snapshot
-                                                              .data
-                                                              .map((e) =>
-                                                                  LeaderBoardItem(
-                                                                    imageId:
-                                                                        e.image,
-                                                                    point:
-                                                                        e.point,
-                                                                    name:
-                                                                        e.name,
-                                                                    branchName:
-                                                                        e.branchName,
-                                                                  ))
-                                                              .toList();
+                                                      newList = snapshot
+                                                          .data
+                                                          .map((e) =>
+                                                          LeaderBoardItem(
+                                                            imageId:
+                                                            e.image,
+                                                            point:
+                                                            e.point,
+                                                            name:
+                                                            e.name,
+                                                            branchName:
+                                                            e.branchName,
+                                                          ))
+                                                          .toList();
                                                       return LeaderBoardPage(
                                                           leaderBoardUsers:
-                                                              newList);
+                                                          newList);
                                                     },
                                                   ),
                                                 );
@@ -241,7 +253,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             RewardCards(
                               reward: Reward(
                                   imageId:
-                                      "c9a560ac-63f2-401b-8185-2bae139957ad",
+                                  "c9a560ac-63f2-401b-8185-2bae139957ad",
                                   point: 0,
                                   likeCount: 0),
                             ),
@@ -296,10 +308,11 @@ class _ProfilePageState extends State<ProfilePage> {
 
   onContentSelectorChange(ContentOption contentOption) {
     WidgetsBinding.instance
-        .addPostFrameCallback((_) => pageController.animateToPage(
-              contentOption.title == 'Liderler' ? 0 : 1,
-              duration: Duration(milliseconds: 300),
-              curve: Curves.easeOut,
-            ));
+        .addPostFrameCallback((_) =>
+        pageController.animateToPage(
+          contentOption.title == 'Liderler' ? 0 : 1,
+          duration: Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        ));
   }
 }

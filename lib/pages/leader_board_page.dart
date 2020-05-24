@@ -113,6 +113,7 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
                         children: [
                           Container(
                             child: LeaderBoard(
+                              isLeaderBoard: true,
                               list: widget.leaderBoardUsers,
                             ),
                           ),
