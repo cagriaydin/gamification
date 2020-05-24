@@ -88,7 +88,11 @@ class FlagAvatar extends StatelessWidget {
           Stack(
             alignment: Alignment.bottomCenter,
             children: [
-              if (point != null) Transform.scale(alignment: Alignment.bottomCenter,scale: isLeaderBoard ? 1.1 : .7,child: FlagPoint(point: point)),
+              if (point != null)
+                Transform.scale(
+                    alignment: Alignment.bottomCenter,
+                    scale: isLeaderBoard ? 1.1 : .7,
+                    child: FlagPoint(point: point)),
               Stack(
                 alignment: Alignment.topCenter,
                 children: [
@@ -179,11 +183,11 @@ class FlagAvatar extends StatelessWidget {
   double getRadius(size) {
     double currentSize = (size.height < 700 || size.width < 400) ? 90 : 70;
     if (rank == 1) {
-      return currentSize;
-    } else if (rank == 2) {
-      return currentSize - 10;
-    } else {
       return currentSize - 20;
+    } else if (rank == 2) {
+      return currentSize - 30;
+    } else {
+      return currentSize - 40;
     }
   }
 
