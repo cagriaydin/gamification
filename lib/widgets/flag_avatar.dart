@@ -88,7 +88,7 @@ class FlagAvatar extends StatelessWidget {
           Stack(
             alignment: Alignment.bottomCenter,
             children: [
-              if (point != null) FlagPoint(point: point),
+              if (point != null) FlagPoint(point: point,avatarRadius: radius,),
               Stack(
                 alignment: Alignment.topCenter,
                 children: [

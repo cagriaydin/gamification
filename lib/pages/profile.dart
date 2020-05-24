@@ -25,7 +25,8 @@ class ProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final padding = MediaQuery.of(context).padding;
-    final size = MediaQuery.of(context).size;
+    final size =
+        MediaQuery.of(context).size * MediaQuery.of(context).devicePixelRatio;
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
@@ -299,26 +300,29 @@ class BuildProfileInfo extends StatelessWidget {
             SizedBox(
               height: size.height < 600 ? 0 : padding.top,
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                UserPercentage(),
-                Container(
-                  child: Transform.scale(
-                    scale: size.height < 600 ? .6 : .9,
-                    child: BuildUserInfo(
-                      showPercentage: true,
-                      user: user,
-                      radius: size.height < 700 ? 50 : 80,
+            Transform.scale(
+              scale: size.width < 751 ? 0.8 : 1.0,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    UserPercentage(),
+                    Container(
+                      child: BuildUserInfo(
+                        showPercentage: true,
+                        user: user,
+                        radius: size.height < 700 ? 50 : 65,
+                      ),
                     ),
-                  ),
+                    FittedBox(
+                      fit: BoxFit.fitWidth,
+                      child: UserPoint(),
+                    ),
+                  ],
                 ),
-                FittedBox(
-                  fit: BoxFit.fitWidth,
-                  child: UserPoint(),
-                ),
-              ],
+              ),
             ),
           ],
         ),

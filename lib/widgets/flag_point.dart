@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
 
 class FlagPoint extends StatelessWidget {
+
   const FlagPoint({
     Key key,
     @required this.point,
+    this.avatarRadius = 0,
   }) : super(key: key);
 
+  final double avatarRadius;
   final int point;
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-    final scale = size.height < 600 ? .8 : 1.3;
+    final scale = avatarRadius != 0 ? 0.7 : 1.0;
     return Transform.scale(
       scale: scale,
       child: DefaultTextStyle(
@@ -29,7 +31,7 @@ class FlagPoint extends StatelessWidget {
               ),
             ),
             child: Padding(
-              padding: EdgeInsets.fromLTRB(24,24,24,24),
+              padding: EdgeInsets.fromLTRB(24,24,24,28),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [

@@ -42,7 +42,7 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
   var future;
 
   int limit = 10;
-
+  bool isFirst = true;
   int myRank = 0;
 
   @override
@@ -82,7 +82,7 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
           extendBodyBehindAppBar: true,
           appBar: AppBar(
             title: Container(
-              height: 33,
+              height: 36,
               child: ContentSelector(
                 onChange: onContentSelectorChange,
                 options: options,
@@ -418,20 +418,47 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
   Future<List> dataFetcher(int index, int limit) async {
     if (index == 0) {
       if (userList.length > 10) {
-        userList = new List<User>();
+        userList.clear();
         userList.addAll(
           await UserRepository.instance
               .getUserList(limit: limit, offset: index),
         );
       }
-      return userLeaderList;
+      if (!isFirst)
+        setState(() {
+          widget.leaderBoardUsers = [
+            LeaderBoardItem(
+              imageId: userList[0].image,
+              point: userLeaderList[0].point,
+              name: userList[0].name,
+              branchName: userList[0].branchName,
+            ),
+            LeaderBoardItem(
+              imageId: userList[1].image,
+              point: userLeaderList[1].point,
+              name: userList[1].name,
+              branchName: userList[1].branchName,
+            ),
+            LeaderBoardItem(
+              imageId: userList[2].image,
+              point: userLeaderList[2].point,
+              name: userList[2].name,
+              branchName: userList[2].branchName,
+            )
+          ];
+        });
+
+      if (isFirst) {
+        isFirst = false;
+        return userLeaderList;
+      }
+    } else {
+      userList.addAll(
+        await UserRepository.instance.getUserList(limit: limit, offset: index),
+      );
     }
 
     var leaderBoardList = new List<UserLeaderBoard>();
-    userList.addAll(
-      await UserRepository.instance.getUserList(limit: limit, offset: index),
-    );
-
     leaderBoardList.addAll(
       await UserRepository.instance
           .getUserPointList(limit: limit, offset: index),

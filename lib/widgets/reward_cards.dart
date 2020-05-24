@@ -19,8 +19,9 @@ class RewardCards extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final double cardPadding = 16.0;
-    final size = MediaQuery.of(context).size;
-    final width = size.width / 2;
+    final deviceRatio = MediaQuery.of(context).devicePixelRatio;
+    final size = MediaQuery.of(context).size * deviceRatio;
+    final width = size.width / (2 * deviceRatio);
     final theme = Theme.of(context);
 
     LinearGradient getGradient({
@@ -98,7 +99,7 @@ class RewardCards extends StatelessWidget {
                   children: [
                     Center(
                       child: FlagAvatar(
-                        radius: 25,
+                        radius: size.width < 400 ? 25 : 35,
                         name: "",
                         point: reward.point,
                         imageId: reward.imageId,
