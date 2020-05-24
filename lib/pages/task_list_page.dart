@@ -251,17 +251,17 @@ class _BuildTaskState extends State<BuildTask> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    return Container(
-      padding: EdgeInsets.only(
-          left: widget.isLeft ? 16 : 0, right: widget.isLeft ? 0 : 16),
-      child: Center(
-        child: SingleChildScrollView(
-          child: Transform.scale(
-            alignment: Alignment.topCenter,
-            scale: size.height < 600 ? 0.7 : .95,
-            child: Stack(
-              children: [
-                Column(
+    return Stack(
+      children: [
+        Container(
+          padding: EdgeInsets.only(
+              left: widget.isLeft ? 60 : 0, right: widget.isLeft ? 0 : 60),
+          child: Center(
+            child: SingleChildScrollView(
+              child: Transform.scale(
+                alignment: Alignment.topCenter,
+                scale: size.height < 600 ? 0.7 : .95,
+                child: Column(
                   crossAxisAlignment: widget.isLeft
                       ? CrossAxisAlignment.start
                       : CrossAxisAlignment.end,
@@ -296,113 +296,135 @@ class _BuildTaskState extends State<BuildTask> {
                     ),
                   ],
                 ),
-                if (!widget.isLeft)
-                  Positioned(
-                    bottom: 0,
-                    left: 8,
-                    child: Opacity(
-                      opacity: opacity(),
-                      child: FlatButton(
-                        hoverColor: Color(0xff3FC1C9).withOpacity(.7),
-                        splashColor: Color(0xff3FC1C9).withOpacity(.7),
-                        focusColor: Color(0xff3FC1C9).withOpacity(.7),
-                        shape: CircleBorder(
-                          side: BorderSide(color: Color(0xff3FC1C9), width: 2),
-                        ),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                          gradient: LinearGradient(
-                            colors: [
-                              widget.userTask.complete == 1 ? Color(0xff26315F) : Colors.transparent,
-                              widget.userTask.complete == 1 ? Color(0xff3FC1C9) : Colors.transparent,
-                            ],
-                          ),
-                          ),
-                          padding: EdgeInsets.all(8),
-                          child: Transform.rotate(
-                            angle: math.pi / 10,
-                            child: Column(
-                              children: [
-                                GradientText(
-                                  '+' + widget.userTask.point.toString(),
-                                  disabled: widget.userTask.complete == 0,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                                GradientText(
-                                  'puan',
-                                  disabled: widget.userTask.complete == 0,
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w300,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        onPressed: () =>
-                            TaskRepository.instance.canUpdate(widget.userTask)
-                                ? stepComplete(context)
-                                : cantComplete(),
-                      ),
-                    ),
-                  ),
-                if (widget.isLeft)
-                  Positioned(
-                    bottom: 0,
-                    right: 8,
-                    child: Opacity(
-                      opacity: opacity(),
-                      child: FlatButton(
-                        hoverColor: Color(0xff3FC1C9).withOpacity(.7),
-                        splashColor: Color(0xff3FC1C9).withOpacity(.7),
-                        focusColor: Color(0xff3FC1C9).withOpacity(.7),
-                        shape: CircleBorder(
-                          side: BorderSide(color: Color(0xff3FC1C9), width: 2),
-                        ),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            gradient: LinearGradient(
-                              colors: [
-                                widget.userTask.complete == 1 ? Color(0xff26315F) : Colors.transparent,
-                                widget.userTask.complete == 1 ? Color(0xff3FC1C9) : Colors.transparent,
-                              ],
-                            ),
-                          ),
-                          padding: EdgeInsets.all(8),
-                          child: Transform.rotate(
-                            angle: -math.pi / 10,
-                            child: Column(
-                              children: [
-                                GradientText(
-                                  '+' + widget.userTask.point.toString(),
-                                  disabled: widget.userTask.complete == 0,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                                GradientText(
-                                  'puan',
-                                  disabled: widget.userTask.complete == 0,
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w300,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        onPressed: () =>
-                        TaskRepository.instance.canUpdate(widget.userTask)
-                            ? stepComplete(context)
-                            : cantComplete(),
-                      ),
-                    ),
-                  )
-              ],
+              ),
             ),
           ),
         ),
-      ),
+        if (!widget.isLeft)
+          Positioned(
+            bottom: 32,
+            right: 0,
+            child: Opacity(
+              opacity: opacity(),
+              child: ButtonTheme(
+                  padding: EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0), //adds padding inside the button
+                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap, //limits the touch area to the button area
+                  minWidth: 0, //wraps child's width
+                  height: 0, //wraps child's height
+                  child: FlatButton(
+                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  padding: EdgeInsets.all(0),
+                  hoverColor: Color(0xff3FC1C9).withOpacity(.7),
+                  splashColor: Color(0xff3FC1C9).withOpacity(.7),
+                  focusColor: Color(0xff3FC1C9).withOpacity(.7),
+                  shape: CircleBorder(
+                    side: BorderSide(color: Color(0xff3FC1C9), width: 2),
+                  ),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      gradient: LinearGradient(
+                        colors: [
+                          widget.userTask.complete == 1 ? Color(0xff26315F) : Colors.transparent,
+                          widget.userTask.complete == 1 ? Color(0xff3FC1C9) : Colors.transparent,
+                        ],
+                      ),
+                    ),
+                    padding: EdgeInsets.all(8),
+                    child: Padding(
+                      padding: const EdgeInsets.all(4.0),
+                      child: Transform.rotate(
+                        angle: -math.pi / 10,
+                        child: Column(
+                          children: [
+                            GradientText(
+                              '+' + widget.userTask.point.toString(),
+                              disabled: widget.userTask.complete == 0,
+                              fontSize: 20,
+                              fontWeight: FontWeight.w500,
+                            ),
+                            GradientText(
+                              'puan',
+                              disabled: widget.userTask.complete == 0,
+                              fontSize: 15,
+                              fontWeight: FontWeight.w300,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  onPressed: () =>
+                  TaskRepository.instance.canUpdate(widget.userTask)
+                      ? stepComplete(context)
+                      : cantComplete(),
+                ),
+              ),
+            ),
+          ),
+        if (widget.isLeft)
+          Positioned(
+            bottom: 36,
+            left: 0,
+            child: Opacity(
+              opacity: opacity(),
+              child: ButtonTheme(
+                padding: EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0), //adds padding inside the button
+                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap, //limits the touch area to the button area
+                minWidth: 0, //wraps child's width
+                height: 0, //wraps child's height
+                child: FlatButton(
+                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  padding: EdgeInsets.all(0),
+                  hoverColor: Color(0xff3FC1C9).withOpacity(.7),
+                  splashColor: Color(0xff3FC1C9).withOpacity(.7),
+                  focusColor: Color(0xff3FC1C9).withOpacity(.7),
+                  shape: CircleBorder(
+                    side: BorderSide(color: Color(0xff3FC1C9), width: 2),
+                  ),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      gradient: LinearGradient(
+                        colors: [
+                          widget.userTask.complete == 1 ? Color(0xff26315F) : Colors.transparent,
+                          widget.userTask.complete == 1 ? Color(0xff3FC1C9) : Colors.transparent,
+                        ],
+                      ),
+                    ),
+                    padding: EdgeInsets.all(8),
+                    child: Padding(
+                      padding: const EdgeInsets.all(4.0),
+                      child: Transform.rotate(
+                        angle: math.pi / 10,
+                        child: Column(
+                          children: [
+                            GradientText(
+                              '+' + widget.userTask.point.toString(),
+                              disabled: widget.userTask.complete == 0,
+                              fontSize: 20,
+                              fontWeight: FontWeight.w500,
+                            ),
+                            GradientText(
+                              'puan',
+                              disabled: widget.userTask.complete == 0,
+                              fontSize: 15,
+                              fontWeight: FontWeight.w300,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  onPressed: () =>
+                  TaskRepository.instance.canUpdate(widget.userTask)
+                      ? stepComplete(context)
+                      : cantComplete(),
+                ),
+              ),
+            ),
+          ),
+      ],
     );
   }
 
