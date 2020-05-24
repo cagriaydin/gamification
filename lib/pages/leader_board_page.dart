@@ -42,7 +42,7 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
   var future;
 
   int limit = 10;
-
+  bool isFirst = true;
   int myRank = 0;
 
   @override
@@ -82,7 +82,7 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
           extendBodyBehindAppBar: true,
           appBar: AppBar(
             title: Container(
-              height: 33,
+              height: 36,
               child: ContentSelector(
                 onChange: onContentSelectorChange,
                 options: options,

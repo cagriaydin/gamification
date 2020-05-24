@@ -109,12 +109,6 @@ class FeedContent extends StatelessWidget {
                           style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.w300,
-                            shadows: <Shadow>[
-                              Shadow(
-                                blurRadius: 40.0,
-                                color: Color(0xFF2FB4C2).withOpacity(.4),
-                              )
-                            ],
                           ),
                         ),
                       ],

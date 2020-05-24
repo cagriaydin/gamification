@@ -83,7 +83,7 @@ class _ValidationCodePageState extends State<ValidationCodePage> {
                             ),
                           ),
                           Container(
-                            height: height * 0.25,
+                            height: height * 0.26,
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -109,7 +109,7 @@ class _ValidationCodePageState extends State<ValidationCodePage> {
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: <Widget>[
                               Container(
-                                width: height * 0.22,
+                                width: height * 0.25,
                                 padding: EdgeInsets.only(right: 20),
                                 child: Column(
                                   children: <Widget>[
