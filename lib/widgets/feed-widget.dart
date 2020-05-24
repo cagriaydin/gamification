@@ -47,7 +47,7 @@ class FeedContent extends StatelessWidget {
               children: <Widget>[
                 Container(
                   width: size.width,
-                  height: 250,
+                  height: size.width / 1.5,
                   child: FittedBox(
                     fit: BoxFit.fitWidth,
                     alignment: Alignment.topCenter,
@@ -76,7 +76,7 @@ class FeedContent extends StatelessWidget {
                   ),
                 ),
                 Container(
-                  padding: EdgeInsets.only(top: 200),
+                  padding: EdgeInsets.only(top: size.width / 1.5 - 50),
                   child: Container(
                     width: size.width - 24,
                     decoration: BoxDecoration(
