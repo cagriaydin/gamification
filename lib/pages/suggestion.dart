@@ -218,16 +218,19 @@ class _SuggestionPageState extends State<SuggestionPage> {
                       SizedBox(
                         height: 20,
                       ),
-                      OutcomeButton(
-                        text: "Önerimi Paylaş",
-                        action: () => titleController.text.isNotEmpty &&
-                                descriptionController.text.isNotEmpty
-                            ? sendSuggestion()
-                            : null,
-                        color: titleController.text.isNotEmpty &&
-                                descriptionController.text.isNotEmpty
-                            ? Color(0xFF3FC1C9)
-                            : Color(0xFF3FC1C9).withOpacity(.2),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: OutcomeButton(
+                          text: "Önerimi Paylaş",
+                          action: () => titleController.text.isNotEmpty &&
+                                  descriptionController.text.isNotEmpty
+                              ? sendSuggestion()
+                              : null,
+                          color: titleController.text.isNotEmpty &&
+                                  descriptionController.text.isNotEmpty
+                              ? Color(0xFF3FC1C9)
+                              : Color(0xFF3FC1C9).withOpacity(.2),
+                        ),
                       )
                     ],
                   ),
