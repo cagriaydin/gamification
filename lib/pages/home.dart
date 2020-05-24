@@ -180,7 +180,6 @@ class _HomePageState extends State<HomePage> {
     var map = jsonDecode(remoteConfig.getString('app_version'));
     var currentVersion = await GetVersion.projectVersion;
     final sharedPref = await SharedPreferences.getInstance();
-    sharedPref.setBool(map['version'], false);
     if (map['version'] != currentVersion) {
       if (!map['forced'] &&
           sharedPref.getBool(map['version']) != null &&
@@ -191,9 +190,8 @@ class _HomePageState extends State<HomePage> {
         sharedPref.setBool(map['version'], true);
       }
       await Future.delayed(Duration(milliseconds: 2000));
-      final title = map['forced']
-          ? 'Uygulamayı güncellemelisiniz.'
-          : 'Yeni sürüm mevcut';
+      final title =
+          map['forced'] ? 'Uygulamayı güncellemelisiniz.' : 'Yeni sürüm mevcut';
       showDialog(
         context: context,
         barrierDismissible: !map['forced'],
@@ -205,9 +203,9 @@ class _HomePageState extends State<HomePage> {
 //                  sharedPref.remove(map['version']);
 //                }
 
-              if (!map['forced']) {
-                sharedPref.setBool(map['version'], false);
-              }
+//              if (!map['forced']) {
+//                sharedPref.setBool(map['version'], false);
+//              }
               return !map['forced'];
             },
             child: Center(
@@ -248,14 +246,19 @@ class _HomePageState extends State<HomePage> {
                                       borderRadius:
                                           BorderRadius.all(Radius.circular(10)),
                                       onTap: () {
-                                        if (!map['forced']) {
-                                          sharedPref.remove(map['version']);
-                                        }
+//                                        if (!map['forced']) {
+//                                          sharedPref.remove(map['version']);
+//                                        }
+                                        sharedPref.setBool(
+                                            map['version'], false);
                                         return Navigator.pop(context);
                                       },
                                       child: Padding(
                                         padding: const EdgeInsets.all(8.0),
-                                        child: Text('Tekrar Gösterme', style: TextStyle(fontSize: 16),),
+                                        child: Text(
+                                          'Tekrar Gösterme',
+                                          style: TextStyle(fontSize: 16),
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -284,7 +287,10 @@ class _HomePageState extends State<HomePage> {
                                     },
                                     child: Padding(
                                       padding: const EdgeInsets.all(12.0),
-                                      child: Text('Güncelle!', style: TextStyle(fontSize: 16),),
+                                      child: Text(
+                                        'Güncelle!',
+                                        style: TextStyle(fontSize: 16),
+                                      ),
                                     ),
                                   ),
                                 ),

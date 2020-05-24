@@ -38,7 +38,6 @@ dependencies:
   uuid: 2.0.4
   fetch_more: ^2.0.0
   flutter_statusbarcolor: 0.2.3
-  catcher: ^0.3.7
 
 dev_dependencies:
   flutter_test:

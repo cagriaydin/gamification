@@ -1,6 +1,4 @@
 import 'dart:ui';
-
-import 'package:catcher/core/catcher.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:yorglass_ik/models/content_option.dart';
