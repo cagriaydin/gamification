@@ -5,46 +5,40 @@ class FlagPoint extends StatelessWidget {
   const FlagPoint({
     Key key,
     @required this.point,
-    this.avatarRadius = 0,
   }) : super(key: key);
 
-  final double avatarRadius;
   final int point;
 
   @override
   Widget build(BuildContext context) {
-    final scale = avatarRadius != 0 ? 0.7 : 1.0;
-    return Transform.scale(
-      scale: scale,
-      child: DefaultTextStyle(
-        style: TextStyle(
-          color: Color(0xff2DB3C1),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Container(
-            decoration: BoxDecoration(
-              image: DecorationImage(
+    return DefaultTextStyle(
+      style: TextStyle(
+        color: Color(0xff2DB3C1),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(
 //                scale: scale,
-                image: AssetImage('assets/flag.png'),
-                fit: BoxFit.contain,
-              ),
+              image: AssetImage('assets/flag.png'),
+              fit: BoxFit.contain,
             ),
-            child: Padding(
-              padding: EdgeInsets.fromLTRB(24,24,24,28),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    (point ?? 0).toString(),
-                    style: TextStyle(fontWeight: FontWeight.w300, fontSize: 20),
-                  ),
-                  Text(
-                    'puan',
-                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.w300),
-                  ),
-                ],
-              ),
+          ),
+          child: Padding(
+            padding: EdgeInsets.fromLTRB(24,24,24,28),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  (point ?? 0).toString(),
+                  style: TextStyle(fontWeight: FontWeight.w300, fontSize: 20),
+                ),
+                Text(
+                  'puan',
+                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w300),
+                ),
+              ],
             ),
           ),
         ),

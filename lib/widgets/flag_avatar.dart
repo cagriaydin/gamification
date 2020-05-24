@@ -88,7 +88,7 @@ class FlagAvatar extends StatelessWidget {
           Stack(
             alignment: Alignment.bottomCenter,
             children: [
-              if (point != null) FlagPoint(point: point,avatarRadius: radius,),
+              if (point != null) Transform.scale(scale: isLeaderBoard ? 1.1 : .7,child: FlagPoint(point: point)),
               Stack(
                 alignment: Alignment.topCenter,
                 children: [
