@@ -88,14 +88,14 @@ class FlagAvatar extends StatelessWidget {
           Stack(
             alignment: Alignment.bottomCenter,
             children: [
-              if (point != null) Transform.scale(scale: isLeaderBoard ? 1.1 : .7,child: FlagPoint(point: point)),
+              if (point != null) Transform.scale(alignment: Alignment.bottomCenter,scale: isLeaderBoard ? 1.1 : .7,child: FlagPoint(point: point)),
               Stack(
                 alignment: Alignment.topCenter,
                 children: [
                   Padding(
                     padding: isLeaderBoard
                         ? const EdgeInsets.fromLTRB(8, 20, 8, 80)
-                        : const EdgeInsets.fromLTRB(8, 20, 8, 60),
+                        : const EdgeInsets.fromLTRB(8, 20, 8, 40),
                     child: Material(
                       elevation: 5,
                       color: Colors.white,
