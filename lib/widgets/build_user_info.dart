@@ -71,7 +71,7 @@ class BuildUserInfo extends StatelessWidget {
                     : user.branchName,
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontSize: isTaskPage ? 15 : 18,
+                  fontSize: isTaskPage ? 14 : 16,
                   fontWeight: isTaskPage ? FontWeight.w200 : FontWeight.w400,
                   color: isTaskPage
                       ? Color(0xFF26315F)
