@@ -251,145 +251,180 @@ class _BuildTaskState extends State<BuildTask> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    return Container(
-      padding: EdgeInsets.only(
-          left: widget.isLeft ? 16 : 0, right: widget.isLeft ? 0 : 16),
-      child: GestureDetector(
-        onDoubleTap: () => TaskRepository.instance.canUpdate(widget.userTask)
-            ? stepComplete(context)
-            : cantComplete(),
-        behavior: HitTestBehavior.opaque,
-        child: Center(
-          child: SingleChildScrollView(
-            child: Transform.scale(
-              alignment: Alignment.topCenter,
-              scale: size.height < 600 ? 0.7 : .95,
-              child: Stack(
-                children: [
-                  Column(
-                    crossAxisAlignment: widget.isLeft
-                        ? CrossAxisAlignment.start
-                        : CrossAxisAlignment.end,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        widget.userTask.task.name,
-                        textAlign:
-                            widget.isLeft ? TextAlign.left : TextAlign.right,
-                      ),
-                      SizedBox(
-                        height: 18,
-                      ),
-                      Text(
-                        getIntervalText(),
-                        style: TextStyle(
-                            fontStyle: FontStyle.italic,
-                            color: Color(0xFF26315F).withOpacity(.6),
-                            fontWeight: FontWeight.w300),
-                      ),
-                      SizedBox(
-                        height: 8,
-                      ),
-                      Opacity(
-                        opacity: opacity(),
-                        child: StepperLinearIndicator(
-                          width: size.width / 2,
-                          height: 20,
-                          stepCount: widget.userTask.task.count,
-                          currentCount: widget.userTask.count,
-                        ),
-                      ),
-                    ],
-                  ),
-                  if (!widget.isLeft)
-                    Positioned(
-                      bottom: 0,
-                      left: 8,
-                      child: ConfettiWidget(
-                        confettiController: confettiController,
-                        blastDirectionality: BlastDirectionality.explosive,
-                        colors: [
-                          Color(0xff54B4BA),
-                        ],
-                        blastDirection: 0,
-                        // radial value - LEFT
-                        particleDrag: 0.05,
-                        // apply drag to the confetti
-                        emissionFrequency: 0.05,
-                        // how often it should emit
-                        numberOfParticles: 20,
-                        // number of particles to emit
-                        gravity: 0.05,
-                        // gravity - or fall speed
-                        shouldLoop: false,
-                        child: Transform.rotate(
-                          angle: math.pi / 10,
-                          child: Column(
-                            children: [
-                              GradientText(
-                                '+' + widget.userTask.point.toString(),
-                                disabled: widget.userTask.complete == 0,
-                                fontSize: 20,
-                                fontWeight: FontWeight.w500,
-                              ),
-                              GradientText(
-                                'puan',
-                                disabled: widget.userTask.complete == 0,
-                                fontSize: 15,
-                                fontWeight: FontWeight.w300,
-                              ),
-                            ],
-                          ),
-                        ),
+    return Stack(
+      children: [
+        Container(
+          padding: EdgeInsets.only(
+              left: widget.isLeft ? 60 : 0, right: widget.isLeft ? 0 : 60),
+          child: Center(
+            child: SingleChildScrollView(
+              child: Transform.scale(
+                alignment: Alignment.topCenter,
+                scale: size.height < 600 ? 0.7 : .95,
+                child: Column(
+                  crossAxisAlignment: widget.isLeft
+                      ? CrossAxisAlignment.start
+                      : CrossAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      widget.userTask.task.name,
+                      textAlign:
+                          widget.isLeft ? TextAlign.left : TextAlign.right,
+                    ),
+                    SizedBox(
+                      height: 18,
+                    ),
+                    Text(
+                      getIntervalText(),
+                      style: TextStyle(
+                          fontStyle: FontStyle.italic,
+                          color: Color(0xFF26315F).withOpacity(.6),
+                          fontWeight: FontWeight.w300),
+                    ),
+                    SizedBox(
+                      height: 8,
+                    ),
+                    Opacity(
+                      opacity: opacity(),
+                      child: StepperLinearIndicator(
+                        width: size.width / 2,
+                        height: 20,
+                        stepCount: widget.userTask.task.count,
+                        currentCount: widget.userTask.count,
                       ),
                     ),
-                  if (widget.isLeft)
-                    Positioned(
-                      bottom: 0,
-                      right: 8,
-                      child: Transform.rotate(
-                        angle: -math.pi / 10,
-                        child: ConfettiWidget(
-                          confettiController: confettiController,
-                          blastDirection: pi,
-                          colors: [
-                            Color(0xff54B4BA),
-                          ],
-                          // radial value - LEFT
-                          particleDrag: 0.05,
-                          // apply drag to the confetti
-                          emissionFrequency: 0.05,
-                          // how often it should emit
-                          numberOfParticles: 20,
-                          // number of particles to emit
-                          gravity: 0.05,
-                          // gravity - or fall speed
-                          shouldLoop: false,
-                          child: Column(
-                            children: [
-                              GradientText(
-                                '+' + widget.userTask.point.toString(),
-                                disabled: widget.userTask.complete == 0,
-                                fontSize: 20,
-                                fontWeight: FontWeight.w500,
-                              ),
-                              GradientText(
-                                'puan',
-                                disabled: widget.userTask.complete == 0,
-                                fontSize: 15,
-                                fontWeight: FontWeight.w300,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    )
-                ],
+                  ],
+                ),
               ),
             ),
           ),
         ),
-      ),
+        if (!widget.isLeft)
+          Positioned(
+            bottom: 32,
+            right: 0,
+            child: Opacity(
+              opacity: opacity(),
+              child: ButtonTheme(
+                  padding: EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0), //adds padding inside the button
+                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap, //limits the touch area to the button area
+                  minWidth: 0, //wraps child's width
+                  height: 0, //wraps child's height
+                  child: FlatButton(
+                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  padding: EdgeInsets.all(0),
+                  hoverColor: Color(0xff3FC1C9).withOpacity(.7),
+                  splashColor: Color(0xff3FC1C9).withOpacity(.7),
+                  focusColor: Color(0xff3FC1C9).withOpacity(.7),
+                  shape: CircleBorder(
+                    side: BorderSide(color: Color(0xff3FC1C9), width: 2),
+                  ),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      gradient: LinearGradient(
+                        colors: [
+                          widget.userTask.complete == 1 ? Color(0xff26315F) : Colors.transparent,
+                          widget.userTask.complete == 1 ? Color(0xff3FC1C9) : Colors.transparent,
+                        ],
+                      ),
+                    ),
+                    padding: EdgeInsets.all(8),
+                    child: Padding(
+                      padding: const EdgeInsets.all(4.0),
+                      child: Transform.rotate(
+                        angle: -math.pi / 10,
+                        child: Column(
+                          children: [
+                            GradientText(
+                              '+' + widget.userTask.point.toString(),
+                              disabled: widget.userTask.complete == 0,
+                              fontSize: 20,
+                              fontWeight: FontWeight.w500,
+                            ),
+                            GradientText(
+                              'puan',
+                              disabled: widget.userTask.complete == 0,
+                              fontSize: 15,
+                              fontWeight: FontWeight.w300,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  onPressed: () =>
+                  TaskRepository.instance.canUpdate(widget.userTask)
+                      ? stepComplete(context)
+                      : cantComplete(),
+                ),
+              ),
+            ),
+          ),
+        if (widget.isLeft)
+          Positioned(
+            bottom: 36,
+            left: 0,
+            child: Opacity(
+              opacity: opacity(),
+              child: ButtonTheme(
+                padding: EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0), //adds padding inside the button
+                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap, //limits the touch area to the button area
+                minWidth: 0, //wraps child's width
+                height: 0, //wraps child's height
+                child: FlatButton(
+                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  padding: EdgeInsets.all(0),
+                  hoverColor: Color(0xff3FC1C9).withOpacity(.7),
+                  splashColor: Color(0xff3FC1C9).withOpacity(.7),
+                  focusColor: Color(0xff3FC1C9).withOpacity(.7),
+                  shape: CircleBorder(
+                    side: BorderSide(color: Color(0xff3FC1C9), width: 2),
+                  ),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      gradient: LinearGradient(
+                        colors: [
+                          widget.userTask.complete == 1 ? Color(0xff26315F) : Colors.transparent,
+                          widget.userTask.complete == 1 ? Color(0xff3FC1C9) : Colors.transparent,
+                        ],
+                      ),
+                    ),
+                    padding: EdgeInsets.all(8),
+                    child: Padding(
+                      padding: const EdgeInsets.all(4.0),
+                      child: Transform.rotate(
+                        angle: math.pi / 10,
+                        child: Column(
+                          children: [
+                            GradientText(
+                              '+' + widget.userTask.point.toString(),
+                              disabled: widget.userTask.complete == 0,
+                              fontSize: 20,
+                              fontWeight: FontWeight.w500,
+                            ),
+                            GradientText(
+                              'puan',
+                              disabled: widget.userTask.complete == 0,
+                              fontSize: 15,
+                              fontWeight: FontWeight.w300,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  onPressed: () =>
+                  TaskRepository.instance.canUpdate(widget.userTask)
+                      ? stepComplete(context)
+                      : cantComplete(),
+                ),
+              ),
+            ),
+          ),
+      ],
     );
   }
 
@@ -639,7 +674,7 @@ class _TaskListBuilderState extends State<TaskListBuilder>
         await Future.delayed(Duration(milliseconds: 600));
         offsetNotifier.value = AnimateOffset(offset ?? Offset.zero, false);
         controller.animateTo(
-          offset.dy - 10,
+          offset.dy - 50,
           duration: Duration(milliseconds: 600),
           curve: Curves.ease,
         );
@@ -674,7 +709,7 @@ class _TaskListBuilderState extends State<TaskListBuilder>
     if (_debounce?.isActive ?? false) _debounce.cancel();
     _debounce = Timer(const Duration(milliseconds: 1000), () async {
       final box = lastPlace.currentContext.findRenderObject() as RenderBox;
-      initialPos = box.localToGlobal(Offset.zero);
+      initialPos = box.localToGlobal(Offset(0,50));
 //      animateToIndex(position);
     });
   }

@@ -27,28 +27,31 @@ class ProfilePage extends StatelessWidget {
     final padding = MediaQuery.of(context).padding;
     final size =
         MediaQuery.of(context).size * MediaQuery.of(context).devicePixelRatio;
-    return Scaffold(
-      extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: GestureDetector(
-          onTap: () => menuFunction(),
-          child: Icon(
-            Icons.menu,
-            color: Color(0xff2DB3C1),
-            size: 40,
+    return MediaQuery(
+      data: MediaQuery.of(context).copyWith(textScaleFactor: 1),
+      child: Scaffold(
+        extendBodyBehindAppBar: true,
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          leading: GestureDetector(
+            onTap: () => menuFunction(),
+            child: Icon(
+              Icons.menu,
+              color: Color(0xff2DB3C1),
+              size: 40,
+            ),
           ),
         ),
-      ),
-      body: Column(
-        mainAxisSize: MainAxisSize.max,
-        children: [
-          Flexible(child: BuildProfileInfo(size: size, padding: padding)),
-          Flexible(
-            child: BuildProfileTabs(),
-          ),
-        ],
+        body: Column(
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            Flexible(child: BuildProfileInfo(size: size, padding: padding)),
+            Flexible(
+              child: BuildProfileTabs(),
+            ),
+          ],
+        ),
       ),
     );
   }
