@@ -1,5 +1,6 @@
 import 'package:fetch_more/fetch_more.dart';
 import 'package:flutter/material.dart';
+import 'package:yorglass_ik/helpers/statusbar-helper.dart';
 import 'package:yorglass_ik/models/branch.dart';
 import 'package:yorglass_ik/models/branch_leader_board.dart';
 import 'package:yorglass_ik/models/content_option.dart';
@@ -44,6 +45,7 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
 
   @override
   void initState() {
+    StatusbarHelper.setSatusBar();
     future = Future.wait([
       BranchRepository.instance.getBoardPointList(),
       BranchRepository.instance.getTopBranchPointList(),

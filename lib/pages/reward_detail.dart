@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:yorglass_ik/helpers/statusbar-helper.dart';
 import 'package:yorglass_ik/models/reward.dart';
 import 'package:yorglass_ik/repositories/reward-repository.dart';
 import 'package:yorglass_ik/widgets/image_widget.dart';
@@ -8,7 +9,9 @@ class RewardDetail extends StatelessWidget {
 
   final num currentPoint;
 
-  RewardDetail({this.reward, this.currentPoint = 0});
+  RewardDetail({this.reward, this.currentPoint = 0}) {
+    StatusbarHelper.setSatusBar();
+  }
 
   @override
   Widget build(BuildContext context) {

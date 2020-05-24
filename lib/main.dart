@@ -4,6 +4,7 @@ import 'package:connectivity/connectivity.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
+import 'package:yorglass_ik/helpers/statusbar-helper.dart';
 import 'package:yorglass_ik/pages/home.dart';
 import 'package:yorglass_ik/pages/welcome.dart';
 import 'package:yorglass_ik/services/authentication-service.dart';
@@ -12,7 +13,7 @@ import 'package:yorglass_ik/shared/custom_theme.dart';
 void main() => runApp(
       DevicePreview(
         builder: (context) => MyApp(),
-        enabled: true,
+        enabled: false,
       ),
     );
 
@@ -27,15 +28,7 @@ class _MyAppState extends State<MyApp> {
 
   @override
   void initState() {
-    // change the status bar color to material color [green-400]
-    FlutterStatusbarcolor.setStatusBarColor(Colors.white).then((value) {
-      FlutterStatusbarcolor.setStatusBarWhiteForeground(false);
-    });
-
-// change the navigation bar color to material color [orange-200]
-    FlutterStatusbarcolor.setNavigationBarColor(Colors.white  ).then((value) {
-      FlutterStatusbarcolor.setNavigationBarWhiteForeground(false);
-    });
+    StatusbarHelper.setSatusBar();
     // AuthenticationService().signOut();
     listenConnection();
     AuthenticationService.firebaseAuthInstance.onAuthStateChanged.listen((event) {
