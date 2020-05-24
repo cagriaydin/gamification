@@ -176,49 +176,46 @@ class _BuildProfileTabsState extends State<BuildProfileTabs> {
                                             ))
                                         .toList(),
                                   ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: OutlineButton(
-                                      child: Text(
-                                        'Lider Tablosunu Gör',
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.w300,
-                                          fontSize: 18,
-                                        ),
+                                  OutlineButton(
+                                    child: Text(
+                                      'Lider Tablosunu Gör',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w300,
+                                        fontSize: 18,
                                       ),
-                                      textColor: Color(0xff2DB3C1),
-                                      borderSide: BorderSide(
-                                        color: Color(0xff2DB3C1),
-                                        style: BorderStyle.solid,
-                                        width: 1,
-                                      ),
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(20))),
-                                      onPressed: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (BuildContext context) {
-                                              BranchRepository.instance;
-                                              List<LeaderBoardItem> newList =
-                                                  snapshot.data
-                                                      .map((e) =>
-                                                          LeaderBoardItem(
-                                                            imageId: e.image,
-                                                            point: e.point,
-                                                            name: e.name,
-                                                            branchName:
-                                                                e.branchName,
-                                                          ))
-                                                      .toList();
-                                              return LeaderBoardPage(
-                                                  leaderBoardUsers: newList);
-                                            },
-                                          ),
-                                        );
-                                      },
                                     ),
+                                    textColor: Color(0xff2DB3C1),
+                                    borderSide: BorderSide(
+                                      color: Color(0xff2DB3C1),
+                                      style: BorderStyle.solid,
+                                      width: 1,
+                                    ),
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(20))),
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (BuildContext context) {
+                                            BranchRepository.instance;
+                                            List<LeaderBoardItem> newList =
+                                                snapshot.data
+                                                    .map((e) =>
+                                                        LeaderBoardItem(
+                                                          imageId: e.image,
+                                                          point: e.point,
+                                                          name: e.name,
+                                                          branchName:
+                                                              e.branchName,
+                                                        ))
+                                                    .toList();
+                                            return LeaderBoardPage(
+                                                leaderBoardUsers: newList);
+                                          },
+                                        ),
+                                      );
+                                    },
                                   ),
                                 ],
                               ),
@@ -300,9 +297,9 @@ class BuildProfileInfo extends StatelessWidget {
       child: SingleChildScrollView(
         child: Column(
           children: [
-            SizedBox(
-              height: size.height < 600 ? 0 : padding.top,
-            ),
+//            SizedBox(
+//              height: size.height < 600 ? 0 : padding.top,
+//            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
