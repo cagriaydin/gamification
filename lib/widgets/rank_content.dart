@@ -121,7 +121,7 @@ class _RankContentState extends State<RankContent> {
                   ),
           ),
           Flexible(
-            flex: 2,
+            flex: 3,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
