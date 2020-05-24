@@ -301,24 +301,27 @@ class BuildProfileInfo extends StatelessWidget {
               height: size.height < 600 ? 0 : padding.top,
             ),
             Transform.scale(
-              scale: size.width < 400 ? 0.8 : 1.0,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  UserPercentage(),
-                  Container(
-                    child: BuildUserInfo(
-                      showPercentage: true,
-                      user: user,
-                      radius: size.height < 700 ? 50 : 80,
+              scale: size.width < 751 ? 0.8 : 1.0,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    UserPercentage(),
+                    Container(
+                      child: BuildUserInfo(
+                        showPercentage: true,
+                        user: user,
+                        radius: size.height < 700 ? 50 : 65,
+                      ),
                     ),
-                  ),
-                  FittedBox(
-                    fit: BoxFit.fitWidth,
-                    child: UserPoint(),
-                  ),
-                ],
+                    FittedBox(
+                      fit: BoxFit.fitWidth,
+                      child: UserPoint(),
+                    ),
+                  ],
+                ),
               ),
             ),
           ],
