@@ -90,128 +90,130 @@ class _SuggestionPageState extends State<SuggestionPage> {
                           ),
                           height: size.height * .6,
                           width: double.infinity,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Padding(
-                                padding:
-                                    const EdgeInsets.fromLTRB(20, 20, 0, 0),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Column(
-                                      children: [
-                                        Container(
-                                          width: 100,
-                                          height: 100,
-                                          child: GetCircleAvatar(
-                                            imageId:AuthenticationService.verifiedUser.image,
-                                            radius: 40,
-                                          )
-                                        ),
-                                        SizedBox(height: 10),
-                                        Text(
-                                          AuthenticationService
-                                              .verifiedUser.name,
-                                          style: TextStyle(
-                                              fontSize: 20,
-                                              color: Theme.of(context)
-                                                  .accentColor),
-                                        ),
-                                        SizedBox(height: 5),
-                                        Row(
-                                          children: [
-                                            Image.asset(
-                                              "assets/blue_pin.png",
-                                              scale: 6,
-                                            ),
-                                            SizedBox(
-                                              width: 8,
-                                            ),
-                                            Text(
-                                              AuthenticationService
-                                                  .verifiedUser.branchName,
-                                              style: TextStyle(
-                                                fontSize: 12,
-                                                color: Color(0xff4BADBB)
-                                                    .withOpacity(.6),
+                          child: SingleChildScrollView(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(20, 20, 0, 0),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Column(
+                                        children: [
+                                          Container(
+                                            width: 100,
+                                            height: 100,
+                                            child: GetCircleAvatar(
+                                              imageId:AuthenticationService.verifiedUser.image,
+                                              radius: 40,
+                                            )
+                                          ),
+                                          SizedBox(height: 10),
+                                          Text(
+                                            AuthenticationService
+                                                .verifiedUser.name,
+                                            style: TextStyle(
+                                                fontSize: 20,
+                                                color: Theme.of(context)
+                                                    .accentColor),
+                                          ),
+                                          SizedBox(height: 5),
+                                          Row(
+                                            children: [
+                                              Image.asset(
+                                                "assets/blue_pin.png",
+                                                scale: 6,
                                               ),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(
-                                          right: 20.0, bottom: 20.0),
-                                      child: PointBuilder(
-                                        point: "10",
+                                              SizedBox(
+                                                width: 8,
+                                              ),
+                                              Text(
+                                                AuthenticationService
+                                                    .verifiedUser.branchName,
+                                                style: TextStyle(
+                                                  fontSize: 12,
+                                                  color: Color(0xff4BADBB)
+                                                      .withOpacity(.6),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
                                       ),
-                                    )
-                                  ],
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                            right: 20.0, bottom: 20.0),
+                                        child: PointBuilder(
+                                          point: "10",
+                                        ),
+                                      )
+                                    ],
+                                  ),
                                 ),
-                              ),
-                              SizedBox(
-                                height: 20,
-                              ),
-                              Padding(
-                                padding:
-                                    const EdgeInsets.fromLTRB(20, 10, 0, 0),
-                                child: TextField(
-                                  onChanged: (a) => setState(() {}),
-                                  maxLength: 28,
-                                  cursorColor: Colors.black,
-                                  keyboardType: TextInputType.text,
-                                  controller: titleController,
-                                  decoration: new InputDecoration(
-                                    counterText: "",
-                                    contentPadding: EdgeInsets.all(0),
-                                    isDense: true,
-                                    hintText: "Önerine bir başlık ver",
-                                    hintStyle: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.black.withOpacity(.25),
+                                SizedBox(
+                                  height: 20,
+                                ),
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(20, 10, 0, 0),
+                                  child: TextField(
+                                    onChanged: (a) => setState(() {}),
+                                    maxLength: 28,
+                                    cursorColor: Colors.black,
+                                    keyboardType: TextInputType.text,
+                                    controller: titleController,
+                                    decoration: new InputDecoration(
+                                      counterText: "",
+                                      contentPadding: EdgeInsets.all(0),
+                                      isDense: true,
+                                      hintText: "Önerine bir başlık ver",
+                                      hintStyle: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black.withOpacity(.25),
+                                      ),
+                                      fillColor: Colors.red,
+                                      border: InputBorder.none,
                                     ),
-                                    fillColor: Colors.red,
-                                    border: InputBorder.none,
-                                  ),
-                                  style: TextStyle(
-                                    color: Theme.of(context).accentColor,
-                                  ),
-                                ),
-                              ),
-                              SizedBox(
-                                height: 10,
-                              ),
-                              Padding(
-                                padding:
-                                    const EdgeInsets.fromLTRB(25, 10, 20, 0),
-                                child: TextField(
-                                  onChanged: (a) => setState(() {}),
-                                  keyboardType: TextInputType.text,
-                                  maxLengthEnforced: false,
-                                  maxLength: 500,
-                                  maxLines: 3,
-                                  cursorColor: Colors.black,
-                                  controller: descriptionController,
-                                  decoration: new InputDecoration(
-                                    contentPadding: EdgeInsets.only(top: 7),
-                                    hintText: "Önerinden biraz bahseder misin",
-                                    hintStyle: TextStyle(
-                                      color: Colors.black.withOpacity(.25),
-                                      fontSize: 14,
+                                    style: TextStyle(
+                                      color: Theme.of(context).accentColor,
                                     ),
-                                    border: InputBorder.none,
-                                  ),
-                                  style: TextStyle(
-                                    color: Theme.of(context).accentColor,
                                   ),
                                 ),
-                              ),
-                            ],
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(25, 10, 20, 0),
+                                  child: TextField(
+                                    onChanged: (a) => setState(() {}),
+                                    keyboardType: TextInputType.text,
+                                    maxLengthEnforced: false,
+                                    maxLength: 500,
+                                    maxLines: 3,
+                                    cursorColor: Colors.black,
+                                    controller: descriptionController,
+                                    decoration: new InputDecoration(
+                                      contentPadding: EdgeInsets.only(top: 7),
+                                      hintText: "Önerinden biraz bahseder misin",
+                                      hintStyle: TextStyle(
+                                        color: Colors.black.withOpacity(.25),
+                                        fontSize: 14,
+                                      ),
+                                      border: InputBorder.none,
+                                    ),
+                                    style: TextStyle(
+                                      color: Theme.of(context).accentColor,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
