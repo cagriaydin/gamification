@@ -15,7 +15,7 @@ class PointBuilder extends StatelessWidget {
       children: [
         GradientText(
           "+ " + point,
-          fontSize: 40,
+          fontSize: 30,
         ),
         Text(
           "puan",
