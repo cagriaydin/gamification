@@ -10,7 +10,8 @@ class UserPoint extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size * MediaQuery.of(context).devicePixelRatio;
+    final size =
+        MediaQuery.of(context).size * MediaQuery.of(context).devicePixelRatio;
     var selectUserPoint = context.select((User value) => value.point);
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -18,11 +19,13 @@ class UserPoint extends StatelessWidget {
         GradientText(
           (selectUserPoint ?? 0).toString(),
           fontWeight: FontWeight.w500,
-          fontSize: size.width <400 ? 30:35,
+          fontSize: size.width < 400 ? 25 : 30,
         ),
         Text(
           'puan',
-          style: TextStyle(fontSize: size.width <400 ? 20 : 25, fontWeight: FontWeight.w300),
+          style: TextStyle(
+              fontSize: size.width < 400 ? 17 : 20,
+              fontWeight: FontWeight.w300),
         ),
       ],
     );
