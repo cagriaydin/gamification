@@ -11,11 +11,10 @@ class UserPercentage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
     final selectPercentage = context.select((User value) => value.percentage);
     return GradientText(
       '%' + (selectPercentage ?? 0).toString(),
-      fontSize: size.width < 400 ? 25 : 30,
+      fontSize: 30,
       fontWeight: FontWeight.w500,
     );
   }
