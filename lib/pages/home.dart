@@ -192,8 +192,8 @@ class _HomePageState extends State<HomePage> {
       }
       await Future.delayed(Duration(milliseconds: 2000));
       final title = map['forced']
-          ? 'You have to update the App'
-          : 'New version available';
+          ? 'Uygulamayı güncellemelisiniz.'
+          : 'Yeni sürüm mevcut';
       showDialog(
         context: context,
         barrierDismissible: !map['forced'],
@@ -228,7 +228,7 @@ class _HomePageState extends State<HomePage> {
                             padding: const EdgeInsets.all(16.0),
                             child: Text(
                               title,
-                              style: Theme.of(context).textTheme.display1,
+                              style: Theme.of(context).textTheme.headline5,
                             ),
                           ),
                           Row(
@@ -254,8 +254,8 @@ class _HomePageState extends State<HomePage> {
                                         return Navigator.pop(context);
                                       },
                                       child: Padding(
-                                        padding: const EdgeInsets.all(12.0),
-                                        child: Text('Do not show it again'),
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Text('Tekrar Gösterme', style: TextStyle(fontSize: 16),),
                                       ),
                                     ),
                                   ),
@@ -284,7 +284,7 @@ class _HomePageState extends State<HomePage> {
                                     },
                                     child: Padding(
                                       padding: const EdgeInsets.all(12.0),
-                                      child: Text('Update the App!'),
+                                      child: Text('Güncelle!', style: TextStyle(fontSize: 16),),
                                     ),
                                   ),
                                 ),
