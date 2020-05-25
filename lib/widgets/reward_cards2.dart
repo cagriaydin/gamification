@@ -35,6 +35,7 @@ class RewardCards2 extends StatelessWidget {
                   child: FlagAvatar(
                 split: false,
                 name: reward.title,
+                radius: 25,
                 point: reward.point,
                 titleColor: Color(0xff26315F),
               ));

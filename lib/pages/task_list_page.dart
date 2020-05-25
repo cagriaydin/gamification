@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:math' as math;
-import 'dart:math';
 import 'dart:typed_data';
 import 'dart:ui';
 
@@ -125,7 +124,7 @@ class _TaskListPageState extends State<TaskListPage> {
             secondChild: Padding(
               padding: const EdgeInsets.only(bottom: 8),
               child: Container(
-                height: 150,
+                height: size.height / 8,
                 width: size.width,
                 padding: EdgeInsets.only(top: padding.top),
                 decoration: BoxDecoration(
@@ -257,39 +256,41 @@ class _BuildTaskState extends State<BuildTask> {
           padding: EdgeInsets.only(
               left: widget.isLeft ? 60 : 0, right: widget.isLeft ? 0 : 60),
           child: Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              crossAxisAlignment: widget.isLeft
-                  ? CrossAxisAlignment.start
-                  : CrossAxisAlignment.end,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  widget.userTask.task.name,
-                  textAlign:
-                      widget.isLeft ? TextAlign.left : TextAlign.right,
-                ),
-                Expanded(child: Container()),
-                Text(
-                  getIntervalText(),
-                  style: TextStyle(
-                      fontStyle: FontStyle.italic,
-                      color: Color(0xFF26315F).withOpacity(.6),
-                      fontWeight: FontWeight.w300),
-                ),
-                SizedBox(
-                  height: 8,
-                ),
-                Opacity(
-                  opacity: opacity(),
-                  child: StepperLinearIndicator(
-                    width: size.width / 2,
-                    height: 20,
-                    stepCount: widget.userTask.task.count,
-                    currentCount: widget.userTask.count,
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: widget.isLeft
+                    ? CrossAxisAlignment.start
+                    : CrossAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    widget.userTask.task.name,
+                    textAlign: widget.isLeft ? TextAlign.left : TextAlign.right,
                   ),
-                ),
-              ],
+                  SizedBox(
+                    height: 15,
+                  ),
+                  Text(
+                    getIntervalText(),
+                    style: TextStyle(
+                        fontStyle: FontStyle.italic,
+                        color: Color(0xFF26315F).withOpacity(.6),
+                        fontWeight: FontWeight.w300),
+                  ),
+                  SizedBox(
+                    height: 8,
+                  ),
+                  Opacity(
+                    opacity: opacity(),
+                    child: StepperLinearIndicator(
+                      width: size.width / 2,
+                      height: 20,
+                      stepCount: widget.userTask.task.count,
+                      currentCount: widget.userTask.count,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -300,11 +301,15 @@ class _BuildTaskState extends State<BuildTask> {
             child: Opacity(
               opacity: opacity(),
               child: ButtonTheme(
-                  padding: EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0), //adds padding inside the button
-                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap, //limits the touch area to the button area
-                  minWidth: 0, //wraps child's width
-                  height: 0, //wraps child's height
-                  child: FlatButton(
+                padding: EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
+                //adds padding inside the button
+                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                //limits the touch area to the button area
+                minWidth: 0,
+                //wraps child's width
+                height: 0,
+                //wraps child's height
+                child: FlatButton(
                   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   padding: EdgeInsets.all(0),
                   hoverColor: Color(0xff3FC1C9).withOpacity(.7),
@@ -318,8 +323,12 @@ class _BuildTaskState extends State<BuildTask> {
                       shape: BoxShape.circle,
                       gradient: LinearGradient(
                         colors: [
-                          widget.userTask.complete == 1 ? Color(0xff26315F) : Colors.transparent,
-                          widget.userTask.complete == 1 ? Color(0xff3FC1C9) : Colors.transparent,
+                          widget.userTask.complete == 1
+                              ? Color(0xff26315F)
+                              : Colors.transparent,
+                          widget.userTask.complete == 1
+                              ? Color(0xff3FC1C9)
+                              : Colors.transparent,
                         ],
                       ),
                     ),
@@ -348,9 +357,9 @@ class _BuildTaskState extends State<BuildTask> {
                     ),
                   ),
                   onPressed: () =>
-                  TaskRepository.instance.canUpdate(widget.userTask)
-                      ? stepComplete(context)
-                      : cantComplete(),
+                      TaskRepository.instance.canUpdate(widget.userTask)
+                          ? stepComplete(context)
+                          : cantComplete(),
                 ),
               ),
             ),
@@ -362,10 +371,14 @@ class _BuildTaskState extends State<BuildTask> {
             child: Opacity(
               opacity: opacity(),
               child: ButtonTheme(
-                padding: EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0), //adds padding inside the button
-                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap, //limits the touch area to the button area
-                minWidth: 0, //wraps child's width
-                height: 0, //wraps child's height
+                padding: EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
+                //adds padding inside the button
+                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                //limits the touch area to the button area
+                minWidth: 0,
+                //wraps child's width
+                height: 0,
+                //wraps child's height
                 child: FlatButton(
                   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   padding: EdgeInsets.all(0),
@@ -380,8 +393,12 @@ class _BuildTaskState extends State<BuildTask> {
                       shape: BoxShape.circle,
                       gradient: LinearGradient(
                         colors: [
-                          widget.userTask.complete == 1 ? Color(0xff26315F) : Colors.transparent,
-                          widget.userTask.complete == 1 ? Color(0xff3FC1C9) : Colors.transparent,
+                          widget.userTask.complete == 1
+                              ? Color(0xff26315F)
+                              : Colors.transparent,
+                          widget.userTask.complete == 1
+                              ? Color(0xff3FC1C9)
+                              : Colors.transparent,
                         ],
                       ),
                     ),
@@ -410,9 +427,9 @@ class _BuildTaskState extends State<BuildTask> {
                     ),
                   ),
                   onPressed: () =>
-                  TaskRepository.instance.canUpdate(widget.userTask)
-                      ? stepComplete(context)
-                      : cantComplete(),
+                      TaskRepository.instance.canUpdate(widget.userTask)
+                          ? stepComplete(context)
+                          : cantComplete(),
                 ),
               ),
             ),
@@ -694,7 +711,7 @@ class _TaskListBuilderState extends State<TaskListBuilder>
     customPaintSize = size;
     await Future.delayed(Duration(seconds: 1));
     final box = lastPlace.currentContext.findRenderObject() as RenderBox;
-    initialPos = box.localToGlobal(Offset(0,50));
+    initialPos = box.localToGlobal(Offset(0, 50));
     widget.crossFadeNotifier.addListener(crossFadeListener);
     animateToIndex(0);
   }
@@ -703,7 +720,7 @@ class _TaskListBuilderState extends State<TaskListBuilder>
     if (_debounce?.isActive ?? false) _debounce.cancel();
     _debounce = Timer(const Duration(milliseconds: 1000), () async {
       final box = lastPlace.currentContext.findRenderObject() as RenderBox;
-      initialPos = box.localToGlobal(Offset(0,50));
+      initialPos = box.localToGlobal(Offset(0, 50));
 //      animateToIndex(position);
     });
   }
@@ -799,7 +816,8 @@ class MyCustomPainter extends CustomPainter {
     path.moveTo(p, p);
     path.lineTo(lastP, p);
     List<Offset> offsets = [];
-    offsets.add(Offset(p, p));
+    final kOffsetValue = 30;
+    offsets.add(Offset(lastP + kOffsetValue, p));
     for (int i = 0; i < lengthOfList(); i++) {
       final index = i + 1;
       bool secondPart = i % 2 == 0;
@@ -807,12 +825,12 @@ class MyCustomPainter extends CustomPainter {
         final offset = Offset(p, getP(index, p));
         path.arcToPoint(offset, radius: radius, clockwise: false);
         path.lineTo(lastP, getP(index, p));
-        offsets.add(offset);
+        offsets.add(Offset(lastP + kOffsetValue, getP(index, p)));
       } else {
         final offset = Offset(lastP, getP(index, p));
         path.arcToPoint(offset, radius: radius);
         path.lineTo(p, getP(index, p));
-        offsets.add(offset);
+        offsets.add(Offset(p, getP(index, p)));
       }
     }
 
