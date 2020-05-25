@@ -15,7 +15,7 @@ class BuildCircularPercentage extends StatelessWidget {
   Widget build(BuildContext context) {
     final percentage = context.select((User value) => value.percentage);
     return CircularPercentIndicator(
-      radius: (radius + 80) ?? 160.0,
+      radius: (radius + 75) ?? 160.0,
       lineWidth: 10.0,
       animation: true,
       percent: (percentage ?? 0) * 1 / 100,
