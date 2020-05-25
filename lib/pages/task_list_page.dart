@@ -257,44 +257,39 @@ class _BuildTaskState extends State<BuildTask> {
           padding: EdgeInsets.only(
               left: widget.isLeft ? 60 : 0, right: widget.isLeft ? 0 : 60),
           child: Center(
-            child: SingleChildScrollView(
-              child: Transform.scale(
-                alignment: Alignment.topCenter,
-                scale: size.height < 600 ? 0.7 : .95,
-                child: Column(
-                  crossAxisAlignment: widget.isLeft
-                      ? CrossAxisAlignment.start
-                      : CrossAxisAlignment.end,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      widget.userTask.task.name,
-                      textAlign:
-                          widget.isLeft ? TextAlign.left : TextAlign.right,
-                    ),
-                    SizedBox(height: 4,),
-                    Text(
-                      getIntervalText(),
-                      style: TextStyle(
-                          fontStyle: FontStyle.italic,
-                          color: Color(0xFF26315F).withOpacity(.6),
-                          fontWeight: FontWeight.w300),
-                    ),
-                    SizedBox(
-                      height: 8,
-                    ),
-                    Opacity(
-                      opacity: opacity(),
-                      child: StepperLinearIndicator(
-                        width: size.width / 2,
-                        height: 20,
-                        stepCount: widget.userTask.task.count,
-                        currentCount: widget.userTask.count,
-                      ),
-                    ),
-                  ],
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              crossAxisAlignment: widget.isLeft
+                  ? CrossAxisAlignment.start
+                  : CrossAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  widget.userTask.task.name,
+                  textAlign:
+                      widget.isLeft ? TextAlign.left : TextAlign.right,
                 ),
-              ),
+                Expanded(child: Container()),
+                Text(
+                  getIntervalText(),
+                  style: TextStyle(
+                      fontStyle: FontStyle.italic,
+                      color: Color(0xFF26315F).withOpacity(.6),
+                      fontWeight: FontWeight.w300),
+                ),
+                SizedBox(
+                  height: 8,
+                ),
+                Opacity(
+                  opacity: opacity(),
+                  child: StepperLinearIndicator(
+                    width: size.width / 2,
+                    height: 20,
+                    stepCount: widget.userTask.task.count,
+                    currentCount: widget.userTask.count,
+                  ),
+                ),
+              ],
             ),
           ),
         ),
@@ -697,8 +692,9 @@ class _TaskListBuilderState extends State<TaskListBuilder>
   Future<void> afterFirstLayout(BuildContext context) async {
     final size = MediaQuery.of(context).size;
     customPaintSize = size;
+    await Future.delayed(Duration(seconds: 1));
     final box = lastPlace.currentContext.findRenderObject() as RenderBox;
-    initialPos = box.localToGlobal(Offset.zero);
+    initialPos = box.localToGlobal(Offset(0,50));
     widget.crossFadeNotifier.addListener(crossFadeListener);
     animateToIndex(0);
   }
