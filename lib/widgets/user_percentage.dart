@@ -14,7 +14,7 @@ class UserPercentage extends StatelessWidget {
     final selectPercentage = context.select((User value) => value.percentage);
     return GradientText(
       '%' + (selectPercentage ?? 0).toString(),
-      fontSize: 30,
+      fontSize: 27,
       fontWeight: FontWeight.w500,
     );
   }
