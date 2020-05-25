@@ -28,6 +28,7 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
   final PageController pageController =
       PageController(initialPage: 0, keepPage: true);
   final ScrollController scrollController = ScrollController();
+  final GlobalKey<FetchMoreBuilderState> _fetchMoreController = GlobalKey<FetchMoreBuilderState>();
 
   final List<ContentOption> options = [
     ContentOption(title: 'Bireysel', isActive: true),
@@ -44,7 +45,8 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
 
   int limit = 10;
   bool isFirst = true;
-  int myRank = 0;
+  bool showMyRank = false;
+  bool fetchMore = true;
 
   @override
   void initState() {
@@ -141,17 +143,13 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
                                   return Column(
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
-                                      if (widget.isSelfCardVisible)
+                                      if (widget.isSelfCardVisible &&
+                                          myRank > 5)
                                         GestureDetector(
-                                          onTap: () {
-                                            // scrollController.animateTo(
-                                            //   75 *
-                                            //       double.tryParse(
-                                            //           (getMyRank() - 3)
-                                            //               .toString()),
-                                            //   duration: Duration(seconds: 1),
-                                            //   curve: Curves.fastOutSlowIn,
-                                            // );
+                                          onTap: () async {
+                                            showMyRank = true;
+                                            await _fetchMoreController.currentState.refresh();
+
                                             setState(() {
                                               widget.isSelfCardVisible = false;
                                             });
@@ -186,25 +184,23 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
                                           context: context,
                                           removeTop: true,
                                           child: FetchMoreBuilder(
+                                            fetchMoreController: _fetchMoreController,
                                             dataFetcher: dataFetcher,
                                             itemBuilder: (BuildContext context,
                                                 List<dynamic> list, int index) {
                                               UserLeaderBoard item =
                                                   list.elementAt(index);
                                               return Visibility(
-                                                visible: index != 0 &&
-                                                    index != 1 &&
-                                                    index != 2,
+                                                visible: showMyRank
+                                                    ? true
+                                                    : (index != 0 && index != 1 && index != 2),
                                                 child: Padding(
                                                   padding:
                                                       const EdgeInsets.fromLTRB(
                                                           18, 0, 18, 0),
                                                   child: Container(
                                                     decoration: item.userId ==
-                                                                AuthenticationService
-                                                                    .verifiedUser
-                                                                    .id &&
-                                                            myRank > 10
+                                                            AuthenticationService.verifiedUser.id
                                                         ? BoxDecoration(
                                                             color: Colors.white,
                                                             borderRadius:
@@ -251,7 +247,9 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
                                                                       item.userId)
                                                                   .branchId))
                                                           .name,
-                                                      rank: index + 1,
+                                                      rank: showMyRank
+                                                          ? (myRank - 1 + index)
+                                                          : index + 1,
                                                       point: item.point,
                                                     ),
                                                   ),
@@ -399,9 +397,12 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
   }
 
   getMyRank() async {
-    List<UserLeaderBoard> userList = await UserRepository.instance.getUserPointList();
+    List<UserLeaderBoard> userList =
+        await UserRepository.instance.getUserPointList();
 
-    UserLeaderBoard user = userList.singleWhere((element) => element.userId == AuthenticationService.verifiedUser.id);
+    UserLeaderBoard user = userList.singleWhere(
+        (element) => element.userId == AuthenticationService.verifiedUser.id);
+
 
     int i = userList.indexOf(user);
     myRank = i > 3 ? i : i + 1;
@@ -416,53 +417,75 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
             ));
   }
 
+  resetUserList(int index) async {
+    userList.clear();
+    userList.addAll(
+      await UserRepository.instance.getUserList(limit: limit, offset: index),
+    );
+  }
+
+  refreshTopThree() {
+    setState(() {
+      widget.leaderBoardUsers = [
+        LeaderBoardItem(
+          imageId: userList[0].image,
+          point: userLeaderList[0].point,
+          name: userList[0].name,
+          branchName: userList[0].branchName,
+        ),
+        LeaderBoardItem(
+          imageId: userList[1].image,
+          point: userLeaderList[1].point,
+          name: userList[1].name,
+          branchName: userList[1].branchName,
+        ),
+        LeaderBoardItem(
+          imageId: userList[2].image,
+          point: userLeaderList[2].point,
+          name: userList[2].name,
+          branchName: userList[2].branchName,
+        )
+      ];
+    });
+  }
+
   Future<List> dataFetcher(int index, int limit) async {
-    if (index == 0) {
+    if (index == 0 && !fetchMore && showMyRank) {
+      fetchMore = true;
+      showMyRank = false;
+      await resetUserList(index);
+      setState(() {
+        widget.isSelfCardVisible = true;
+      });
+    }
+    if (!fetchMore) return [];
+    if (index == 0 && !showMyRank) {
       if (userList.length > 10) {
-        userList.clear();
-        userList.addAll(
-          await UserRepository.instance
-              .getUserList(limit: limit, offset: index),
-        );
+        await resetUserList(index);
       }
-      if (!isFirst)
-        setState(() {
-          widget.leaderBoardUsers = [
-            LeaderBoardItem(
-              imageId: userList[0].image,
-              point: userLeaderList[0].point,
-              name: userList[0].name,
-              branchName: userList[0].branchName,
-            ),
-            LeaderBoardItem(
-              imageId: userList[1].image,
-              point: userLeaderList[1].point,
-              name: userList[1].name,
-              branchName: userList[1].branchName,
-            ),
-            LeaderBoardItem(
-              imageId: userList[2].image,
-              point: userLeaderList[2].point,
-              name: userList[2].name,
-              branchName: userList[2].branchName,
-            )
-          ];
-        });
+      if (!isFirst) refreshTopThree();
 
       if (isFirst) {
         isFirst = false;
         return userLeaderList;
       }
     } else {
+      if (showMyRank) {
+        fetchMore = false;
+        userList.clear();
+      }
+
       userList.addAll(
-        await UserRepository.instance.getUserList(limit: limit, offset: index),
+        await UserRepository.instance.getUserList(
+            limit: limit, offset: !showMyRank ? index : myRank - 1),
+
       );
     }
 
     var leaderBoardList = new List<UserLeaderBoard>();
     leaderBoardList.addAll(
-      await UserRepository.instance
-          .getUserPointList(limit: limit, offset: index),
+      await UserRepository.instance.getUserPointList(
+          limit: limit, offset: !showMyRank ? index : myRank - 1),
     );
     return leaderBoardList;
   }
