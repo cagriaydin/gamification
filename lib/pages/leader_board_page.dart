@@ -44,6 +44,7 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
   var future;
 
   int limit = 10;
+  int myRank = 0;
   bool isFirst = true;
   bool showMyRank = false;
   bool fetchMore = true;
