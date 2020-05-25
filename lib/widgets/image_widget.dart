@@ -1,60 +1,63 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
+import 'package:yorglass_ik/models/image.dart' as image;
 import 'package:yorglass_ik/repositories/image-repository.dart';
 
-class ImageWidget extends StatefulWidget {
+enum ImageType { image, imageProvider }
+
+class ImageWidget extends StatelessWidget {
   final String id;
-  final bool isBoardItem;
-  ImageWidget({this.id, this.isBoardItem = false});
+  final ImageType imageType;
 
-  @override
-  _ImageWidgetState createState() => _ImageWidgetState();
-}
+  final BorderRadius borderRadius;
 
-class _ImageWidgetState extends State<ImageWidget> {
-  String base64;
-
-  @override
-  void initState() {
-    if (widget.id != null)
-      ImageRepository.instance
-          .getImage(widget.id)
-          .then((value) => setState(() => base64 = value.base64));
-    super.initState();
-  }
-
-  @override
-  void didUpdateWidget(ImageWidget oldWidget) {
-    if (widget.id != null)
-      ImageRepository.instance
-          .getImage(widget.id)
-          .then((value) => setState(() => base64 = value.base64));
-    super.didUpdateWidget(oldWidget);
-  }
+  ImageWidget({
+    this.id,
+    this.imageType = ImageType.image,
+    this.borderRadius = const BorderRadius.all(Radius.circular(90)),
+  });
 
   @override
   Widget build(BuildContext context) {
-    try {
-      return ClipRRect(
-            borderRadius: BorderRadius.circular(widget.isBoardItem ? 90 : 0),
-            child: base64 == null
-                ? Container(
-                    child: Image.asset("assets/default-profile.png"),
-                  )
-                : Image.memory(
-                    Base64Codec().decode(base64),
-                    fit: BoxFit.cover,
-                  ),
-          );
-    } catch (e) {
-      return ClipRRect(
-        borderRadius: BorderRadius.circular(widget.isBoardItem ? 90 : 0),
-        child: Container(
-          child: Image.asset("assets/default-profile.png"),
-        ),
-      );
-      print(e);
-    }
+    final defaultImage = ClipRRect(
+        borderRadius: borderRadius,
+        child: Image.asset(
+          'assets/default-profile.png',
+          gaplessPlayback: true,
+        ));
+
+    return FutureBuilder(
+      future: ImageRepository.instance.getImage(id),
+      builder: (BuildContext context, AsyncSnapshot<image.Image> snapshot) {
+        switch (snapshot.connectionState) {
+          case ConnectionState.none:
+          case ConnectionState.waiting:
+//            return Center(child: CircularProgressIndicator(),);
+            return defaultImage;
+          case ConnectionState.active:
+          case ConnectionState.done:
+            try {
+              if (snapshot.data.decodedImage != null) {
+                return ClipRRect(
+                  borderRadius: borderRadius,
+                  child: snapshot.data.base64 == null
+                      ? Image.asset("assets/default-profile.png")
+                      : Image.memory(
+                          snapshot.data.decodedImage,
+                          fit: BoxFit.cover,
+                          gaplessPlayback: true,
+                        ),
+                );
+              } else {
+                return defaultImage;
+              }
+            } catch (e) {
+              return defaultImage;
+            }
+            break;
+          default:
+            return defaultImage;
+        }
+      },
+    );
   }
 }

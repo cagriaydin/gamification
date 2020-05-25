@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:mysql1/mysql1.dart';
+import 'package:rxdart/subjects.dart';
 import 'package:yorglass_ik/models/feed-item.dart';
 import 'package:yorglass_ik/models/feed-type.dart';
 import 'package:yorglass_ik/repositories/task-repository.dart';
@@ -8,27 +11,37 @@ import 'package:yorglass_ik/services/db-connection.dart';
 class FeedRepository {
   static final FeedRepository _instance = FeedRepository._privateConstructor();
 
-  FeedRepository._privateConstructor();
+  FeedRepository._privateConstructor() {
+    getFeed();
+  }
 
   static FeedRepository get instance => _instance;
+
+  StreamController<List<FeedItem>> _feedList = BehaviorSubject();
+
+  Stream get currentFeeds => _feedList.stream;
+
   Future<List<FeedItem>> getFeed() async {
     Results res = await DbConnection.query("SELECT * FROM feed WHERE id NOT IN (?) ORDER BY date, likecount DESC", [AuthenticationService.verifiedUser.deletedFeeds]);
     List<FeedItem> feedItemList = [];
     if (res.length > 0) {
       forEach(res, (element) {
-        feedItemList.add(
-          FeedItem(
-            id: element[0],
-            title: element[1],
-            description: element[2].toString(),
-            date: element[3],
-            likeCount: element[4],
-            itemType: element[5],
-            imageId: element[6],
-            url: element[7],
-          ),
-        );
+        if (!AuthenticationService.verifiedUser.deletedFeeds.contains(element[0])) {
+          feedItemList.add(
+            FeedItem(
+              id: element[0],
+              title: element[1],
+              description: element[2].toString(),
+              date: element[3],
+              likeCount: element[4],
+              itemType: element[5],
+              imageId: element[6],
+              url: element[7],
+            ),
+          );
+        }
       });
+      _feedList.add(feedItemList);
     }
     return feedItemList;
   }
@@ -98,6 +111,7 @@ class FeedRepository {
     if (res.affectedRows > 0) {
       AuthenticationService.verifiedUser.deletedFeeds.add(id);
     }
+    getFeed();
     return true;
   }
 }

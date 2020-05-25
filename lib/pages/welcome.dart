@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:yorglass_ik/helpers/statusbar-helper.dart';
 import 'package:yorglass_ik/pages/phone.dart';
 import 'package:yorglass_ik/widgets/outcome-button.dart';
 
 class WelcomePage extends StatelessWidget {
+  WelcomePage() {
+    StatusbarHelper.setSatusBar();
+  }
   @override
   Widget build(BuildContext context) {
     final double width = MediaQuery.of(context).size.width;

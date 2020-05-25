@@ -1,8 +1,8 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:yorglass_ik/models/user.dart';
+import 'package:yorglass_ik/widgets/build_circular_percentage.dart';
+
+import 'get_circle_avatar.dart';
 
 class BuildUserInfo extends StatelessWidget {
   const BuildUserInfo({
@@ -20,35 +20,24 @@ class BuildUserInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         SizedBox(
-          height: 36,
+          height: size.height < 600 ? 8 : 36,
         ),
         Stack(
           children: [
             Padding(
               padding: const EdgeInsets.all(20.0),
-              child: CircleAvatar(
-                radius: radius ?? 70,
-                backgroundImage: user.image == null
-                    ? AssetImage("assets/default-profile.png")
-                    : MemoryImage(base64.decode(user.image)),
-              ),
+              child: GetCircleAvatar(imageId: user.image, radius: radius),
             ),
             if (showPercentage)
               Positioned.fill(
-                child: CircularPercentIndicator(
-                  radius: (radius + 80) ?? 160.0,
-                  lineWidth: 10.0,
-                  animation: true,
-                  percent: (user.percentage ?? 0) * 1 / 100,
-                  circularStrokeCap: CircularStrokeCap.round,
-                  backgroundColor: Colors.white,
-                  progressColor: Color(0xff2DB3C1),
-                  curve: Curves.easeOut,
+                child: BuildCircularPercentage(
+                  radius: radius,
                 ),
               ),
           ],
@@ -82,9 +71,11 @@ class BuildUserInfo extends StatelessWidget {
                     : user.branchName,
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontSize: isTaskPage ? 15 : 18,
+                  fontSize: isTaskPage ? 14 : 16,
                   fontWeight: isTaskPage ? FontWeight.w200 : FontWeight.w400,
-                  color: isTaskPage ? Color(0xFF26315F) : Color(0xff4BADBB).withOpacity(.6),
+                  color: isTaskPage
+                      ? Color(0xFF26315F)
+                      : Color(0xff4BADBB).withOpacity(.6),
                 ),
                 overflow: TextOverflow.ellipsis,
               ),
@@ -93,5 +84,10 @@ class BuildUserInfo extends StatelessWidget {
         )
       ],
     );
+  }
+
+  double getRadius(size) {
+    double currentSize = (size.height < 700 || size.width < 400) ? 70 : 80;
+    return currentSize;
   }
 }

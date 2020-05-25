@@ -8,8 +8,11 @@ import 'package:yorglass_ik/services/db-connection.dart';
 class BranchRepository {
   static final BranchRepository _instance = BranchRepository._privateConstructor();
 
-  BranchRepository._privateConstructor();
+  BranchRepository._privateConstructor() {
+    getBranchList();
+  }
 
+  List<Branch> _branchList;
   static BranchRepository get instance => _instance;
 
   Future<List<BranchLeaderBoard>> getBoardPointList() async {
@@ -24,21 +27,24 @@ class BranchRepository {
   }
 
   Future<List<Branch>> getBranchList() async {
-    Results res = await DbConnection.query("SELECT branch.*, bl.point FROM branch, branchleaderboard as bl WHERE branch.id = bl.branchid AND bl.enddate IS NULL");
-    List<Branch> list = [];
-    if (res.length > 0) {
-      for (Row element in res) {
-        list.add(Branch(
-          id: element[0],
-          name: element[1],
-          image: element[2] != null ? (await ImageRepository.instance.getImage64(element[2])) : element[2],
-          employeeCount: element[3],
-          color: element[4],
-          point: element[5],
-        ));
+    if (_branchList == null) {
+      Results res = await DbConnection.query("SELECT branch.*, bl.point FROM branch, branchleaderboard as bl WHERE branch.id = bl.branchid AND bl.enddate IS NULL");
+      _branchList = [];
+      if (res.length > 0) {
+        for (Row element in res) {
+          _branchList.add(Branch(
+            id: element[0],
+            name: element[1],
+            image: element[2],
+            employeeCount: element[3],
+            color: element[4],
+            point: element[5],
+          ));
+          ImageRepository.instance.getImage(element[2]);
+        }
       }
     }
-    return list;
+    return _branchList;
   }
 
   Future<List<Branch>> getTopBranchPointList() async {
@@ -49,6 +55,9 @@ class BranchRepository {
   }
 
   Future<Branch> getBranch(String id) async {
+    if (_branchList != null && _branchList.where((element) => element.id == id).length > 0) {
+      return _branchList.where((element) => element.id == id).elementAt(0);
+    }
     Results res = await DbConnection.query(
       "SELECT branch.*, bl.point FROM branch, branchleaderboard as bl WHERE branch.id = bl.branchid AND bl.enddate IS NULL AND branch.id = ?",
       [id],
@@ -56,7 +65,7 @@ class BranchRepository {
     return Branch(
       id: res.single[0],
       name: res.single[1],
-      image: res.single[2] != null ? (await ImageRepository.instance.getImage64(res.single[2])) : res.single[2],
+      image: res.single[2],
       employeeCount: res.single[3],
       color: res.single[4],
       point: res.single[5],

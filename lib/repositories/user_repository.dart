@@ -3,8 +3,6 @@ import 'package:yorglass_ik/models/user.dart';
 import 'package:yorglass_ik/models/user_leader_board.dart';
 import 'package:mysql1/mysql1.dart';
 import 'package:yorglass_ik/repositories/branch_repository.dart';
-import 'package:yorglass_ik/repositories/image-repository.dart';
-import 'package:yorglass_ik/models/image.dart';
 import 'package:yorglass_ik/repositories/task-repository.dart';
 import 'package:yorglass_ik/services/db-connection.dart';
 
@@ -15,8 +13,8 @@ class UserRepository {
 
   static UserRepository get instance => _instance;
 
-  Future<List<UserLeaderBoard>> getUserPointList({int limit}) async {
-    Results res = await DbConnection.query("SELECT * FROM leaderboard where enddate IS NULL ORDER BY point DESC" + (limit != null ? (" LIMIT " + limit.toString()) : ""));
+  Future<List<UserLeaderBoard>> getUserPointList({int limit, int offset}) async {
+    Results res = await DbConnection.query("SELECT * FROM leaderboard, user WHERE enddate IS NULL AND user.id = leaderboard.userid ORDER BY point DESC, user.name" + (limit != null ? (" LIMIT " + limit.toString()) : "") + (offset != null ? (" OFFSET " + offset.toString()) : ""));
     List<UserLeaderBoard> list = [];
     if (res.length > 0) {
       forEach(res, (element) {
@@ -26,9 +24,9 @@ class UserRepository {
     return list;
   }
 
-  Future<List<User>> getUserList() async {
+  Future<List<User>> getUserList({int limit, int offset}) async {
     List<Branch> bList = await BranchRepository.instance.getBranchList();
-    Results res = await DbConnection.query("SELECT user.*, lb.point FROM user, leaderboard as lb WHERE user.id = lb.userid AND lb.enddate IS NULL");
+    Results res = await DbConnection.query("SELECT user.*, lb.point FROM user, leaderboard as lb WHERE user.id = lb.userid AND lb.enddate IS NULL ORDER BY lb.point DESC, user.name" + (limit != null ? (" LIMIT " + limit.toString()) : "") + (offset != null ? (" OFFSET " + offset.toString()) : ""));
     List<User> list = [];
     if (res.length > 0) {
       for (Row element in res) {
@@ -79,10 +77,6 @@ class UserRepository {
   Future<User> _fillUser(Results res, bool detailed) async {
     if (res.length > 0) {
       User user = User(id: res.single[0], name: res.single[1], branchId: res.single[3], phone: res.single[2], code: res.single[4], image: res.single[5]);
-      if (user.image != null) {
-        Image userImage = await ImageRepository.instance.getImage(res.single[5]);
-        user.image = userImage.base64;
-      }
       Branch b = await BranchRepository.instance.getBranch(user.branchId);
       user.branchName = b.name;
       if (detailed) {

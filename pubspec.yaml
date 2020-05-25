@@ -27,9 +27,17 @@ dependencies:
   icon_shadow: ^1.0.1
   confetti: ^0.5.2
 
+  get_version: ^0.2.2
+  firebase_remote_config: ^0.3.0+3
+  open_appstore: ^1.0.2
+  shared_preferences: ^0.5.6+2
+
+  provider: ^4.1.2
   rxdart: ^0.24.1
   mysql1: 0.17.1
   uuid: 2.0.4
+  fetch_more: ^2.0.0
+  flutter_statusbarcolor: 0.2.3
 
 dev_dependencies:
   flutter_test:

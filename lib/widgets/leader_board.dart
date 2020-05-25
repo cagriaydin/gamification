@@ -27,42 +27,39 @@ class LeaderBoard extends StatelessWidget {
   }
 
   Widget buildLeaderBoard() {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      mainAxisAlignment: MainAxisAlignment.center,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Hero(
-          tag: '2',
-          child: FlagAvatar(
-            imageUrl: list.elementAt(1).image,
+    return FittedBox(
+      fit: BoxFit.fitWidth,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          FlagAvatar(
+            imageId: list.elementAt(1).imageId,
             name: list.elementAt(1).name,
             point: list.elementAt(1).point ?? 0,
             rank: 2,
+            isLeaderBoard: isLeaderBoard,
             branchName: list.elementAt(1).branchName,
           ),
-        ),
-        Hero(
-          tag: '1',
-          child: FlagAvatar(
-            imageUrl: list.elementAt(0).image,
+          FlagAvatar(
+            imageId: list.elementAt(0).imageId,
+            isLeaderBoard: isLeaderBoard,
             name: list.elementAt(0).name,
             point: list.elementAt(0).point ?? 0,
             rank: 1,
-            branchName: list.elementAt(1).branchName,
+            branchName: list.elementAt(0).branchName,
           ),
-        ),
-        Hero(
-          tag: '3',
-          child: FlagAvatar(
-            imageUrl: list.elementAt(2).image,
+          FlagAvatar(
+            isLeaderBoard: isLeaderBoard,
+            imageId: list.elementAt(2).imageId,
             name: list.elementAt(2).name,
             point: list.elementAt(2).point ?? 0,
             rank: 3,
-            branchName: list.elementAt(1).branchName,
+            branchName: list.elementAt(2).branchName,
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

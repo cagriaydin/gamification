@@ -11,14 +11,17 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:provider/provider.dart';
 import 'package:yorglass_ik/helpers/popup_helper.dart';
 import 'package:yorglass_ik/models/user-task.dart';
 import 'package:yorglass_ik/models/user.dart';
-import 'package:yorglass_ik/repositories/reward-repository.dart';
+import 'package:yorglass_ik/repositories/image-repository.dart';
 import 'package:yorglass_ik/repositories/task-repository.dart';
 import 'package:yorglass_ik/services/authentication-service.dart';
 import 'package:yorglass_ik/widgets/build_user_info.dart';
 import 'package:yorglass_ik/widgets/gradient_text.dart';
+import 'package:yorglass_ik/widgets/user_percentage.dart';
+import 'package:yorglass_ik/widgets/user_point.dart';
 
 class TaskListPage extends StatefulWidget {
   final User user;
@@ -39,11 +42,8 @@ class _TaskListPageState extends State<TaskListPage> {
   ValueNotifier<CrossFadeState> crossFade =
       ValueNotifier(CrossFadeState.showFirst);
 
-  var getActivePointFuture;
-
   @override
   void initState() {
-    getActivePointFuture = RewardRepository.instance.getActivePoint();
     controller.addListener(scrollControllerListener);
     TaskRepository.instance.getUserTasks();
     super.initState();
@@ -65,7 +65,7 @@ class _TaskListPageState extends State<TaskListPage> {
         }
       }
       if (controller.offset <= controller.position.minScrollExtent &&
-          controller.offset < -150) {
+          controller.offset < -100) {
         if (crossFade.value != CrossFadeState.showFirst) {
           setState(() {
             crossFade.value = CrossFadeState.showFirst;
@@ -138,30 +138,7 @@ class _TaskListPageState extends State<TaskListPage> {
                           blurRadius: 4,
                           spreadRadius: 2)
                     ]),
-                child: FutureBuilder(
-                  future: getActivePointFuture,
-                  builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
-                    if (snapshot.hasData || snapshot.hasError) {
-                      return Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          GradientText(
-                            (widget.user.point ?? 0).toString(),
-                            fontWeight: FontWeight.w500,
-                            fontSize: 40,
-                          ),
-                          GradientText(
-                            'puan',
-                            fontWeight: FontWeight.w300,
-                            fontSize: 25,
-                          ),
-                        ],
-                      );
-                    } else {
-                      return Center(child: CircularProgressIndicator());
-                    }
-                  },
-                ),
+                child: UserPoint(),
               ),
             ),
             firstChild: Container(
@@ -175,22 +152,7 @@ class _TaskListPageState extends State<TaskListPage> {
                     children: [
                       Padding(
                         padding: const EdgeInsets.only(top: 90),
-                        child: Row(
-                          children: [
-                            GradientText(
-                              '%',
-                              fontWeight: FontWeight.w300,
-                              fontSize: 30,
-                            ),
-                            SizedBox(
-                              width: 10,
-                            ),
-                            GradientText(
-                              (widget.user.percentage ?? 0).toString(),
-                              fontSize: 30,
-                            ),
-                          ],
-                        ),
+                        child: UserPercentage(),
                       ),
                       BuildUserInfo(
                         user: widget.user,
@@ -198,31 +160,7 @@ class _TaskListPageState extends State<TaskListPage> {
                       ),
                       Padding(
                         padding: const EdgeInsets.only(bottom: 90.0),
-                        child: FutureBuilder(
-                          future: getActivePointFuture,
-                          builder: (BuildContext context,
-                              AsyncSnapshot<int> snapshot) {
-                            if (snapshot.hasData || snapshot.hasError) {
-                              return Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  GradientText(
-                                    (widget.user.point ?? 0).toString(),
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 40,
-                                  ),
-                                  GradientText(
-                                    'puan',
-                                    fontWeight: FontWeight.w300,
-                                    fontSize: 25,
-                                  ),
-                                ],
-                              );
-                            } else {
-                              return Center(child: CircularProgressIndicator());
-                            }
-                          },
-                        ),
+                        child: UserPoint(),
                       )
                     ],
                   ),
@@ -272,15 +210,8 @@ class _TaskListPageState extends State<TaskListPage> {
   ) {
     return BuildTask(
       userTask: userTasks.elementAt(index),
-      changePointCallback: changePointCallback,
       isLeft: index % 2 != 0,
     );
-  }
-
-  changePointCallback() {
-    setState(() {
-      getActivePointFuture = RewardRepository.instance.getActivePoint();
-    });
   }
 }
 
@@ -320,145 +251,173 @@ class _BuildTaskState extends State<BuildTask> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    return Container(
-      padding: EdgeInsets.only(
-          left: widget.isLeft ? 16 : 0, right: widget.isLeft ? 0 : 16),
-      child: GestureDetector(
-        onDoubleTap: () => TaskRepository.instance.canUpdate(widget.userTask)
-            ? stepComplete()
-            : cantComplete(),
-        behavior: HitTestBehavior.opaque,
-        child: Center(
-          child: SingleChildScrollView(
-            child: Transform.scale(
-              alignment: Alignment.topCenter,
-              scale: size.height < 600 ? 0.7 : .95,
-              child: Stack(
-                children: [
-                  Column(
-                    crossAxisAlignment: widget.isLeft
-                        ? CrossAxisAlignment.start
-                        : CrossAxisAlignment.end,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        widget.userTask.task.name,
-                        textAlign:
-                            widget.isLeft ? TextAlign.left : TextAlign.right,
-                      ),
-                      SizedBox(
-                        height: 18,
-                      ),
-                      Text(
-                        getIntervalText(),
-                        style: TextStyle(
-                            fontStyle: FontStyle.italic,
-                            color: Color(0xFF26315F).withOpacity(.6),
-                            fontWeight: FontWeight.w300),
-                      ),
-                      SizedBox(
-                        height: 8,
-                      ),
-                      Opacity(
-                        opacity: opacity(),
-                        child: StepperLinearIndicator(
-                          width: size.width / 2,
-                          height: 20,
-                          stepCount: widget.userTask.task.count,
-                          currentCount: widget.userTask.count,
-                        ),
-                      ),
-                    ],
+    return Stack(
+      children: [
+        Container(
+          padding: EdgeInsets.only(
+              left: widget.isLeft ? 60 : 0, right: widget.isLeft ? 0 : 60),
+          child: Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              crossAxisAlignment: widget.isLeft
+                  ? CrossAxisAlignment.start
+                  : CrossAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  widget.userTask.task.name,
+                  textAlign:
+                      widget.isLeft ? TextAlign.left : TextAlign.right,
+                ),
+                Expanded(child: Container()),
+                Text(
+                  getIntervalText(),
+                  style: TextStyle(
+                      fontStyle: FontStyle.italic,
+                      color: Color(0xFF26315F).withOpacity(.6),
+                      fontWeight: FontWeight.w300),
+                ),
+                SizedBox(
+                  height: 8,
+                ),
+                Opacity(
+                  opacity: opacity(),
+                  child: StepperLinearIndicator(
+                    width: size.width / 2,
+                    height: 20,
+                    stepCount: widget.userTask.task.count,
+                    currentCount: widget.userTask.count,
                   ),
-                  if (!widget.isLeft)
-                    Positioned(
-                      bottom: 0,
-                      left: 8,
-                      child: ConfettiWidget(
-                        confettiController: confettiController,
-                        blastDirectionality: BlastDirectionality.explosive,
-                        colors: [
-                          Color(0xff54B4BA),
-                        ],
-                        blastDirection: 0,
-                        // radial value - LEFT
-                        particleDrag: 0.05,
-                        // apply drag to the confetti
-                        emissionFrequency: 0.05,
-                        // how often it should emit
-                        numberOfParticles: 20,
-                        // number of particles to emit
-                        gravity: 0.05,
-                        // gravity - or fall speed
-                        shouldLoop: false,
-                        child: Transform.rotate(
-                          angle: math.pi / 10,
-                          child: Column(
-                            children: [
-                              GradientText(
-                                '+' + widget.userTask.point.toString(),
-                                disabled: widget.userTask.complete == 0,
-                                fontSize: 20,
-                                fontWeight: FontWeight.w500,
-                              ),
-                              GradientText(
-                                'puan',
-                                disabled: widget.userTask.complete == 0,
-                                fontSize: 15,
-                                fontWeight: FontWeight.w300,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  if (widget.isLeft)
-                    Positioned(
-                      bottom: 0,
-                      right: 8,
-                      child: Transform.rotate(
-                        angle: -math.pi / 10,
-                        child: ConfettiWidget(
-                          confettiController: confettiController,
-                          blastDirection: pi,
-                          colors: [
-                            Color(0xff54B4BA),
-                          ],
-                          // radial value - LEFT
-                          particleDrag: 0.05,
-                          // apply drag to the confetti
-                          emissionFrequency: 0.05,
-                          // how often it should emit
-                          numberOfParticles: 20,
-                          // number of particles to emit
-                          gravity: 0.05,
-                          // gravity - or fall speed
-                          shouldLoop: false,
-                          child: Column(
-                            children: [
-                              GradientText(
-                                '+' + widget.userTask.point.toString(),
-                                disabled: widget.userTask.complete == 0,
-                                fontSize: 20,
-                                fontWeight: FontWeight.w500,
-                              ),
-                              GradientText(
-                                'puan',
-                                disabled: widget.userTask.complete == 0,
-                                fontSize: 15,
-                                fontWeight: FontWeight.w300,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    )
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),
-      ),
+        if (!widget.isLeft)
+          Positioned(
+            bottom: 32,
+            right: 2,
+            child: Opacity(
+              opacity: opacity(),
+              child: ButtonTheme(
+                  padding: EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0), //adds padding inside the button
+                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap, //limits the touch area to the button area
+                  minWidth: 0, //wraps child's width
+                  height: 0, //wraps child's height
+                  child: FlatButton(
+                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  padding: EdgeInsets.all(0),
+                  hoverColor: Color(0xff3FC1C9).withOpacity(.7),
+                  splashColor: Color(0xff3FC1C9).withOpacity(.7),
+                  focusColor: Color(0xff3FC1C9).withOpacity(.7),
+                  shape: CircleBorder(
+                    side: BorderSide(color: Color(0xff3FC1C9), width: 2),
+                  ),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      gradient: LinearGradient(
+                        colors: [
+                          widget.userTask.complete == 1 ? Color(0xff26315F) : Colors.transparent,
+                          widget.userTask.complete == 1 ? Color(0xff3FC1C9) : Colors.transparent,
+                        ],
+                      ),
+                    ),
+                    padding: EdgeInsets.all(8),
+                    child: Padding(
+                      padding: const EdgeInsets.all(4.0),
+                      child: Transform.rotate(
+                        angle: -math.pi / 10,
+                        child: Column(
+                          children: [
+                            GradientText(
+                              '+' + widget.userTask.point.toString(),
+                              disabled: widget.userTask.complete == 0,
+                              fontSize: 20,
+                              fontWeight: FontWeight.w500,
+                            ),
+                            GradientText(
+                              'puan',
+                              disabled: widget.userTask.complete == 0,
+                              fontSize: 15,
+                              fontWeight: FontWeight.w300,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  onPressed: () =>
+                  TaskRepository.instance.canUpdate(widget.userTask)
+                      ? stepComplete(context)
+                      : cantComplete(),
+                ),
+              ),
+            ),
+          ),
+        if (widget.isLeft)
+          Positioned(
+            bottom: 36,
+            left: 2,
+            child: Opacity(
+              opacity: opacity(),
+              child: ButtonTheme(
+                padding: EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0), //adds padding inside the button
+                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap, //limits the touch area to the button area
+                minWidth: 0, //wraps child's width
+                height: 0, //wraps child's height
+                child: FlatButton(
+                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  padding: EdgeInsets.all(0),
+                  hoverColor: Color(0xff3FC1C9).withOpacity(.7),
+                  splashColor: Color(0xff3FC1C9).withOpacity(.7),
+                  focusColor: Color(0xff3FC1C9).withOpacity(.7),
+                  shape: CircleBorder(
+                    side: BorderSide(color: Color(0xff3FC1C9), width: 2),
+                  ),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      gradient: LinearGradient(
+                        colors: [
+                          widget.userTask.complete == 1 ? Color(0xff26315F) : Colors.transparent,
+                          widget.userTask.complete == 1 ? Color(0xff3FC1C9) : Colors.transparent,
+                        ],
+                      ),
+                    ),
+                    padding: EdgeInsets.all(8),
+                    child: Padding(
+                      padding: const EdgeInsets.all(4.0),
+                      child: Transform.rotate(
+                        angle: math.pi / 10,
+                        child: Column(
+                          children: [
+                            GradientText(
+                              '+' + widget.userTask.point.toString(),
+                              disabled: widget.userTask.complete == 0,
+                              fontSize: 20,
+                              fontWeight: FontWeight.w500,
+                            ),
+                            GradientText(
+                              'puan',
+                              disabled: widget.userTask.complete == 0,
+                              fontSize: 15,
+                              fontWeight: FontWeight.w300,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  onPressed: () =>
+                  TaskRepository.instance.canUpdate(widget.userTask)
+                      ? stepComplete(context)
+                      : cantComplete(),
+                ),
+              ),
+            ),
+          ),
+      ],
     );
   }
 
@@ -484,16 +443,17 @@ class _BuildTaskState extends State<BuildTask> {
     }
   }
 
-  Future<void> stepComplete() async {
+  Future<void> stepComplete(BuildContext context) async {
     if (TaskRepository.instance.canUpdate(widget.userTask)) {
       await TaskRepository.instance.updateUserTask(widget.userTask);
       if (widget.userTask.complete == 1) {
         confettiController.play();
+        context.read<User>().updatePoint();
 //        await Future.delayed(Duration(milliseconds: 300));
-        if (widget.changePointCallback != null) widget.changePointCallback();
+//        if (widget.changePointCallback != null) widget.changePointCallback();
 //        await Future.delayed(Duration(milliseconds: 1000));
 //        confettiController.stop();
-        setState(() {});
+//        setState(() {});
       }
     }
   }
@@ -623,9 +583,11 @@ class _TaskListBuilderState extends State<TaskListBuilder>
     super.initState();
   }
 
-  void decodeImage() {
+  Future<void> decodeImage() async {
     try {
-      decodedImage = base64.decode(AuthenticationService.verifiedUser.image);
+      var image = await ImageRepository.instance
+          .getImage64(AuthenticationService.verifiedUser.image);
+      decodedImage = base64.decode(image);
     } catch (e) {
       print(e);
     }
@@ -705,7 +667,7 @@ class _TaskListBuilderState extends State<TaskListBuilder>
         await Future.delayed(Duration(milliseconds: 600));
         offsetNotifier.value = AnimateOffset(offset ?? Offset.zero, false);
         controller.animateTo(
-          offset.dy - 10,
+          offset.dy - 50,
           duration: Duration(milliseconds: 600),
           curve: Curves.ease,
         );
@@ -730,8 +692,9 @@ class _TaskListBuilderState extends State<TaskListBuilder>
   Future<void> afterFirstLayout(BuildContext context) async {
     final size = MediaQuery.of(context).size;
     customPaintSize = size;
+    await Future.delayed(Duration(seconds: 1));
     final box = lastPlace.currentContext.findRenderObject() as RenderBox;
-    initialPos = box.localToGlobal(Offset.zero);
+    initialPos = box.localToGlobal(Offset(0,50));
     widget.crossFadeNotifier.addListener(crossFadeListener);
     animateToIndex(0);
   }
@@ -740,8 +703,8 @@ class _TaskListBuilderState extends State<TaskListBuilder>
     if (_debounce?.isActive ?? false) _debounce.cancel();
     _debounce = Timer(const Duration(milliseconds: 1000), () async {
       final box = lastPlace.currentContext.findRenderObject() as RenderBox;
-      initialPos = box.localToGlobal(Offset.zero);
-      animateToIndex(position);
+      initialPos = box.localToGlobal(Offset(0,50));
+//      animateToIndex(position);
     });
   }
 

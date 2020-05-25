@@ -26,16 +26,21 @@ class CustomDrawerState extends State<CustomDrawer>
 
   bool _canBeDragged;
 
+  CurvedAnimation curved;
+
   @override
   void initState() {
     animationController =
-        AnimationController(vsync: this, duration: Duration(milliseconds: 400));
+        AnimationController(vsync: this, duration: Duration(milliseconds: 200));
 //    animationController.addListener(() {
 //      /// Since it is using GlobalKey This trigger is needed.
 //      setState(() {});
 //    });
-//    Animation curved =
-//        CurvedAnimation(parent: animationController, curve: Curves.easeInCubic);
+    curved = CurvedAnimation(
+      parent: animationController,
+      curve: Curves.easeOut,
+      reverseCurve: Curves.easeIn,
+    );
 
     super.initState();
   }
@@ -57,6 +62,7 @@ class CustomDrawerState extends State<CustomDrawer>
       onHorizontalDragEnd: onHorizontalDragEnd,
       child: Scaffold(
         body: AnimatedBuilder(
+          child: widget.bodyBuilder,
           builder: (BuildContext context, Widget child) {
             final slide = maxSlide * animationController.value;
 //            print(animationController.value);
@@ -81,14 +87,14 @@ class CustomDrawerState extends State<CustomDrawer>
                         !animationController.isDismissed ? closeDrawer() : null,
                     child: IgnorePointer(
                       ignoring: !animationController.isDismissed,
-                      child: widget.bodyBuilder,
+                      child: child,
                     ),
                   ),
                 ),
               ],
             );
           },
-          animation: animationController,
+          animation: curved,
         ),
       ),
     );

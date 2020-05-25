@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:yorglass_ik/enums/authentication-enum.dart';
+import 'package:yorglass_ik/helpers/statusbar-helper.dart';
 import 'package:yorglass_ik/helpers/string-helper.dart';
 import 'package:yorglass_ik/pages/validation-code.dart';
 import 'package:yorglass_ik/services/authentication-service.dart';
+import 'package:yorglass_ik/widgets/loading_builder.dart';
 import 'package:yorglass_ik/widgets/outcome-button.dart';
 
 class PhoneValidationPage extends StatefulWidget {
@@ -22,6 +24,7 @@ class _PhoneValidationPageState extends State<PhoneValidationPage> {
 
   @override
   void initState() {
+    StatusbarHelper.setSatusBar();
     super.initState();
     isLoading = false;
   }
@@ -170,26 +173,7 @@ class _PhoneValidationPageState extends State<PhoneValidationPage> {
                 ),
               ),
             )
-          : Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  CircularProgressIndicator(
-                    backgroundColor: Colors.white70,
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Text(
-                    "Kod Gönderiliyor...",
-                    style: TextStyle(
-                      fontStyle: FontStyle.italic,
-                      fontSize: 24,
-                    ),
-                  )
-                ],
-              ),
-            ),
+          : LoadingBuilder(text: "Kod Gönderiliyor...",)
     );
   }
 

@@ -62,7 +62,6 @@ class _RankContentState extends State<RankContent> {
                     padding: const EdgeInsets.all(2.0),
                     child: ImageWidget(
                       id: widget.image,
-                      isBoardItem: true,
                     )),
               ),
             ),
@@ -122,14 +121,14 @@ class _RankContentState extends State<RankContent> {
                   ),
           ),
           Flexible(
-            flex: 2,
+            flex: 3,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text(
                   widget.point.toString(),
                   style: TextStyle(
-                      fontSize: widget.selfContent ? 30 : 25,
+                      fontSize: widget.selfContent ? 29 : 25,
                       fontWeight: FontWeight.w300,
                       color: color),
                 ),
