@@ -44,7 +44,6 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
   var future;
 
   int limit = 10;
-  int myRank = 0;
   bool isFirst = true;
   bool showMyRank = false;
   bool fetchMore = true;
@@ -150,6 +149,7 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
                                           onTap: () async {
                                             showMyRank = true;
                                             await _fetchMoreController.currentState.refresh();
+
                                             setState(() {
                                               widget.isSelfCardVisible = false;
                                             });
@@ -403,6 +403,7 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
     UserLeaderBoard user = userList.singleWhere(
         (element) => element.userId == AuthenticationService.verifiedUser.id);
 
+
     int i = userList.indexOf(user);
     myRank = i > 3 ? i : i + 1;
   }
@@ -477,6 +478,7 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
       userList.addAll(
         await UserRepository.instance.getUserList(
             limit: limit, offset: !showMyRank ? index : myRank - 1),
+
       );
     }
 
