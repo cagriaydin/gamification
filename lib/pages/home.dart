@@ -250,7 +250,7 @@ class _HomePageState extends State<HomePage> {
 //                                          sharedPref.remove(map['version']);
 //                                        }
                                         sharedPref.setBool(
-                                            map['version'], false);
+                                            map['version'], true);
                                         return Navigator.pop(context);
                                       },
                                       child: Padding(
