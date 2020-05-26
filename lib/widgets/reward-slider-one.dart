@@ -8,7 +8,9 @@ import 'package:yorglass_ik/repositories/reward-repository.dart';
 import 'package:yorglass_ik/widgets/reward_cards2.dart';
 
 class RewardSliderOne extends StatelessWidget {
-  const RewardSliderOne({Key key}) : super(key: key);
+  RewardSliderOne({Key key}) : super(key: key);
+
+  var currentIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -17,6 +19,7 @@ class RewardSliderOne extends StatelessWidget {
       builder: (BuildContext context, AsyncSnapshot<List<Reward>> snapshot) {
         if (snapshot.hasData) {
           return Swiper(
+            onIndexChanged: (value) => currentIndex = value,
             itemBuilder: (BuildContext context, int index) {
               return GestureDetector(
                 onTap: () {
@@ -35,6 +38,7 @@ class RewardSliderOne extends StatelessWidget {
                   child: Container(
                     child: RewardCards2(
                       reward: snapshot.data[index],
+                      isFirst: currentIndex == index,
                     ),
                   ),
                 ),

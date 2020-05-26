@@ -8,8 +8,9 @@ import 'package:yorglass_ik/widgets/reward_like_widget.dart';
 
 class RewardCards2 extends StatelessWidget {
   final Reward reward;
+  final bool isFirst;
 
-  const RewardCards2({Key key, this.reward});
+  const RewardCards2({Key key, this.reward, this.isFirst = false});
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +21,7 @@ class RewardCards2 extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(8)),
           color: Colors.white,
-          gradient: getGradient(),
+          gradient: !isFirst ? getGradient() : null,
           boxShadow: [
             BoxShadow(
               offset: Offset(-2, 2),

@@ -58,7 +58,10 @@ class RewardsPage extends StatelessWidget {
                           padding: const EdgeInsets.all(8.0),
                           child: Text(
                             "İnsanlara Faydam Olsun",
-                            style: TextStyle(color: Color(0xffAAAAAD), fontSize: 20),
+                            style: TextStyle(
+                                color: Color(0xffD6D8DC),
+                                fontSize: 20,
+                                fontWeight: FontWeight.w300),
                           ),
                         ),
                         Container(
@@ -69,7 +72,10 @@ class RewardsPage extends StatelessWidget {
                           padding: const EdgeInsets.all(8.0),
                           child: Text(
                             "Şirin Hayvan Dostlarımıza",
-                            style: TextStyle(color: Color(0xffAAAAAD), fontSize: 20),
+                            style: TextStyle(
+                                color: Color(0xffAAAAAD),
+                                fontSize: 20,
+                                fontWeight: FontWeight.w300),
                           ),
                         ),
                         Container(
@@ -81,7 +87,10 @@ class RewardsPage extends StatelessWidget {
                           padding: const EdgeInsets.all(8.0),
                           child: Text(
                             "Kendimi mutlu etme zamanı!",
-                            style: TextStyle(color: Color(0xffAAAAAD), fontSize: 20),
+                            style: TextStyle(
+                                color: Color(0xffAAAAAD),
+                                fontSize: 20,
+                                fontWeight: FontWeight.w300),
                           ),
                         ),
                         Container(
@@ -95,14 +104,19 @@ class RewardsPage extends StatelessWidget {
                                 return GridView.count(
                                   mainAxisSpacing: 15,
                                   crossAxisSpacing: 10,
-                                  childAspectRatio: MediaQuery.of(context).size.width / (MediaQuery.of(context).size.height),
+                                  childAspectRatio:
+                                      MediaQuery.of(context).size.width /
+                                          (MediaQuery.of(context).size.height),
                                   scrollDirection: Axis.vertical,
                                   padding: EdgeInsets.all(8),
                                   crossAxisCount: 2,
-                                  children: snapshot.data.map((e) => RewardCards4(reward: e)).toList(),
+                                  children: snapshot.data
+                                      .map((e) => RewardCards4(reward: e))
+                                      .toList(),
                                 );
                               } else
-                                return Center(child: CircularProgressIndicator());
+                                return Center(
+                                    child: CircularProgressIndicator());
                             },
                           ),
                         )
@@ -131,7 +145,13 @@ class RewardsPage extends StatelessWidget {
         decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.all(Radius.circular(16)),
-            boxShadow: [BoxShadow(color: Color(0xffABF3F8), offset: Offset(0, 3), blurRadius: 3, spreadRadius: 1)]),
+            boxShadow: [
+              BoxShadow(
+                  color: Color(0xffABF3F8),
+                  offset: Offset(0, 3),
+                  blurRadius: 3,
+                  spreadRadius: 1)
+            ]),
         child: Column(
           children: [
             Flexible(
@@ -157,11 +177,12 @@ class RewardsPage extends StatelessWidget {
   }
 
   onContentSelectorChange(ContentOption contentOption) {
-    WidgetsBinding.instance.addPostFrameCallback((_) => controller.animateToPage(
-          contentOption.title == 'Ödüllerim' ? 1 : 0,
-          duration: Duration(milliseconds: 300),
-          curve: Curves.easeOut,
-        ));
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) => controller.animateToPage(
+              contentOption.title == 'Ödüllerim' ? 1 : 0,
+              duration: Duration(milliseconds: 300),
+              curve: Curves.easeOut,
+            ));
   }
 }
 
