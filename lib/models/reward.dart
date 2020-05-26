@@ -1,7 +1,5 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:typed_data';
-import 'package:yorglass_ik/repositories/image-repository.dart';
 
 class Reward {
   final String id;
@@ -10,7 +8,7 @@ class Reward {
   Completer<Uint8List> image64 = Completer();
   final int point;
   final String itemType;
-  final int likeCount;
+  int likeCount;
 
   Reward({
     this.id,
@@ -19,20 +17,5 @@ class Reward {
     this.point,
     this.likeCount = 112,
     this.itemType,
-  }) {
-    setImage64();
-  }
-
-  setImage64() async {
-    try {
-      if (this.imageId != null) {
-        final currentBase64 = await ImageRepository.instance.getImage64(this.imageId);
-        Uint8List decoded = base64.decode(currentBase64);
-        image64.complete(decoded);
-      }
-    } catch (e) {
-      image64.completeError(e);
-      print(e);
-    }
-  }
+  });
 }

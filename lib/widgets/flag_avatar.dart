@@ -40,19 +40,22 @@ class FlagAvatar extends StatelessWidget {
       child: Column(
         children: [
           name.isNotEmpty
-              ? Text(
-                  split
-                      ? name.length > 10 ? name.split(" ").join("\n") : name
-                      : name.length > 20
-                          ? name.substring(
-                                  0, name.length > 15 ? 15 : name.length) +
-                              '...'
-                          : name,
-                  style: TextStyle(
-                    color: titleColor == null ? Colors.white : titleColor,
-                    fontSize: 16,
+              ? Tooltip(
+                  message: name,
+                  child: Text(
+                    split
+                        ? name.length > 10 ? name.split(" ").join("\n") : name
+                        : name.length > 20
+                            ? name.substring(
+                                    0, name.length > 15 ? 15 : name.length) +
+                                '...'
+                            : name,
+                    style: TextStyle(
+                      color: titleColor == null ? Colors.white : titleColor,
+                      fontSize: 16,
+                    ),
+                    textAlign: TextAlign.center,
                   ),
-                  textAlign: TextAlign.center,
                 )
               : Text(""),
           if (branchName != null)
@@ -91,14 +94,14 @@ class FlagAvatar extends StatelessWidget {
               if (point != null)
                 Transform.scale(
                     alignment: Alignment.bottomCenter,
-                    scale: isLeaderBoard ? 1.1 : .7,
+                    scale: isLeaderBoard ? .9 : .7,
                     child: FlagPoint(point: point)),
               Stack(
                 alignment: Alignment.topCenter,
                 children: [
                   Padding(
                     padding: isLeaderBoard
-                        ? const EdgeInsets.fromLTRB(8, 20, 8, 80)
+                        ? const EdgeInsets.fromLTRB(8, 20, 8, 70)
                         : const EdgeInsets.fromLTRB(8, 20, 8, 40),
                     child: Material(
                       elevation: 5,
