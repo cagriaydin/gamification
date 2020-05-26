@@ -11,7 +11,7 @@ class RewardSliderTwo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: RewardRepository.instance.getRewards(),
+      future: RewardRepository.instance.getRewards(type: "43c917d1-5262-4a4f-8085-d863084eceda"),
       builder: (BuildContext context, AsyncSnapshot<List<Reward>> snapshot) {
         if (snapshot.hasData) {
           return Swiper(
