@@ -117,7 +117,7 @@ class FlagAvatar extends StatelessWidget {
                           elevation: 5,
                           color: Colors.white,
                           borderRadius: BorderRadius.all(
-                              Radius.circular(getRadius(size))),
+                              Radius.circular(90)),
                           child: Padding(
                             padding: const EdgeInsets.all(3.0),
                             child: GetCircleAvatar(

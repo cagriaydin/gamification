@@ -14,7 +14,7 @@ class RewardCards2 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-  final userPoint = context.select((UserReward value) => value.point);
+    final userPoint = context.select((UserReward value) => value.point);
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Container(
@@ -34,14 +34,17 @@ class RewardCards2 extends StatelessWidget {
         child: Stack(
           alignment: Alignment.center,
           children: [
-            FlagAvatar(
-              imageId: reward.imageId,
-              isLeaderBoard: true,
-              split: false,
-              name: reward.title,
-              radius: 40,
-              point: reward.point,
-              titleColor: Colors.black54,
+            Padding(
+              padding: const EdgeInsets.only(top: 8.0),
+              child: FlagAvatar(
+                imageId: reward.imageId,
+                isLeaderBoard: true,
+                split: false,
+                name: reward.title,
+                radius: 40,
+                point: reward.point,
+                titleColor: Colors.black54,
+              ),
             ),
             Positioned(
               bottom: 8,
@@ -64,7 +67,10 @@ class RewardCards2 extends StatelessWidget {
             Positioned(
               bottom: 4,
               right: 0,
-              child: LikeRewardWidget(reward: reward,likedRewards: [],),
+              child: LikeRewardWidget(
+                reward: reward,
+                likedRewards: [],
+              ),
             )
           ],
         ),
