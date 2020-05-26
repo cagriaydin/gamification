@@ -120,7 +120,7 @@ class _TaskListPageState extends State<TaskListPage> {
               );
             },
             crossFadeState: crossFade.value,
-            duration: Duration(milliseconds: 600),
+            duration: Duration(milliseconds: 300),
             secondChild: Padding(
               padding: const EdgeInsets.only(bottom: 8),
               child: Container(
