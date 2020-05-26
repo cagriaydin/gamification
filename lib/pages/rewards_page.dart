@@ -48,7 +48,6 @@ class RewardsPage extends StatelessWidget {
             buildTopPart(size, padding),
             Expanded(
               child: PageView(
-                physics: NeverScrollableScrollPhysics(),
                 controller: controller,
                 children: [
                   SingleChildScrollView(
@@ -98,14 +97,12 @@ class RewardsPage extends StatelessWidget {
                               AsyncSnapshot<List<Reward>> snapshot) {
                             if (snapshot.hasData) {
                               return GridView.count(
-                                childAspectRatio:
-                                    90 / 165,
+                                childAspectRatio: 90 / 165,
                                 scrollDirection: Axis.vertical,
                                 shrinkWrap: true,
                                 physics: ScrollPhysics(),
                                 padding: EdgeInsets.all(8),
                                 crossAxisCount: 2,
-                                
                                 children: snapshot.data
                                     .map((e) => RewardCards4(reward: e))
                                     .toList(),
@@ -187,10 +184,15 @@ class BuildMyRewards extends StatelessWidget {
     final myRewards = context.select((UserReward value) => value.rewards);
     return GridView.count(
       scrollDirection: Axis.vertical,
-      childAspectRatio: 90 / 165 ,
+      childAspectRatio: 90 / 165,
       padding: EdgeInsets.all(8),
       crossAxisCount: 2,
-      children: myRewards.map((e) => RewardCards4(reward: e)).toList(),
+      children: myRewards.map((e) {
+        return RewardCards4(
+          reward: e,
+          isMyReward: true,
+        );
+      }).toList(),
     );
   }
 }
