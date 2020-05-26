@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:yorglass_ik/models/reward.dart';
+import 'package:yorglass_ik/models/user-reward.dart';
 import 'package:yorglass_ik/repositories/reward-repository.dart';
+import 'package:provider/provider.dart';
 
 class LikeRewardWidget extends StatefulWidget {
   final List<String> likedRewards;
@@ -20,18 +22,20 @@ class LikeRewardWidget extends StatefulWidget {
 class _LikeRewardWidgetState extends State<LikeRewardWidget> {
   @override
   Widget build(BuildContext context) {
+    final likedRewards = context.select((UserReward userReward) => userReward.liked);
     return Stack(
       alignment: Alignment.center,
       children: <Widget>[
         IconButton(
           color: Color(0xFFF90A60),
-          icon: widget.likedRewards.contains(widget.reward.id)
+          icon: likedRewards.contains(widget.reward.id)
               ? Icon(Icons.favorite)
               : Icon(Icons.favorite_border),
           onPressed: () {
             RewardRepository.instance.changeLike(widget.reward.id).then(
-                  (value) => setState(
-                    () {
+                  (value) =>
+                  setState(
+                        () {
                       if (value) {
                         widget.reward.likeCount++;
                       } else {
@@ -40,7 +44,7 @@ class _LikeRewardWidgetState extends State<LikeRewardWidget> {
                       }
                     },
                   ),
-                );
+            );
           },
         ),
         Padding(

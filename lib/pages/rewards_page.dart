@@ -111,7 +111,8 @@ class _RewardsPageState extends State<RewardsPage> {
                         Container(
                           height: size.height,
                           child: FutureBuilder(
-                            future: RewardRepository.instance.getRewards(type: "91548730-6a79-4d8d-9f1b-76f5dfa51887"),
+                            future: RewardRepository.instance.getRewards(
+                                type: "91548730-6a79-4d8d-9f1b-76f5dfa51887"),
                             builder: (BuildContext context,
                                 AsyncSnapshot<List<Reward>> snapshot) {
                               if (snapshot.hasData) {
@@ -123,7 +124,7 @@ class _RewardsPageState extends State<RewardsPage> {
                                   padding: EdgeInsets.all(8),
                                   crossAxisCount: 2,
                                   children: snapshot.data
-                                      .map((e) => RewardCards4(reward: e, currentPoint: currentPoint))
+                                      .map((e) => RewardCards4(reward: e))
                                       .toList(),
                                 );
                               } else
@@ -214,10 +215,7 @@ class BuildMyRewards extends StatelessWidget {
 class BuildActivePoint extends StatelessWidget {
   const BuildActivePoint({
     Key key,
-    @required this.getActivePointFuture,
   }) : super(key: key);
-
-  final Future<int> getActivePointFuture;
 
   @override
   Widget build(BuildContext context) {

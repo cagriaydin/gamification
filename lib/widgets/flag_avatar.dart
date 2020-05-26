@@ -1,6 +1,8 @@
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:icon_shadow/icon_shadow.dart';
+import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:yorglass_ik/widgets/flag_point.dart';
 import 'package:yorglass_ik/widgets/get_circle_avatar.dart';
 
@@ -18,6 +20,9 @@ class FlagAvatar extends StatelessWidget {
 
   final bool isLeaderBoard;
 
+  final int rewardPoint;
+  final int userActivePoint;
+
   const FlagAvatar(
       {Key key,
       this.imageId,
@@ -29,7 +34,9 @@ class FlagAvatar extends StatelessWidget {
       this.branchName,
       this.split = true,
       this.radius,
-      this.isLeaderBoard = false})
+      this.isLeaderBoard = false,
+      this.rewardPoint,
+      this.userActivePoint})
       : super(key: key);
 
   @override
@@ -103,18 +110,49 @@ class FlagAvatar extends StatelessWidget {
                     padding: isLeaderBoard
                         ? const EdgeInsets.fromLTRB(8, 20, 8, 70)
                         : const EdgeInsets.fromLTRB(8, 20, 8, 40),
-                    child: Material(
-                      elevation: 5,
-                      color: Colors.white,
-                      borderRadius:
-                          BorderRadius.all(Radius.circular(getRadius(size))),
-                      child: Padding(
-                        padding: const EdgeInsets.all(3.0),
-                        child: GetCircleAvatar(
-                          radius: radius ?? getRadius(size),
-                          imageId: imageId,
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        Material(
+                          elevation: 5,
+                          color: Colors.white,
+                          borderRadius: BorderRadius.all(
+                              Radius.circular(getRadius(size))),
+                          child: Padding(
+                            padding: const EdgeInsets.all(3.0),
+                            child: GetCircleAvatar(
+                              radius: radius ?? getRadius(size),
+                              imageId: imageId,
+                            ),
+                          ),
                         ),
-                      ),
+                        if (userActivePoint != null && rewardPoint != null)
+                          CircularPercentIndicator(
+                            radius: (radius ?? getRadius(size)) * 2.2,
+                            lineWidth: 7.0,
+                            circularStrokeCap: CircularStrokeCap.round,
+                            percent: userActivePoint / rewardPoint > 1.0
+                                ? 1.0
+                                : userActivePoint / rewardPoint,
+                            center: IconShadowWidget(
+                              Icon(
+                                userActivePoint < rewardPoint
+                                    ? Icons.lock
+                                    : Icons.lock_open,
+                                color: Colors.white,
+                                size: 36,
+                              ),
+                              shadowColor: Colors.lightBlueAccent.shade100,
+                            ),
+                            backgroundColor: Colors.white,
+                            linearGradient: LinearGradient(
+                              colors: [
+                                Color(0xff1A8EA7),
+                                Colors.white,
+                              ],
+                            ),
+                          ),
+                      ],
                     ),
                   ),
                   if (rank == 1)
