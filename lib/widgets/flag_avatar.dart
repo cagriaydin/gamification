@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
@@ -23,6 +24,8 @@ class FlagAvatar extends StatelessWidget {
   final int rewardPoint;
   final int userActivePoint;
 
+  final Widget centerWidget;
+
   const FlagAvatar(
       {Key key,
       this.imageId,
@@ -36,7 +39,8 @@ class FlagAvatar extends StatelessWidget {
       this.radius,
       this.isLeaderBoard = false,
       this.rewardPoint,
-      this.userActivePoint})
+      this.userActivePoint,
+      this.centerWidget})
       : super(key: key);
 
   @override
@@ -116,8 +120,7 @@ class FlagAvatar extends StatelessWidget {
                         Material(
                           elevation: 5,
                           color: Colors.white,
-                          borderRadius: BorderRadius.all(
-                              Radius.circular(90)),
+                          borderRadius: BorderRadius.all(Radius.circular(90)),
                           child: Padding(
                             padding: const EdgeInsets.all(3.0),
                             child: GetCircleAvatar(
@@ -134,15 +137,28 @@ class FlagAvatar extends StatelessWidget {
                             percent: userActivePoint / rewardPoint > 1.0
                                 ? 1.0
                                 : userActivePoint / rewardPoint,
-                            center: IconShadowWidget(
-                              Icon(
-                                userActivePoint < rewardPoint
-                                    ? Icons.lock
-                                    : Icons.lock_open,
-                                color: Colors.white,
-                                size: 36,
+                            center: Container(
+                              decoration: BoxDecoration(shape: BoxShape.circle),
+                              width: double.infinity,
+                              height: double.infinity,
+                              child: Center(
+                                child: CustomPaint(
+                                  painter: CircleBlurPainter(
+                                      circleWidth: radius ?? getRadius(size), blurSigma: 3.0),
+                                  child: centerWidget ??
+                                      IconShadowWidget(
+                                        Icon(
+                                          userActivePoint < rewardPoint
+                                              ? Icons.lock
+                                              : Icons.lock_open,
+                                          color: Colors.white,
+                                          size: 36,
+                                        ),
+                                        shadowColor:
+                                            Colors.lightBlueAccent.shade100,
+                                      ),
+                                ),
                               ),
-                              shadowColor: Colors.lightBlueAccent.shade100,
                             ),
                             backgroundColor: Colors.white,
                             linearGradient: LinearGradient(
@@ -240,5 +256,39 @@ class FlagAvatar extends StatelessWidget {
     } else {
       return 2.8;
     }
+  }
+}
+
+class CircleBlurPainter extends CustomPainter {
+  CircleBlurPainter({@required this.circleWidth, this.blurSigma});
+
+  double circleWidth;
+  double blurSigma;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    Offset center = new Offset(size.width / 2, size.height / 2);
+    Paint line = new Paint()
+      ..color = Colors.lightBlue.withOpacity(.3)
+      ..strokeCap = StrokeCap.round
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = circleWidth
+      ..maskFilter = MaskFilter.blur(BlurStyle.normal, blurSigma)
+      ..shader = LinearGradient(
+        colors: <Color>[Colors.black, Colors.black54, Colors.transparent],
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+      ).createShader(Rect.fromCenter(
+        center: center,
+        width: circleWidth,
+        height: circleWidth,
+      ));
+    double radius = min(size.width / 2, size.height / 2);
+    canvas.drawCircle(center, radius, line);
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) {
+    return true;
   }
 }
