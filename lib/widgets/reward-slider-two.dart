@@ -2,7 +2,9 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
+import 'package:provider/provider.dart';
 import 'package:yorglass_ik/models/reward.dart';
+import 'package:yorglass_ik/models/user-reward.dart';
 import 'package:yorglass_ik/pages/reward_detail.dart';
 import 'package:yorglass_ik/repositories/reward-repository.dart';
 import 'package:yorglass_ik/widgets/reward-cards3.dart';
@@ -19,14 +21,16 @@ class RewardSliderTwo extends StatelessWidget {
               return Container(
                 child: FutureBuilder(
                   future: snapshot.data[index].image64.future,
-                  builder: (BuildContext context,
-                      AsyncSnapshot<Uint8List> _snapshot) {
+                  builder: (BuildContext context, AsyncSnapshot<Uint8List> _snapshot) {
                     if (snapshot.hasData) {
                       return GestureDetector(
-                        onTap: () => Navigator.push(context,
-                            MaterialPageRoute(builder: (BuildContext context) {
-                          return RewardDetail(
-                            reward: snapshot.data[index],
+                        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) {
+                          final provider = Provider.of<UserReward>(context);
+                          return ChangeNotifierProvider.value(
+                            value: provider,
+                            child: RewardDetail(
+                              reward: snapshot.data[index],
+                            ),
                           );
                         })),
                         child: RewardCards3(

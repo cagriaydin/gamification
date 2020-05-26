@@ -25,10 +25,6 @@ class _RewardsPageState extends State<RewardsPage> {
 
   final controller = PageController(initialPage: 0);
 
-  ValueNotifier<int> currentPoint = ValueNotifier(0);
-
-  Future<int> getActivePointFuture;
-
   @override
   void initState() {
     StatusbarHelper.setSatusBar();
@@ -37,8 +33,6 @@ class _RewardsPageState extends State<RewardsPage> {
   }
 
   void handleInitState() async {
-    getActivePointFuture = RewardRepository.instance.getActivePoint();
-    currentPoint.value = await getActivePointFuture;
   }
 
   @override
@@ -83,9 +77,7 @@ class _RewardsPageState extends State<RewardsPage> {
                         ),
                         Container(
                           height: size.height / 3,
-                          child: RewardSliderOne(
-                            currentPoint: currentPoint,
-                          ),
+                          child: RewardSliderOne(),
                         ),
                         Padding(
                           padding: const EdgeInsets.all(8.0),
@@ -212,13 +204,6 @@ class BuildMyRewards extends StatelessWidget {
 }
 
 class BuildActivePoint extends StatelessWidget {
-  const BuildActivePoint({
-    Key key,
-    @required this.getActivePointFuture,
-  }) : super(key: key);
-
-  final Future<int> getActivePointFuture;
-
   @override
   Widget build(BuildContext context) {
     final point = context.select((UserReward userReward) => userReward.point);

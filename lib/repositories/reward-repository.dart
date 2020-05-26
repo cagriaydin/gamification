@@ -164,6 +164,7 @@ class RewardRepository {
         buyDate: buyDate.toLocal(),
         status: 0,
       ));
+      getActivePoint();
 //      userRewardStream.map((reward) {
 //        reward.rewards.add(BuyedReward(
 //          id: r.id,
