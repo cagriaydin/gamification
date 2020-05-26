@@ -15,6 +15,7 @@ class RewardCards4 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     final userPoint = context.select((UserReward value) => value.point);
     return GestureDetector(
       onTap: () {
@@ -62,6 +63,7 @@ class RewardCards4 extends StatelessWidget {
                   alignment: Alignment.topCenter,
                   children: [
                     FlagAvatar(
+                      radius: size.height < 700 ? 40 : 50,
                       name: "",
                       isLeaderBoard: true,
                       imageId: reward.imageId,
@@ -76,6 +78,7 @@ class RewardCards4 extends StatelessWidget {
                               Colors.white,
                               Colors.white
                             ]),
+                            fontSize: size.height < 700 ? 25 : 30,
                       ),
                       point: reward.point,
                       rewardPoint: reward.point,

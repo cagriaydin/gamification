@@ -33,7 +33,7 @@ class RewardDetail extends StatelessWidget {
               width: size.width,
               height: size.height / 2,
               child: FittedBox(
-                fit: BoxFit.fill,
+                fit: BoxFit.cover,
                 child: ImageWidget(
                   id: reward.imageId,
                   borderRadius: BorderRadius.all(Radius.circular(0)),
