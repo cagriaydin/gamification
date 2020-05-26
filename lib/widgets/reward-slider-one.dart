@@ -41,8 +41,7 @@ class RewardSliderOne extends StatelessWidget {
                     height: height - 100,
                     child: Container(
                       child: RewardCards2(
-                        reward: snapshot.data[index],
-                        isFirst: currentIndex == index
+                        reward: snapshot.data[index]
                       ),
                     ),
                   ),

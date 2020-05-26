@@ -21,13 +21,12 @@ class RewardCards2 extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(8)),
           color: Colors.white,
-          gradient: !isFirst ? getGradient() : null,
           boxShadow: [
             BoxShadow(
-              offset: Offset(-2, 2),
+              offset: Offset(0, 2),
               spreadRadius: 1,
               blurRadius: 2,
-              color: const Color(0xff1A8EA7).withOpacity(.2),
+              color: const Color(0xffABF3F8),
             ),
           ],
         ),

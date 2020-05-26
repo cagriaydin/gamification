@@ -33,7 +33,6 @@ class RewardCards4 extends StatelessWidget {
             color: Colors.white,
             boxShadow: [
               BoxShadow(
-                // offset: Offset(-2, 2),
                 spreadRadius: 1,
                 blurRadius: 3,
                 color: const Color(0xffABF3F8),
