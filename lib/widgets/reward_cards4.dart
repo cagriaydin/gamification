@@ -9,8 +9,9 @@ import 'package:yorglass_ik/widgets/reward_like_widget.dart';
 
 class RewardCards4 extends StatelessWidget {
   final Reward reward;
+  final bool isMyReward;
 
-  const RewardCards4({Key key, this.reward}) : super(key: key);
+  const RewardCards4({Key key, this.reward, this.isMyReward = false}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -78,7 +79,7 @@ class RewardCards4 extends StatelessWidget {
                       ),
                       point: reward.point,
                       rewardPoint: reward.point,
-                      userActivePoint: userPoint,
+                      userActivePoint: isMyReward ? null : userPoint,
                     ),
                     Align(
                       alignment: Alignment.bottomRight,

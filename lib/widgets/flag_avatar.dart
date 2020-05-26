@@ -92,7 +92,7 @@ class FlagAvatar extends StatelessWidget {
                     style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.w300,
-                        fontSize: 12),
+                        fontSize: name == "\n" ? 16 : 12),
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
