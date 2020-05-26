@@ -99,20 +99,23 @@ class RewardCards3 extends StatelessWidget {
                   ),
                   Expanded(
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      mainAxisAlignment: MainAxisAlignment.end,
                       children: <Widget>[
-                        GradientText(
-                          (point ?? 0).toString(),
-                          fontWeight: FontWeight.w500,
-                          fontSize: size.width < 400 ? 23 : 28,
-                          linearGradient: LinearGradient(
-                            colors: [Color(0xFF26315F), Color(0xFF2FB4C2)],
-                            begin: Alignment.bottomCenter,
-                            end: Alignment.topCenter,
+                        Padding(
+                          padding: const EdgeInsets.all(4.0),
+                          child: GradientText(
+                            (point ?? 0).toString(),
+                            fontWeight: FontWeight.w500,
+                            fontSize: size.width < 400 ? 23 : 28,
+                            linearGradient: LinearGradient(
+                              colors: [Color(0xFF26315F), Color(0xFF2FB4C2)],
+                              begin: Alignment.bottomCenter,
+                              end: Alignment.topCenter,
+                            ),
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.fromLTRB(8.0, 0, 29, 0),
+                          padding: const EdgeInsets.fromLTRB(4.0, 0, 43, 8),
                           child: RotatedBox(
                             quarterTurns: 3,
                             child: LinearPercentIndicator(
