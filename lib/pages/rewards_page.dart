@@ -185,13 +185,13 @@ class BuildActivePoint extends StatelessWidget {
         Flexible(
           child: GradientText(
             (point ?? 0).toString(),
-            fontSize: 25,
+            fontSize: 20,
           ),
         ),
         Flexible(
           child: GradientText(
             'puan',
-            fontSize: 20,
+            fontSize: 18,
             fontWeight: FontWeight.w300,
           ),
         ),
