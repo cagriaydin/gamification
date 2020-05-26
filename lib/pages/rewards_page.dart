@@ -131,7 +131,7 @@ class RewardsPage extends StatelessWidget {
         decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.all(Radius.circular(16)),
-            boxShadow: [BoxShadow(color: Color(0xff54B4BA), offset: Offset(2, 3), blurRadius: 4, spreadRadius: 2)]),
+            boxShadow: [BoxShadow(color: Color(0xffABF3F8), offset: Offset(0, 3), blurRadius: 3, spreadRadius: 1)]),
         child: Column(
           children: [
             Flexible(
