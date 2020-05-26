@@ -19,15 +19,17 @@ class Reward {
     this.point,
     this.likeCount = 112,
     this.itemType,
-  }){
+  }) {
     setImage64();
   }
 
   setImage64() async {
     try {
-      final currentBase64 = await ImageRepository.instance.getImage64(this.imageId);
-      Uint8List decoded = base64.decode(currentBase64);
-      image64.complete(decoded);
+      if (this.imageId != null) {
+        final currentBase64 = await ImageRepository.instance.getImage64(this.imageId);
+        Uint8List decoded = base64.decode(currentBase64);
+        image64.complete(decoded);
+      }
     } catch (e) {
       image64.completeError(e);
       print(e);

@@ -1,10 +1,9 @@
 import 'package:meta/meta.dart';
-
-import 'package:yorglass_ik/models/reward.dart';
+import 'package:yorglass_ik/models/buyed-reward.dart';
 
 class UserReward {
     int point;
-    List<Reward> rewards;
+    List<BuyedReward> rewards;
     List<String> liked;
 
     UserReward({
