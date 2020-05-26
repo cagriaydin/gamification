@@ -97,41 +97,42 @@ class RewardCards3 extends StatelessWidget {
                   FlagPoint(
                     point: reward.point,
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
-                      GradientText(
-                        (point ?? 0).toString(),
-                        fontWeight: FontWeight.w500,
-                        fontSize: size.width < 400 ? 23 : 28,
-                        linearGradient: LinearGradient(
-                          colors: [Color(0xFF26315F), Color(0xFF2FB4C2)],
-                          begin: Alignment.bottomCenter,
-                          end: Alignment.topCenter,
+                  Expanded(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: <Widget>[
+                        GradientText(
+                          (point ?? 0).toString(),
+                          fontWeight: FontWeight.w500,
+                          fontSize: size.width < 400 ? 23 : 28,
+                          linearGradient: LinearGradient(
+                            colors: [Color(0xFF26315F), Color(0xFF2FB4C2)],
+                            begin: Alignment.bottomCenter,
+                            end: Alignment.topCenter,
+                          ),
                         ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(8.0, 0, 29, 0),
-                        child: RotatedBox(
-                          quarterTurns: 3,
-                          child: LinearPercentIndicator(
-                            linearStrokeCap: LinearStrokeCap.roundAll,
-                            width: containerHeight / 3,
-                            lineHeight: 12.0,
-                            percent: point / reward.point > 1.0
-                                ? 1.0
-                                : point / reward.point,
-                            backgroundColor: Colors.black12.withOpacity(0.05),
-                            linearGradient: LinearGradient(
-                              colors: [
-                                Color(0xFFABF3F8).withOpacity(0.5),
-                                Color(0xFF80CEDF),
-                              ],
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(8.0, 0, 29, 0),
+                          child: RotatedBox(
+                            quarterTurns: 3,
+                            child: LinearPercentIndicator(
+                              linearStrokeCap: LinearStrokeCap.roundAll,
+                              lineHeight: 12.0,
+                              percent: point / reward.point > 1.0
+                                  ? 1.0
+                                  : point / reward.point,
+                              backgroundColor: Colors.black12.withOpacity(0.05),
+                              linearGradient: LinearGradient(
+                                colors: [
+                                  Color(0xFFABF3F8).withOpacity(0.5),
+                                  Color(0xFF80CEDF),
+                                ],
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ],
               ),
