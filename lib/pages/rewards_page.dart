@@ -48,6 +48,7 @@ class RewardsPage extends StatelessWidget {
             buildTopPart(size, padding),
             Expanded(
               child: PageView(
+                physics: NeverScrollableScrollPhysics(),
                 controller: controller,
                 children: [
                   SingleChildScrollView(
