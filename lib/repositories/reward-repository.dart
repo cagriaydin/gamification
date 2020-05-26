@@ -1,6 +1,10 @@
+import 'dart:async';
+
 import 'package:mysql1/mysql1.dart';
+import 'package:rxdart/subjects.dart';
 import 'package:yorglass_ik/models/reward-type.dart';
 import 'package:yorglass_ik/models/reward.dart';
+import 'package:yorglass_ik/models/user-reward.dart';
 import 'package:yorglass_ik/services/authentication-service.dart';
 import 'package:yorglass_ik/services/db-connection.dart';
 
@@ -8,9 +12,18 @@ class RewardRepository {
   static final RewardRepository _instance =
       RewardRepository._privateConstructor();
 
-  RewardRepository._privateConstructor();
+  RewardRepository._privateConstructor() {
+    getMyRewards();
+    likedRewards();
+    getActivePoint();
+  }
 
   static RewardRepository get instance => _instance;
+
+  StreamController<UserReward> _userReward = BehaviorSubject();
+
+  Stream get userRewardStream => _userReward.stream;
+
 
   Future<List<Reward>> getRewards({String type}) async {
     Results res;
