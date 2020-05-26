@@ -124,7 +124,7 @@ class _TaskListPageState extends State<TaskListPage> {
             secondChild: Padding(
               padding: const EdgeInsets.only(bottom: 8),
               child: Container(
-                height: size.height / 8,
+                height: (size.width * 16 / 9) / 8,
                 width: size.width,
                 padding: EdgeInsets.only(top: padding.top),
                 decoration: BoxDecoration(
@@ -266,9 +266,11 @@ class _BuildTaskState extends State<BuildTask> {
                   Text(
                     widget.userTask.task.name,
                     textAlign: widget.isLeft ? TextAlign.left : TextAlign.right,
+                    style: TextStyle(fontSize: 16),
+                    maxLines: 2,
                   ),
                   SizedBox(
-                    height: 15,
+                    height: 8,
                   ),
                   Text(
                     getIntervalText(),
@@ -334,7 +336,7 @@ class _BuildTaskState extends State<BuildTask> {
                     ),
                     padding: EdgeInsets.all(8),
                     child: Padding(
-                      padding: const EdgeInsets.all(4.0),
+                      padding: const EdgeInsets.all(2.0),
                       child: Transform.rotate(
                         angle: -math.pi / 10,
                         child: Column(
@@ -342,13 +344,13 @@ class _BuildTaskState extends State<BuildTask> {
                             GradientText(
                               '+' + widget.userTask.point.toString(),
                               disabled: widget.userTask.complete == 0,
-                              fontSize: 20,
+                              fontSize: 16,
                               fontWeight: FontWeight.w500,
                             ),
                             GradientText(
                               'puan',
                               disabled: widget.userTask.complete == 0,
-                              fontSize: 15,
+                              fontSize: 14,
                               fontWeight: FontWeight.w300,
                             ),
                           ],
