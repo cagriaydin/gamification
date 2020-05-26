@@ -63,7 +63,7 @@ class RewardRepository {
         rewardItemList.add(
           Reward(
             id: r[0],
-            title: r[1],
+            title: r[1].toString(),
             imageId: r[2],
             point: r[3],
             itemType: r[4],

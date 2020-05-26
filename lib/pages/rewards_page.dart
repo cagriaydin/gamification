@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:yorglass_ik/helpers/statusbar-helper.dart';
 import 'package:yorglass_ik/models/content_option.dart';
 import 'package:yorglass_ik/models/reward.dart';
@@ -42,8 +41,6 @@ class _RewardsPageState extends State<RewardsPage> {
 
   @override
   Widget build(BuildContext context) {
-    //TODO: change Wip page later
-    return WorkingProgress();
 
     final size = MediaQuery.of(context).size;
     final padding = MediaQuery.of(context).padding;
@@ -62,63 +59,7 @@ class _RewardsPageState extends State<RewardsPage> {
       ),
       body: Column(
         children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.only(bottom: 8),
-            child: Container(
-              height: 125,
-              width: size.width,
-              padding: EdgeInsets.only(top: padding.top),
-              decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.all(Radius.circular(16)),
-                  boxShadow: [BoxShadow(color: Color(0xff54B4BA), offset: Offset(2, 3), blurRadius: 4, spreadRadius: 2)]),
-              child: Column(
-                children: [
-                  Flexible(
-                    child: FutureBuilder(
-                      future: getActivePointFuture,
-                      builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
-                        if (snapshot.hasData || snapshot.hasError) {
-                          return Column(
-                            children: [
-                              Flexible(
-                                child: GradientText(
-                                  (snapshot.data ?? 0).toString(),
-                                  fontSize: 25,
-                                ),
-                              ),
-                              Flexible(
-                                child: GradientText(
-                                  'puan',
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w300,
-                                ),
-                              ),
-                            ],
-                          );
-                        } else {
-                          return Center(child: CircularProgressIndicator());
-                        }
-                      },
-                    ),
-                  ),
-                  Container(
-                    width: size.width,
-                    height: 40,
-                    child: ContentSelector(
-                      onChange: onContentSelectorChange,
-                      options: options,
-                      rowMainAxisAlignment: MainAxisAlignment.spaceAround,
-                      contentSelectorType: ContentSelectorType.tab,
-                      activeColor: Color(0xff4BADBB),
-                      isLeaderBoard: false,
-                      disabledColor: Colors.black54,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
+          buildTopPart(size, padding),
           Expanded(
             child: PageView(
               physics: NeverScrollableScrollPhysics(),
@@ -204,6 +145,66 @@ class _RewardsPageState extends State<RewardsPage> {
         ],
       ),
     );
+  }
+
+  Padding buildTopPart(Size size, EdgeInsets padding) {
+    return Padding(
+          padding: const EdgeInsets.only(bottom: 8),
+          child: Container(
+            height: 125,
+            width: size.width,
+            padding: EdgeInsets.only(top: padding.top),
+            decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.all(Radius.circular(16)),
+                boxShadow: [BoxShadow(color: Color(0xff54B4BA), offset: Offset(2, 3), blurRadius: 4, spreadRadius: 2)]),
+            child: Column(
+              children: [
+                Flexible(
+                  child: FutureBuilder(
+                    future: getActivePointFuture,
+                    builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
+                      if (snapshot.hasData || snapshot.hasError) {
+                        return Column(
+                          children: [
+                            Flexible(
+                              child: GradientText(
+                                (snapshot.data ?? 0).toString(),
+                                fontSize: 25,
+                              ),
+                            ),
+                            Flexible(
+                              child: GradientText(
+                                'puan',
+                                fontSize: 20,
+                                fontWeight: FontWeight.w300,
+                              ),
+                            ),
+                          ],
+                        );
+                      } else {
+                        return Center(child: CircularProgressIndicator());
+                      }
+                    },
+                  ),
+                ),
+                Container(
+                  width: size.width,
+                  height: 40,
+                  child: ContentSelector(
+                    onChange: onContentSelectorChange,
+                    options: options,
+                    rowMainAxisAlignment: MainAxisAlignment.spaceAround,
+                    contentSelectorType: ContentSelectorType.tab,
+                    activeColor: Color(0xff4BADBB),
+                    isLeaderBoard: false,
+                    disabledColor: Colors.black54,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
   }
 
   onContentSelectorChange(ContentOption contentOption) {
