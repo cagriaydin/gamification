@@ -15,10 +15,13 @@ class RewardCards4 extends StatelessWidget {
     final userPoint = context.select((UserReward value) => value.point);
     return GestureDetector(
       onTap: () {
-        return Navigator.push(context,
-            MaterialPageRoute(builder: (BuildContext context) {
-          return RewardDetail(
-            reward: reward,
+        return Navigator.push(context, MaterialPageRoute(builder: (_) {
+          final provider = Provider.of<UserReward>(context);
+          return ChangeNotifierProvider.value(
+            value: provider,
+            child: RewardDetail(
+              reward: reward,
+            ),
           );
         }));
       },
@@ -40,7 +43,7 @@ class RewardCards4 extends StatelessWidget {
           child: Column(
             children: [
               Padding(
-                padding: const EdgeInsets.fromLTRB(8,8,8,0),
+                padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
                 child: Text(
                   reward.title,
                   overflow: TextOverflow.ellipsis,
