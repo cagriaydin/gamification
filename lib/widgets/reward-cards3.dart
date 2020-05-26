@@ -66,7 +66,10 @@ class RewardCards3 extends StatelessWidget {
                         Text(
                           reward.title,
                           textAlign: TextAlign.center,
-                          style: TextStyle(fontSize: 16),
+                          style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w300,
+                              color: Color(0xFF26315F)),
                           overflow: TextOverflow.ellipsis,
                           maxLines: 2,
                         ),
