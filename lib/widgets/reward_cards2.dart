@@ -53,12 +53,11 @@ class RewardCards2 extends StatelessWidget {
                 width: 140.0,
                 lineHeight: 14.0,
                 percent: getPercentage(userPoint),
-                backgroundColor: Colors.white,
+                backgroundColor: Colors.black12.withOpacity(0.05),
                 linearGradient: LinearGradient(
                   colors: [
                     Color(0xFFABF3F8),
                     Color(0xFF80CEDF),
-//                    Color(0xFF26315F),
                   ],
                 ),
               ),

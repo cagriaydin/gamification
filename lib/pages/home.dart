@@ -82,13 +82,13 @@ class _HomePageState extends State<HomePage> {
                       Text(
                         AuthenticationService.verifiedUser.name,
                         style: TextStyle(
-                          fontSize: 30,
+                          fontSize: 24,
                           color: Theme.of(context).accentColor,
                           shadows: <Shadow>[
                             Shadow(
                               blurRadius: 4.0,
                               color: Color(0xFFE0ECF4),
-                            )
+                            ),
                           ],
                         ),
                       ),

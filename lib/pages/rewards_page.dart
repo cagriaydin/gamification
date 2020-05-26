@@ -26,6 +26,7 @@ class RewardsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+    final aspectRatio = size.width / size.height;
     final padding = MediaQuery.of(context).padding;
     return ChangeNotifierProvider.value(
       value: RewardRepository.instance.userRewardData,
@@ -78,17 +79,16 @@ class RewardsPage extends StatelessWidget {
                                 fontWeight: FontWeight.w300),
                           ),
                         ),
-                        Container(
-                          height: size.height / 2.5,
-                          child: RewardSliderTwo(),
-                        ),
+                        RewardSliderTwo(width: size.width),
                         //TODO: type 3 start here
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Text(
                             "Kendimi mutlu etme zamanı!",
                             style: TextStyle(
-                                color: Color(0xffAAAAAD), fontSize: 20,fontWeight: FontWeight.w300),
+                                color: Color(0xffAAAAAD),
+                                fontSize: 20,
+                                fontWeight: FontWeight.w300),
                           ),
                         ),
                         FutureBuilder(

@@ -10,21 +10,27 @@ import 'package:yorglass_ik/repositories/reward-repository.dart';
 import 'package:yorglass_ik/widgets/reward-cards3.dart';
 
 class RewardSliderTwo extends StatelessWidget {
+  RewardSliderTwo({@required this.width});
+  final width;
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: RewardRepository.instance.getRewards(type: "43c917d1-5262-4a4f-8085-d863084eceda"),
-      builder: (BuildContext context, AsyncSnapshot<List<Reward>> snapshot) {
-        if (snapshot.hasData) {
-          return Swiper(
-            itemBuilder: (BuildContext context, int index) {
-              return Container(
-                child: FutureBuilder(
+    return Container(
+      height: (width * 16 / 9) / 2.2,
+      child: FutureBuilder(
+        future: RewardRepository.instance
+            .getRewards(type: "43c917d1-5262-4a4f-8085-d863084eceda"),
+        builder: (BuildContext context, AsyncSnapshot<List<Reward>> snapshot) {
+          if (snapshot.hasData) {
+            return Swiper(
+              itemBuilder: (BuildContext context, int index) {
+                return FutureBuilder(
                   future: snapshot.data[index].image64.future,
-                  builder: (BuildContext context, AsyncSnapshot<Uint8List> _snapshot) {
+                  builder:
+                      (BuildContext context, AsyncSnapshot<Uint8List> _snapshot) {
                     if (snapshot.hasData) {
                       return GestureDetector(
-                        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) {
+                        onTap: () => Navigator.push(context,
+                            MaterialPageRoute(builder: (_) {
                           final provider = Provider.of<UserReward>(context);
                           return ChangeNotifierProvider.value(
                             value: provider,
@@ -40,17 +46,17 @@ class RewardSliderTwo extends StatelessWidget {
                     } else
                       return Center(child: CircularProgressIndicator());
                   },
-                ),
-              );
-            },
-            itemCount: snapshot.data.length,
-            itemWidth: 200,
-            pagination: new SwiperPagination(builder: SwiperPagination.rect),
-          );
-        } else {
-          return Center(child: CircularProgressIndicator());
-        }
-      },
+                );
+              },
+              itemCount: snapshot.data.length,
+              itemWidth: 200,
+              pagination: new SwiperPagination(builder: SwiperPagination.rect),
+            );
+          } else {
+            return Center(child: CircularProgressIndicator());
+          }
+        },
+      ),
     );
   }
 }

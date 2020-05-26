@@ -5,6 +5,7 @@ class GradientText extends StatelessWidget {
   final double fontSize;
   final bool disabled;
   final FontWeight fontWeight;
+  final LinearGradient linearGradient;
 
   const GradientText(
     this.text, {
@@ -12,21 +13,24 @@ class GradientText extends StatelessWidget {
     this.fontSize = 35,
     this.disabled = true,
     this.fontWeight,
+    this.linearGradient,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ShaderMask(
       shaderCallback: (Rect bounds) {
-        return LinearGradient(
-          colors: <Color>[
-            disabled ? Color(0xff2FB4C2).withOpacity(.1) : Colors.white,
-            disabled ? Color(0xff26315F).withOpacity(.7) : Colors.white,
-            disabled ? Color(0xff26315F).withOpacity(.7) : Colors.white,
-          ],
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-        ).createShader(bounds);
+        return linearGradient != null
+            ? linearGradient.createShader(bounds)
+            : LinearGradient(
+                colors: <Color>[
+                  disabled ? Color(0xff2FB4C2).withOpacity(.1) : Colors.white,
+                  disabled ? Color(0xff26315F).withOpacity(.7) : Colors.white,
+                  disabled ? Color(0xff26315F).withOpacity(.7) : Colors.white,
+                ],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ).createShader(bounds);
       },
       child: Text(
         text,
