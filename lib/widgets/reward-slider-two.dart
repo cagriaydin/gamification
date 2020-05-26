@@ -23,11 +23,7 @@ class RewardSliderTwo extends StatelessWidget {
           if (snapshot.hasData) {
             return Swiper(
               itemBuilder: (BuildContext context, int index) {
-                return FutureBuilder(
-                  future: snapshot.data[index].image64.future,
-                  builder:
-                      (BuildContext context, AsyncSnapshot<Uint8List> _snapshot) {
-                    if (snapshot.hasData) {
+                if (snapshot.hasData) {
                       return GestureDetector(
                         onTap: () => Navigator.push(context,
                             MaterialPageRoute(builder: (_) {
@@ -45,8 +41,6 @@ class RewardSliderTwo extends StatelessWidget {
                       );
                     } else
                       return Center(child: CircularProgressIndicator());
-                  },
-                );
               },
               itemCount: snapshot.data.length,
               itemWidth: 200,

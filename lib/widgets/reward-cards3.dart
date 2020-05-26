@@ -11,6 +11,7 @@ import 'package:yorglass_ik/widgets/flag_point.dart';
 import 'package:yorglass_ik/widgets/reward_like_widget.dart';
 
 import 'gradient_text.dart';
+import 'image_widget.dart';
 
 class RewardCards3 extends StatelessWidget {
   final Reward reward;
@@ -52,34 +53,13 @@ class RewardCards3 extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.all(4.0),
-                          child: SizedBox(
-                            child: FutureBuilder(
-                              future: ImageRepository.instance
-                                  .getImage(reward.imageId),
-                              builder: (BuildContext context,
-                                  AsyncSnapshot<image.Image> snapshot) {
-                                if (snapshot.hasError) {
-                                  return ClipRRect(
-                                    borderRadius:
-                                        BorderRadius.circular(size.width / 25),
-                                    child: Image.asset(
-                                        'assets/default-profile.png'),
-                                  );
-                                }
-                                if (snapshot.hasData) {
-                                  // return Image.memory(snapshot.data);
-                                  return ClipRRect(
-                                    borderRadius: BorderRadius.circular(
-                                        containerHeight / 25),
-                                    child: Image.memory(
-                                        snapshot.data.decodedImage),
-                                  );
-                                } else
-                                  return Center(
-                                      child: CircularProgressIndicator());
-                              },
+                        Flexible(
+                          child: Padding(
+                            padding: const EdgeInsets.all(4.0),
+                            child: ImageWidget(
+                              id: reward.imageId,
+                              borderRadius:
+                                  BorderRadius.circular(containerHeight / 25),
                             ),
                           ),
                         ),

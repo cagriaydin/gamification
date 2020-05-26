@@ -99,8 +99,7 @@ class RewardsPage extends StatelessWidget {
                             if (snapshot.hasData) {
                               return GridView.count(
                                 childAspectRatio:
-                                    MediaQuery.of(context).size.width /
-                                        (MediaQuery.of(context).size.height),
+                                    9 / 19,
                                 scrollDirection: Axis.vertical,
                                 shrinkWrap: true,
                                 mainAxisSpacing: 15,
@@ -108,6 +107,7 @@ class RewardsPage extends StatelessWidget {
                                 physics: ScrollPhysics(),
                                 padding: EdgeInsets.all(8),
                                 crossAxisCount: 2,
+                                
                                 children: snapshot.data
                                     .map((e) => RewardCards4(reward: e))
                                     .toList(),
