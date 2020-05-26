@@ -20,7 +20,6 @@ class RewardCards4 extends StatelessWidget {
             MaterialPageRoute(builder: (BuildContext context) {
           return RewardDetail(
             reward: reward,
-            currentPoint: userPoint,
           );
         }));
       },
