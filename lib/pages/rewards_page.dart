@@ -7,7 +7,6 @@ import 'package:yorglass_ik/models/user-reward.dart';
 import 'package:yorglass_ik/repositories/reward-repository.dart';
 import 'package:yorglass_ik/widgets/content_selector.dart';
 import 'package:yorglass_ik/widgets/gradient_text.dart';
-import 'package:yorglass_ik/widgets/reward-cards3.dart';
 import 'package:yorglass_ik/widgets/reward-slider-one.dart';
 import 'package:yorglass_ik/widgets/reward-slider-two.dart';
 import 'package:yorglass_ik/widgets/reward_cards4.dart';
@@ -84,25 +83,24 @@ class RewardsPage extends StatelessWidget {
                             style: TextStyle(color: Color(0xffAAAAAD), fontSize: 20),
                           ),
                         ),
-                        Container(
-                          height: size.height,
-                          child: FutureBuilder(
-                            future: RewardRepository.instance.getRewards(
-                                type: "91548730-6a79-4d8d-9f1b-76f5dfa51887"),
-                            builder: (BuildContext context,
-                                AsyncSnapshot<List<Reward>> snapshot) {
-                              if (snapshot.hasData) {
-                                return GridView.count(
-                                  childAspectRatio: MediaQuery.of(context).size.width / (MediaQuery.of(context).size.height),
-                                  scrollDirection: Axis.vertical,
-                                  padding: EdgeInsets.all(8),
-                                  crossAxisCount: 2,
-                                  children: snapshot.data.map((e) => RewardCards4(reward: e)).toList(),
-                                );
-                              } else
-                                return Center(child: CircularProgressIndicator());
-                            },
-                          ),
+                        FutureBuilder(
+                          future: RewardRepository.instance.getRewards(
+                              type: "91548730-6a79-4d8d-9f1b-76f5dfa51887"),
+                          builder: (BuildContext context,
+                              AsyncSnapshot<List<Reward>> snapshot) {
+                            if (snapshot.hasData) {
+                              return GridView.count(
+                                childAspectRatio: MediaQuery.of(context).size.width / (MediaQuery.of(context).size.height),
+                                scrollDirection: Axis.vertical,
+                                shrinkWrap: true,
+                                physics: ScrollPhysics(),
+                                padding: EdgeInsets.all(8),
+                                crossAxisCount: 2,
+                                children: snapshot.data.map((e) => RewardCards4(reward: e)).toList(),
+                              );
+                            } else
+                              return Center(child: CircularProgressIndicator());
+                          },
                         )
                         //TODO type 3 finish
                       ],
@@ -169,9 +167,10 @@ class BuildMyRewards extends StatelessWidget {
     final myRewards = context.select((UserReward value) => value.rewards);
     return GridView.count(
       scrollDirection: Axis.vertical,
+      childAspectRatio: MediaQuery.of(context).size.width / (MediaQuery.of(context).size.height),
       padding: EdgeInsets.all(8),
       crossAxisCount: 2,
-      children: myRewards.map((e) => RewardCards3(reward: e)).toList(),
+      children: myRewards.map((e) => RewardCards4(reward: e)).toList(),
     );
   }
 }
