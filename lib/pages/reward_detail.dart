@@ -99,7 +99,9 @@ class RewardDetail extends StatelessWidget {
                                 try {
                                   var y = await RewardRepository.instance.buyReward(reward.id);
                                   Navigator.pop(context);
-                                  print(y);
+                                  if (y) {
+                                    PopupHelper().showPopup(context, Text('Ödülü başarıyla aldınız!'));
+                                  }
                                 } catch (e) {
                                   PopupHelper().showPopup(context, Text(e));
                                 }
