@@ -16,9 +16,11 @@ class RewardsPage extends StatelessWidget {
     ContentOption(title: 'Ödül Havuzu', isActive: true),
     ContentOption(title: 'Ödüllerim'),
   ];
+
   RewardsPage() {
     StatusbarHelper.setSatusBar();
   }
+
   final controller = PageController(initialPage: 0);
 
   @override
@@ -57,18 +59,19 @@ class RewardsPage extends StatelessWidget {
                           padding: const EdgeInsets.all(8.0),
                           child: Text(
                             "İnsanlara Faydam Olsun",
-                            style: TextStyle(color: Color(0xffAAAAAD), fontSize: 20),
+                            style: TextStyle(
+                                color: Color(0xffAAAAAD), fontSize: 20),
                           ),
                         ),
-                        Container(
-                          height: size.height / 3,
-                          child: RewardSliderOne(),
+                        RewardSliderOne(
+                          height: 300,
                         ),
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Text(
                             "Şirin Hayvan Dostlarımıza",
-                            style: TextStyle(color: Color(0xffAAAAAD), fontSize: 20),
+                            style: TextStyle(
+                                color: Color(0xffAAAAAD), fontSize: 20),
                           ),
                         ),
                         Container(
@@ -80,7 +83,8 @@ class RewardsPage extends StatelessWidget {
                           padding: const EdgeInsets.all(8.0),
                           child: Text(
                             "Kendimi mutlu etme zamanı!",
-                            style: TextStyle(color: Color(0xffAAAAAD), fontSize: 20),
+                            style: TextStyle(
+                                color: Color(0xffAAAAAD), fontSize: 20),
                           ),
                         ),
                         FutureBuilder(
@@ -90,7 +94,9 @@ class RewardsPage extends StatelessWidget {
                               AsyncSnapshot<List<Reward>> snapshot) {
                             if (snapshot.hasData) {
                               return GridView.count(
-                                childAspectRatio: MediaQuery.of(context).size.width / (MediaQuery.of(context).size.height),
+                                childAspectRatio:
+                                    MediaQuery.of(context).size.width /
+                                        (MediaQuery.of(context).size.height),
                                 scrollDirection: Axis.vertical,
                                 shrinkWrap: true,
                                 mainAxisSpacing: 15,
@@ -98,7 +104,9 @@ class RewardsPage extends StatelessWidget {
                                 physics: ScrollPhysics(),
                                 padding: EdgeInsets.all(8),
                                 crossAxisCount: 2,
-                                children: snapshot.data.map((e) => RewardCards4(reward: e)).toList(),
+                                children: snapshot.data
+                                    .map((e) => RewardCards4(reward: e))
+                                    .toList(),
                               );
                             } else
                               return Center(child: CircularProgressIndicator());
@@ -129,7 +137,13 @@ class RewardsPage extends StatelessWidget {
         decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.all(Radius.circular(16)),
-            boxShadow: [BoxShadow(color: Color(0xffABF3F8), offset: Offset(0, 3), blurRadius: 3, spreadRadius: 1)]),
+            boxShadow: [
+              BoxShadow(
+                  color: Color(0xffABF3F8),
+                  offset: Offset(0, 3),
+                  blurRadius: 3,
+                  spreadRadius: 1)
+            ]),
         child: Column(
           children: [
             Flexible(
@@ -155,11 +169,12 @@ class RewardsPage extends StatelessWidget {
   }
 
   onContentSelectorChange(ContentOption contentOption) {
-    WidgetsBinding.instance.addPostFrameCallback((_) => controller.animateToPage(
-          contentOption.title == 'Ödüllerim' ? 1 : 0,
-          duration: Duration(milliseconds: 300),
-          curve: Curves.easeOut,
-        ));
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) => controller.animateToPage(
+              contentOption.title == 'Ödüllerim' ? 1 : 0,
+              duration: Duration(milliseconds: 300),
+              curve: Curves.easeOut,
+            ));
   }
 }
 
@@ -169,7 +184,8 @@ class BuildMyRewards extends StatelessWidget {
     final myRewards = context.select((UserReward value) => value.rewards);
     return GridView.count(
       scrollDirection: Axis.vertical,
-      childAspectRatio: MediaQuery.of(context).size.width / (MediaQuery.of(context).size.height),
+      childAspectRatio: MediaQuery.of(context).size.width /
+          (MediaQuery.of(context).size.height),
       padding: EdgeInsets.all(8),
       crossAxisCount: 2,
       children: myRewards.map((e) => RewardCards4(reward: e)).toList(),
