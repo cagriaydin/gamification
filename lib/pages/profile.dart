@@ -242,7 +242,7 @@ class _BuildProfileTabsState extends State<BuildProfileTabs> {
                     children: [
                       RewardCards(
                         reward: Reward(
-                            imageId: "c9a560ac-63f2-401b-8185-2bae139957ad",
+                            imageId: "21eb8c71-9f90-11ea-b559-005056b3b493",
                             point: 0,
                             likeCount: 0),
                       ),
