@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -9,9 +8,11 @@ class BlurBackgroundImage extends StatelessWidget {
     Key key,
     this.child,
     this.imageUrl,
+    this.backgroundChild,
   }) : super(key: key);
 
   final Widget child;
+  final Widget backgroundChild;
   final String imageUrl;
 
   @override
@@ -21,7 +22,10 @@ class BlurBackgroundImage extends StatelessWidget {
       children: [
         Opacity(
           opacity: .3,
-          child: ImageWidget(id: imageUrl,borderRadius: BorderRadius.all(Radius.circular(0)),),
+          child: backgroundChild ?? ImageWidget(
+            id: imageUrl,
+            borderRadius: BorderRadius.all(Radius.circular(0)),
+          ),
         ),
         BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),

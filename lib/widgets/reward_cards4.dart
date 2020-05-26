@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:yorglass_ik/models/reward.dart';
 import 'package:yorglass_ik/models/user-reward.dart';
 import 'package:yorglass_ik/pages/reward_detail.dart';
 import 'package:yorglass_ik/widgets/flag_avatar.dart';
+import 'package:yorglass_ik/widgets/gradient_text.dart';
 import 'package:yorglass_ik/widgets/reward_like_widget.dart';
-import 'package:provider/provider.dart';
 
 class RewardCards4 extends StatelessWidget {
   final Reward reward;
+
   const RewardCards4({Key key, this.reward}) : super(key: key);
 
   @override
@@ -57,9 +59,20 @@ class RewardCards4 extends StatelessWidget {
                     FlagAvatar(
                       name: "",
                       isLeaderBoard: true,
-                      point: reward.point,
                       imageId: reward.imageId,
                       titleColor: Color(0xff26315F),
+                      centerWidget: GradientText(
+                        '%${(reward.point / userPoint).floor()}',
+                        linearGradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                              Color(0xff2FB4C2),
+                              Colors.white,
+                              Colors.white
+                            ]),
+                      ),
+                      point: reward.point,
                       rewardPoint: reward.point,
                       userActivePoint: userPoint,
                     ),

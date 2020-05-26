@@ -162,6 +162,7 @@ class RewardsPage extends StatelessWidget {
                 rowMainAxisAlignment: MainAxisAlignment.spaceAround,
                 contentSelectorType: ContentSelectorType.tab,
                 activeColor: Color(0xff4BADBB),
+                fontSize: 18,
                 isLeaderBoard: false,
                 disabledColor: Colors.black54,
               ),
