@@ -8,8 +8,7 @@ import 'package:provider/provider.dart';
 
 class RewardCards4 extends StatelessWidget {
   final Reward reward;
-  const RewardCards4({Key key, this.reward})
-      : super(key: key);
+  const RewardCards4({Key key, this.reward}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -34,40 +33,44 @@ class RewardCards4 extends StatelessWidget {
               BoxShadow(
                 // offset: Offset(-2, 2),
                 spreadRadius: 1,
-                blurRadius: 2,
-                color: const Color(0xff1A8EA7).withOpacity(.2),
+                blurRadius: 3,
+                color: const Color(0xffABF3F8),
               ),
             ],
           ),
-          child: Stack(
+          child: Column(
             children: [
               Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.fromLTRB(8,8,8,0),
                 child: Text(
                   reward.title,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 2,
                   style: TextStyle(fontSize: 20, color: Color(0xff26315F)),
                 ),
               ),
-              Stack(
-                alignment: Alignment.center,
-                children: [
-                  FlagAvatar(
-                    name: "",
-                    isLeaderBoard: true,
-                    point: reward.point,
-                    imageId: reward.imageId,
-                    titleColor: Color(0xff26315F),
-                    rewardPoint: reward.point,
-                    userActivePoint: userPoint,
-                  ),
-                  Align(
-                    alignment: Alignment.bottomRight,
-                    child: LikeRewardWidget(
-                      reward: reward,
-                      likedRewards: [],
+              Expanded(
+                child: Stack(
+                  alignment: Alignment.topCenter,
+                  children: [
+                    FlagAvatar(
+                      name: "",
+                      isLeaderBoard: true,
+                      point: reward.point,
+                      imageId: reward.imageId,
+                      titleColor: Color(0xff26315F),
+                      rewardPoint: reward.point,
+                      userActivePoint: userPoint,
                     ),
-                  ),
-                ],
+                    Align(
+                      alignment: Alignment.bottomRight,
+                      child: LikeRewardWidget(
+                        reward: reward,
+                        likedRewards: [],
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
