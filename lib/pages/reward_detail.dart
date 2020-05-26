@@ -34,6 +34,7 @@ class RewardDetail extends StatelessWidget {
                   fit: BoxFit.fitWidth,
                   child: ImageWidget(
                     id: reward.imageId,
+                    borderRadius: BorderRadius.all(Radius.circular(0)),
                   ),
                 ),
               ),

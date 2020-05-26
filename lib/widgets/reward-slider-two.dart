@@ -24,7 +24,7 @@ class RewardSliderTwo extends StatelessWidget {
                   builder: (BuildContext context, AsyncSnapshot<Uint8List> _snapshot) {
                     if (snapshot.hasData) {
                       return GestureDetector(
-                        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) {
+                        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) {
                           final provider = Provider.of<UserReward>(context);
                           return ChangeNotifierProvider.value(
                             value: provider,
