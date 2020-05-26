@@ -66,7 +66,10 @@ class RewardCards3 extends StatelessWidget {
                         Text(
                           reward.title,
                           textAlign: TextAlign.center,
-                          style: TextStyle(fontSize: 16),
+                          style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w300,
+                              color: Color(0xFF26315F)),
                           overflow: TextOverflow.ellipsis,
                           maxLines: 2,
                         ),
@@ -88,18 +91,36 @@ class RewardCards3 extends StatelessWidget {
                           children: <Widget>[
                             Padding(
                               padding: const EdgeInsets.all(4.0),
-                              child: GradientText(
-                                (point ?? 0).toString(),
-                                fontWeight: FontWeight.w500,
-                                fontSize: size.width < 400 ? 23 : 28,
-                                linearGradient: LinearGradient(
-                                  colors: [
-                                    Color(0xFF26315F),
-                                    Color(0xFF2FB4C2)
-                                  ],
-                                  begin: Alignment.bottomCenter,
-                                  end: Alignment.topCenter,
-                                ),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  GradientText(
+                                    (point ?? 0).toString(),
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: size.width < 400 ? 20 : 25,
+                                    linearGradient: LinearGradient(
+                                      colors: [
+                                        Color(0xFF26315F),
+                                        Color(0xFF2FB4C2)
+                                      ],
+                                      begin: Alignment.bottomCenter,
+                                      end: Alignment.topCenter,
+                                    ),
+                                  ),
+                                  GradientText(
+                                    'puan',
+                                    fontWeight: FontWeight.w300,
+                                    fontSize: size.width < 400 ? 15 : 20,
+                                    linearGradient: LinearGradient(
+                                      colors: [
+                                        Color(0xFF26315F),
+                                        Color(0xFF2FB4C2)
+                                      ],
+                                      begin: Alignment.bottomCenter,
+                                      end: Alignment.topCenter,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                             Padding(
