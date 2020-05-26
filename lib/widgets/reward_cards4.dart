@@ -43,16 +43,20 @@ class RewardCards4 extends StatelessWidget {
           ),
           child: Column(
             children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
-                child: Text(
-                  reward.title,
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 2,
-                  style: TextStyle(fontSize: 20, color: Color(0xff26315F)),
+              Expanded(
+                flex: 29,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
+                  child: Text(
+                    reward.title,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 2,
+                    style: TextStyle(fontSize: 20, color: Color(0xff26315F)),
+                  ),
                 ),
               ),
-              Flexible(
+              Expanded(
+                flex: 110,
                 child: Stack(
                   alignment: Alignment.topCenter,
                   children: [
