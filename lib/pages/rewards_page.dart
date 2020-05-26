@@ -93,6 +93,8 @@ class RewardsPage extends StatelessWidget {
                                 AsyncSnapshot<List<Reward>> snapshot) {
                               if (snapshot.hasData) {
                                 return GridView.count(
+                                  mainAxisSpacing: 15,
+                                  crossAxisSpacing: 10,
                                   childAspectRatio: MediaQuery.of(context).size.width / (MediaQuery.of(context).size.height),
                                   scrollDirection: Axis.vertical,
                                   padding: EdgeInsets.all(8),
