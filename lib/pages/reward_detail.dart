@@ -16,75 +16,79 @@ class RewardDetail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final int point = context.select((UserReward userReward) => userReward.point);
+    final int point =
+        context.select((UserReward userReward) => userReward.point);
     final size = MediaQuery.of(context).size;
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-        ),
-        extendBodyBehindAppBar: true,
-        body: Stack(
-          children: <Widget>[
-            Positioned(
-              top: 0,
-              child: Container(
-                width: size.width,
-                height: size.height / 2,
-                child: FittedBox(
-                  fit: BoxFit.fill,
-                  child: ImageWidget(
-                    id: reward.imageId,
-                    borderRadius: BorderRadius.all(Radius.circular(0)),
-                  ),
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+      ),
+      extendBodyBehindAppBar: true,
+      body: Stack(
+        children: <Widget>[
+          Positioned(
+            top: 0,
+            child: Container(
+              width: size.width,
+              child: FittedBox(
+                fit: BoxFit.fitWidth,
+                child: ImageWidget(
+                  id: reward.imageId,
+                  borderRadius: BorderRadius.all(Radius.circular(0)),
                 ),
               ),
             ),
-            Positioned(
-              bottom: 0,
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(20.0),
-                    topRight: Radius.circular(20.0),
-                  ),
-                  border: Border.all(color: Colors.white),
-                  color: Colors.white,
+          ),
+          Positioned(
+            bottom: 0,
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(20.0),
+                  topRight: Radius.circular(20.0),
                 ),
-                height: size.height / 1.75,
-                width: size.width,
-                child: Column(
-                  children: <Widget>[
-                    Expanded(
+                border: Border.all(color: Colors.white),
+                color: Colors.white,
+              ),
+              height: size.height / 1.75,
+              width: size.width,
+              child: Column(
+                children: <Widget>[
+                  Flexible(
+                    flex: 5,
+                    child: Padding(
+                      padding: const EdgeInsets.all(24.0),
+                      child: Text(
+                        reward.title,
+                        style: TextStyle(
+                          fontSize: 24,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                  Flexible(
+                    flex: 4,
+                    child: Visibility(
+                      visible: reward.point > point,
                       child: Padding(
-                        padding: const EdgeInsets.all(24.0),
+                        padding: const EdgeInsets.all(16.0),
                         child: Text(
-                          reward.title,
+                          "Bu ödül için ${reward.point - point} puan daha kazanmalısın !",
                           style: TextStyle(
-                            fontSize: 28,
+                            fontSize: 20,
+                            color: Colors.pink,
                           ),
                           textAlign: TextAlign.center,
                         ),
                       ),
                     ),
-                    Expanded(
-                      child: Visibility(
-                        visible: reward.point > point,
-                        child: Padding(
-                          padding: const EdgeInsets.all(24.0),
-                          child: Text(
-                            "Bu ödül için ${reward.point - point} puan daha kazanmalısın !",
-                            style: TextStyle(
-                              fontSize: 20,
-                              color: Colors.pink,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(24.0),
+                  ),
+                  Flexible(
+                    flex: 3,
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
                       child: OutlineButton(
                         child: Text('Ödülü Al!'),
                         textColor: Color(0xff2DB3C1),
@@ -93,15 +97,19 @@ class RewardDetail extends StatelessWidget {
                           style: BorderStyle.solid,
                           width: 1,
                         ),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
+                        shape: RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(20))),
                         onPressed: reward.point > point
                             ? null
                             : () async {
                                 try {
-                                  var y = await RewardRepository.instance.buyReward(reward.id);
+                                  var y = await RewardRepository.instance
+                                      .buyReward(reward.id);
                                   Navigator.pop(context);
                                   if (y) {
-                                    PopupHelper().showPopup(context, Text('Ödülü başarıyla aldınız!'));
+                                    PopupHelper().showPopup(context,
+                                        Text('Ödülü başarıyla aldınız!'));
                                   }
                                 } catch (e) {
                                   PopupHelper().showPopup(context, Text(e));
@@ -109,12 +117,13 @@ class RewardDetail extends StatelessWidget {
                               },
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            )
-          ],
-        ),
-      );
+            ),
+          )
+        ],
+      ),
+    );
   }
 }
