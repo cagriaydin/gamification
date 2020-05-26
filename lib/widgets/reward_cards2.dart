@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:yorglass_ik/models/reward.dart';
+import 'package:provider/provider.dart';
+import 'package:yorglass_ik/models/user-reward.dart';
 import 'package:yorglass_ik/widgets/flag_avatar.dart';
 import 'package:yorglass_ik/widgets/reward_like_widget.dart';
 
@@ -11,7 +13,7 @@ class RewardCards2 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final point = 1000;
+  final userPoint = context.select((UserReward value) => value.point);
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Container(
@@ -47,7 +49,7 @@ class RewardCards2 extends StatelessWidget {
                 linearStrokeCap: LinearStrokeCap.roundAll,
                 width: 140.0,
                 lineHeight: 14.0,
-                percent: getPercentage(point),
+                percent: getPercentage(userPoint),
                 backgroundColor: Colors.white,
                 linearGradient: LinearGradient(
                   colors: [
