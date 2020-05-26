@@ -52,7 +52,7 @@ class RewardCards4 extends StatelessWidget {
                   style: TextStyle(fontSize: 20, color: Color(0xff26315F)),
                 ),
               ),
-              Expanded(
+              Flexible(
                 child: Stack(
                   alignment: Alignment.topCenter,
                   children: [

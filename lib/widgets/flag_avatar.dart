@@ -50,25 +50,24 @@ class FlagAvatar extends StatelessWidget {
       color: Colors.transparent,
       child: Column(
         children: [
-          name.isNotEmpty
-              ? Tooltip(
-                  message: name,
-                  child: Text(
-                    split
-                        ? name.length > 10 ? name.split(" ").join("\n") : name
-                        : name.length > 20
-                            ? name.substring(
-                                    0, name.length > 15 ? 15 : name.length) +
-                                '...'
-                            : name,
-                    style: TextStyle(
-                      color: titleColor == null ? Colors.white : titleColor,
-                      fontSize: 16,
-                    ),
-                    textAlign: TextAlign.center,
+          if (name.isNotEmpty)
+              Tooltip(
+                message: name,
+                child: Text(
+                  split
+                      ? name.length > 10 ? name.split(" ").join("\n") : name
+                      : name.length > 20
+                          ? name.substring(
+                                  0, name.length > 15 ? 15 : name.length) +
+                              '...'
+                          : name,
+                  style: TextStyle(
+                    color: titleColor == null ? Colors.white : titleColor,
+                    fontSize: 16,
                   ),
-                )
-              : Text(""),
+                  textAlign: TextAlign.center,
+                ),
+              ),
           if (branchName != null)
             SizedBox(
               height: 10,
@@ -144,7 +143,8 @@ class FlagAvatar extends StatelessWidget {
                               child: Center(
                                 child: CustomPaint(
                                   painter: CircleBlurPainter(
-                                      circleWidth: radius ?? getRadius(size), blurSigma: 3.0),
+                                      circleWidth: radius ?? getRadius(size),
+                                      blurSigma: 3.0),
                                   child: centerWidget ??
                                       IconShadowWidget(
                                         Icon(
