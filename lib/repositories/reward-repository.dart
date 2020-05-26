@@ -140,7 +140,7 @@ class RewardRepository {
     return budget;
   }
 
-  Future buyReward(String id) async {
+  Future<bool> buyReward(String id) async {
     Reward r = await getRewardItem(id);
     int budget = await getActivePoint();
     DateTime buyDate = DateTime.now();
@@ -164,6 +164,8 @@ class RewardRepository {
         buyDate: buyDate.toLocal(),
         status: 0,
       ));
+      getActivePoint();
+      return true;
 //      userRewardStream.map((reward) {
 //        reward.rewards.add(BuyedReward(
 //          id: r.id,

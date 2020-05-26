@@ -12,34 +12,15 @@ import 'package:yorglass_ik/widgets/reward-slider-one.dart';
 import 'package:yorglass_ik/widgets/reward-slider-two.dart';
 import 'package:yorglass_ik/widgets/reward_cards4.dart';
 
-class RewardsPage extends StatefulWidget {
-  @override
-  _RewardsPageState createState() => _RewardsPageState();
-}
-
-class _RewardsPageState extends State<RewardsPage> {
+class RewardsPage extends StatelessWidget {
   final List<ContentOption> options = [
     ContentOption(title: 'Ödül Havuzu', isActive: true),
     ContentOption(title: 'Ödüllerim'),
   ];
-
-  final controller = PageController(initialPage: 0);
-
-  ValueNotifier<int> currentPoint = ValueNotifier(0);
-
-  Future<int> getActivePointFuture;
-
-  @override
-  void initState() {
+  RewardsPage() {
     StatusbarHelper.setSatusBar();
-    handleInitState();
-    super.initState();
   }
-
-  void handleInitState() async {
-    getActivePointFuture = RewardRepository.instance.getActivePoint();
-    currentPoint.value = await getActivePointFuture;
-  }
+  final controller = PageController(initialPage: 0);
 
   @override
   Widget build(BuildContext context) {
@@ -77,22 +58,18 @@ class _RewardsPageState extends State<RewardsPage> {
                           padding: const EdgeInsets.all(8.0),
                           child: Text(
                             "İnsanlara Faydam Olsun",
-                            style: TextStyle(
-                                color: Color(0xffAAAAAD), fontSize: 20),
+                            style: TextStyle(color: Color(0xffAAAAAD), fontSize: 20),
                           ),
                         ),
                         Container(
                           height: size.height / 3,
-                          child: RewardSliderOne(
-                            currentPoint: currentPoint,
-                          ),
+                          child: RewardSliderOne(),
                         ),
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Text(
                             "Şirin Hayvan Dostlarımıza",
-                            style: TextStyle(
-                                color: Color(0xffAAAAAD), fontSize: 20),
+                            style: TextStyle(color: Color(0xffAAAAAD), fontSize: 20),
                           ),
                         ),
                         Container(
@@ -104,8 +81,7 @@ class _RewardsPageState extends State<RewardsPage> {
                           padding: const EdgeInsets.all(8.0),
                           child: Text(
                             "Kendimi mutlu etme zamanı!",
-                            style: TextStyle(
-                                color: Color(0xffAAAAAD), fontSize: 20),
+                            style: TextStyle(color: Color(0xffAAAAAD), fontSize: 20),
                           ),
                         ),
                         Container(
@@ -117,19 +93,14 @@ class _RewardsPageState extends State<RewardsPage> {
                                 AsyncSnapshot<List<Reward>> snapshot) {
                               if (snapshot.hasData) {
                                 return GridView.count(
-                                  childAspectRatio:
-                                      MediaQuery.of(context).size.width /
-                                          (MediaQuery.of(context).size.height),
+                                  childAspectRatio: MediaQuery.of(context).size.width / (MediaQuery.of(context).size.height),
                                   scrollDirection: Axis.vertical,
                                   padding: EdgeInsets.all(8),
                                   crossAxisCount: 2,
-                                  children: snapshot.data
-                                      .map((e) => RewardCards4(reward: e))
-                                      .toList(),
+                                  children: snapshot.data.map((e) => RewardCards4(reward: e)).toList(),
                                 );
                               } else
-                                return Center(
-                                    child: CircularProgressIndicator());
+                                return Center(child: CircularProgressIndicator());
                             },
                           ),
                         )
@@ -158,13 +129,7 @@ class _RewardsPageState extends State<RewardsPage> {
         decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.all(Radius.circular(16)),
-            boxShadow: [
-              BoxShadow(
-                  color: Color(0xff54B4BA),
-                  offset: Offset(2, 3),
-                  blurRadius: 4,
-                  spreadRadius: 2)
-            ]),
+            boxShadow: [BoxShadow(color: Color(0xff54B4BA), offset: Offset(2, 3), blurRadius: 4, spreadRadius: 2)]),
         child: Column(
           children: [
             Flexible(
@@ -190,12 +155,11 @@ class _RewardsPageState extends State<RewardsPage> {
   }
 
   onContentSelectorChange(ContentOption contentOption) {
-    WidgetsBinding.instance
-        .addPostFrameCallback((_) => controller.animateToPage(
-              contentOption.title == 'Ödüllerim' ? 1 : 0,
-              duration: Duration(milliseconds: 300),
-              curve: Curves.easeOut,
-            ));
+    WidgetsBinding.instance.addPostFrameCallback((_) => controller.animateToPage(
+          contentOption.title == 'Ödüllerim' ? 1 : 0,
+          duration: Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        ));
   }
 }
 
@@ -213,10 +177,6 @@ class BuildMyRewards extends StatelessWidget {
 }
 
 class BuildActivePoint extends StatelessWidget {
-  const BuildActivePoint({
-    Key key,
-  }) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     final point = context.select((UserReward userReward) => userReward.point);
@@ -225,13 +185,13 @@ class BuildActivePoint extends StatelessWidget {
         Flexible(
           child: GradientText(
             (point ?? 0).toString(),
-            fontSize: 25,
+            fontSize: 20,
           ),
         ),
         Flexible(
           child: GradientText(
             'puan',
-            fontSize: 20,
+            fontSize: 18,
             fontWeight: FontWeight.w300,
           ),
         ),

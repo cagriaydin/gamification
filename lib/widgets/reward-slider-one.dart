@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
+import 'package:provider/provider.dart';
 import 'package:yorglass_ik/models/reward.dart';
+import 'package:yorglass_ik/models/user-reward.dart';
 import 'package:yorglass_ik/pages/reward_detail.dart';
 import 'package:yorglass_ik/repositories/reward-repository.dart';
 import 'package:yorglass_ik/widgets/reward_cards2.dart';
 
 class RewardSliderOne extends StatelessWidget {
-  final ValueNotifier currentPoint;
-
-  const RewardSliderOne({Key key, this.currentPoint}) : super(key: key);
+  const RewardSliderOne({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -20,11 +20,13 @@ class RewardSliderOne extends StatelessWidget {
             itemBuilder: (BuildContext context, int index) {
               return GestureDetector(
                 onTap: () {
-                  return Navigator.push(context,
-                      MaterialPageRoute(builder: (BuildContext context) {
-                    return RewardDetail(
-                      reward: snapshot.data[index],
-                      currentPoint: currentPoint.value,
+                  return Navigator.push(context, MaterialPageRoute(builder: (_) {
+                    final provider = Provider.of<UserReward>(context);
+                    return ChangeNotifierProvider.value(
+                      value: provider,
+                      child: RewardDetail(
+                        reward: snapshot.data[index],
+                      ),
                     );
                   }));
                 },
