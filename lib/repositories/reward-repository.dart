@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:mysql1/mysql1.dart';
-import 'package:rxdart/subjects.dart';
 import 'package:yorglass_ik/models/buyed-reward.dart';
 import 'package:yorglass_ik/models/reward-type.dart';
 import 'package:yorglass_ik/models/reward.dart';
@@ -19,11 +18,7 @@ class RewardRepository {
   }
 
   static RewardRepository get instance => _instance;
-  UserReward _userRewardData = UserReward();
-
-  StreamController<UserReward> _userReward = BehaviorSubject();
-
-  Stream<UserReward> get userRewardStream => _userReward.stream;
+  UserReward userRewardData = UserReward();
 
   Future<List<Reward>> getRewards({String type}) async {
     Results res;
@@ -78,8 +73,7 @@ class RewardRepository {
 //        return reward;
 //      });
     }
-    _userRewardData.rewards = rewardItemList;
-    _userReward.add(_userRewardData);
+    userRewardData.update(rewards: rewardItemList);
     return rewardItemList;
   }
 
@@ -124,8 +118,7 @@ class RewardRepository {
 //        return reward;
 //      });
     }
-    _userRewardData.liked = likedList;
-    _userReward.add(_userRewardData);
+    userRewardData.update(liked: likedList);
     return likedList;
   }
 
@@ -139,8 +132,7 @@ class RewardRepository {
     int earn = (res.single[0] as double).floor();
     int cost = (res.single[1] as double).floor();
     int budget = (earn == null ? 0 : earn) - (cost == null ? 0 : cost);
-    _userRewardData.point = budget;
-    _userReward.add(_userRewardData);
+    userRewardData.update(point: budget);
 //    userRewardStream.map((reward) {
 //      reward.point = budget;
 //      return reward;
@@ -162,7 +154,7 @@ class RewardRepository {
             0,
             r.point,
           ]);
-      _userRewardData.rewards.add(BuyedReward(
+      userRewardData.addReward(BuyedReward(
         id: r.id,
         title: r.title,
         imageId: r.imageId,
@@ -172,7 +164,6 @@ class RewardRepository {
         buyDate: buyDate.toLocal(),
         status: 0,
       ));
-      _userReward.add(_userRewardData);
 //      userRewardStream.map((reward) {
 //        reward.rewards.add(BuyedReward(
 //          id: r.id,
@@ -202,8 +193,8 @@ class RewardRepository {
         ],
       );
       if (res.affectedRows > 0) {
-        _userRewardData.liked.remove(id);
-        _userReward.add(_userRewardData);
+        userRewardData.liked.remove(id);
+        userRewardData.update(liked: userRewardData.liked);
 //        userRewardStream.map((reward) {
 //          reward.liked.remove(id);
 //          return reward;
@@ -220,8 +211,8 @@ class RewardRepository {
         ],
       );
       if (res.affectedRows > 0) {
-        _userRewardData.liked.add(id);
-        _userReward.add(_userRewardData);
+        userRewardData.liked.add(id);
+        userRewardData.update(liked: userRewardData.liked);
 //        userRewardStream.map((reward) {
 //          reward.liked.add(id);
 //          return reward;

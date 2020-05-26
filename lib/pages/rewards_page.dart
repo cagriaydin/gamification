@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:yorglass_ik/helpers/statusbar-helper.dart';
 import 'package:yorglass_ik/models/content_option.dart';
 import 'package:yorglass_ik/models/reward.dart';
@@ -44,116 +45,104 @@ class _RewardsPageState extends State<RewardsPage> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final padding = MediaQuery.of(context).padding;
-    return Scaffold(
-      extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-        leading: GestureDetector(
-          onTap: () => Navigator.pop(context),
-          child: Icon(
-            Icons.arrow_back_ios,
-            color: Colors.black,
-          ),
-        ),
-      ),
-      body: Column(
-        children: <Widget>[
-          buildTopPart(size, padding),
-          Expanded(
-            child: PageView(
-              physics: NeverScrollableScrollPhysics(),
-              controller: controller,
-              children: [
-                SingleChildScrollView(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.max,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          "İnsanlara Faydam Olsun",
-                          style:
-                              TextStyle(color: Color(0xffAAAAAD), fontSize: 20),
-                        ),
-                      ),
-                      Container(
-                        height: size.height / 3,
-                        child: RewardSliderOne(
-                          currentPoint: currentPoint,
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          "Şirin Hayvan Dostlarımıza",
-                          style:
-                              TextStyle(color: Color(0xffAAAAAD), fontSize: 20),
-                        ),
-                      ),
-                      Container(
-                        height: size.height / 2.5,
-                        child: RewardSliderTwo(),
-                      ),
-                      //TODO: type 3 start here
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          "Kendimi mutlu etme zamanı!",
-                          style:
-                              TextStyle(color: Color(0xffAAAAAD), fontSize: 20),
-                        ),
-                      ),
-                      Container(
-                        height: size.height,
-                        child: FutureBuilder(
-                          future: RewardRepository.instance.getRewards(),
-                          builder: (BuildContext context,
-                              AsyncSnapshot<List<Reward>> snapshot) {
-                            if (snapshot.hasData) {
-                              return GridView.count(
-                                childAspectRatio:
-                                    MediaQuery.of(context).size.width /
-                                        (MediaQuery.of(context).size.height),
-                                scrollDirection: Axis.vertical,
-                                padding: EdgeInsets.all(8),
-                                crossAxisCount: 2,
-                                children: snapshot.data
-                                    .map((e) => RewardCards4(reward: e))
-                                    .toList(),
-                              );
-                            } else
-                              return Center(child: CircularProgressIndicator());
-                          },
-                        ),
-                      )
-                      //TODO type 3 finish
-                    ],
-                  ),
-                ),
-                //TODO ödüllerim sayfası
-                StreamBuilder(
-                  stream: RewardRepository.instance.userRewardStream,
-                  builder:
-                      (BuildContext context, AsyncSnapshot<UserReward> snapshot) {
-                    if (snapshot.hasData && snapshot.data.rewards != null) {
-                      return GridView.count(
-                        scrollDirection: Axis.vertical,
-                        padding: EdgeInsets.all(8),
-                        crossAxisCount: 2,
-                        children: snapshot.data.rewards
-                            .map((e) => RewardCards3(reward: e))
-                            .toList(),
-                      );
-                    } else
-                      return Center(child: CircularProgressIndicator());
-                  },
-                )
-              ],
+    return ChangeNotifierProvider.value(
+      value: RewardRepository.instance.userRewardData,
+      child: Scaffold(
+        extendBodyBehindAppBar: true,
+        appBar: AppBar(
+          elevation: 0,
+          backgroundColor: Colors.transparent,
+          leading: GestureDetector(
+            onTap: () => Navigator.pop(context),
+            child: Icon(
+              Icons.arrow_back_ios,
+              color: Colors.black,
             ),
           ),
-        ],
+        ),
+        body: Column(
+          children: <Widget>[
+            buildTopPart(size, padding),
+            Expanded(
+              child: PageView(
+                physics: NeverScrollableScrollPhysics(),
+                controller: controller,
+                children: [
+                  SingleChildScrollView(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.max,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            "İnsanlara Faydam Olsun",
+                            style: TextStyle(
+                                color: Color(0xffAAAAAD), fontSize: 20),
+                          ),
+                        ),
+                        Container(
+                          height: size.height / 3,
+                          child: RewardSliderOne(
+                            currentPoint: currentPoint,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            "Şirin Hayvan Dostlarımıza",
+                            style: TextStyle(
+                                color: Color(0xffAAAAAD), fontSize: 20),
+                          ),
+                        ),
+                        Container(
+                          height: size.height / 2.5,
+                          child: RewardSliderTwo(),
+                        ),
+                        //TODO: type 3 start here
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            "Kendimi mutlu etme zamanı!",
+                            style: TextStyle(
+                                color: Color(0xffAAAAAD), fontSize: 20),
+                          ),
+                        ),
+                        Container(
+                          height: size.height,
+                          child: FutureBuilder(
+                            future: RewardRepository.instance.getRewards(),
+                            builder: (BuildContext context,
+                                AsyncSnapshot<List<Reward>> snapshot) {
+                              if (snapshot.hasData) {
+                                return GridView.count(
+                                  childAspectRatio:
+                                      MediaQuery.of(context).size.width /
+                                          (MediaQuery.of(context).size.height),
+                                  scrollDirection: Axis.vertical,
+                                  padding: EdgeInsets.all(8),
+                                  crossAxisCount: 2,
+                                  children: snapshot.data
+                                      .map((e) => RewardCards4(reward: e))
+                                      .toList(),
+                                );
+                              } else
+                                return Center(
+                                    child: CircularProgressIndicator());
+                            },
+                          ),
+                        )
+                        //TODO type 3 finish
+                      ],
+                    ),
+                  ),
+                  //TODO ödüllerim sayfası
+                  BuildMyRewards(),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -178,32 +167,7 @@ class _RewardsPageState extends State<RewardsPage> {
         child: Column(
           children: [
             Flexible(
-              child: FutureBuilder(
-                future: getActivePointFuture,
-                builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
-                  if (snapshot.hasData || snapshot.hasError) {
-                    return Column(
-                      children: [
-                        Flexible(
-                          child: GradientText(
-                            (snapshot.data ?? 0).toString(),
-                            fontSize: 25,
-                          ),
-                        ),
-                        Flexible(
-                          child: GradientText(
-                            'puan',
-                            fontSize: 20,
-                            fontWeight: FontWeight.w300,
-                          ),
-                        ),
-                      ],
-                    );
-                  } else {
-                    return Center(child: CircularProgressIndicator());
-                  }
-                },
-              ),
+              child: BuildActivePoint(),
             ),
             Container(
               width: size.width,
@@ -231,6 +195,50 @@ class _RewardsPageState extends State<RewardsPage> {
               duration: Duration(milliseconds: 300),
               curve: Curves.easeOut,
             ));
+  }
+}
+
+class BuildMyRewards extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final myRewards = context.select((UserReward value) => value.rewards);
+    return GridView.count(
+      scrollDirection: Axis.vertical,
+      padding: EdgeInsets.all(8),
+      crossAxisCount: 2,
+      children: myRewards.map((e) => RewardCards3(reward: e)).toList(),
+    );
+  }
+}
+
+class BuildActivePoint extends StatelessWidget {
+  const BuildActivePoint({
+    Key key,
+    @required this.getActivePointFuture,
+  }) : super(key: key);
+
+  final Future<int> getActivePointFuture;
+
+  @override
+  Widget build(BuildContext context) {
+    final point = context.select((UserReward userReward) => userReward.point);
+    return Column(
+      children: [
+        Flexible(
+          child: GradientText(
+            (point ?? 0).toString(),
+            fontSize: 25,
+          ),
+        ),
+        Flexible(
+          child: GradientText(
+            'puan',
+            fontSize: 20,
+            fontWeight: FontWeight.w300,
+          ),
+        ),
+      ],
+    );
   }
 }
 

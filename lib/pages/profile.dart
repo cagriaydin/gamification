@@ -1,9 +1,11 @@
 import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:yorglass_ik/models/content_option.dart';
 import 'package:yorglass_ik/models/leader_board_item.dart';
 import 'package:yorglass_ik/models/reward.dart';
+import 'package:yorglass_ik/models/user-reward.dart';
 import 'package:yorglass_ik/models/user.dart';
 import 'package:yorglass_ik/pages/leader_board_page.dart';
 import 'package:yorglass_ik/pages/rewards_page.dart';
@@ -82,8 +84,10 @@ class _BuildProfileTabsState extends State<BuildProfileTabs> {
     return Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (BuildContext context) {
-          return RewardsPage();
+        builder: (_) {
+          final userRewardProvider = Provider.of<UserReward>(context);
+          return ChangeNotifierProvider.value(
+              value: userRewardProvider, child: RewardsPage());
         },
       ),
     );
@@ -201,8 +205,7 @@ class _BuildProfileTabsState extends State<BuildProfileTabs> {
                                             BranchRepository.instance;
                                             List<LeaderBoardItem> newList =
                                                 snapshot.data
-                                                    .map((e) =>
-                                                        LeaderBoardItem(
+                                                    .map((e) => LeaderBoardItem(
                                                           imageId: e.image,
                                                           point: e.point,
                                                           name: e.name,
