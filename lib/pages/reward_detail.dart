@@ -61,7 +61,7 @@ class RewardDetail extends StatelessWidget {
                   Flexible(
                     flex: 5,
                     child: Padding(
-                      padding: const EdgeInsets.all(15.0),
+                      padding: const EdgeInsets.fromLTRB(15.0,20.0,10.0,0.0),
                       child: Text(
                         reward.title,
                         style:
