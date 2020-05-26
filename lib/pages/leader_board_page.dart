@@ -290,19 +290,19 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
                                     isLeaderBoard: true,
                                     list: [
                                       LeaderBoardItem(
-                                        name: "",
+                                        name: "\n",
                                         imageId: branchTopList[0].image,
                                         point: branchTopList[0].point,
                                         branchName: branchTopList[0].name,
                                       ),
                                       LeaderBoardItem(
-                                        name: "",
+                                        name: "\n",
                                         imageId: branchTopList[1].image,
                                         point: branchTopList[1].point,
                                         branchName: branchTopList[1].name,
                                       ),
                                       LeaderBoardItem(
-                                        name: "",
+                                        name: "\n",
                                         imageId: branchTopList[2].image,
                                         point: branchTopList[2].point,
                                         branchName: branchTopList[2].name,
