@@ -180,7 +180,7 @@ class RewardsPage extends StatelessWidget {
   onContentSelectorChange(ContentOption contentOption) {
     WidgetsBinding.instance
         .addPostFrameCallback((_) => controller.animateToPage(
-              contentOption.title == 'Ödüllerim' ? 1 : 0,
+              contentOption.title == 'Ödül Havuzu' ? 0 : 1,
               duration: Duration(milliseconds: 300),
               curve: Curves.easeOut,
             ));

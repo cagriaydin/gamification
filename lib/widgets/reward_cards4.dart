@@ -11,7 +11,8 @@ class RewardCards4 extends StatelessWidget {
   final Reward reward;
   final bool isMyReward;
 
-  const RewardCards4({Key key, this.reward, this.isMyReward = false}) : super(key: key);
+  const RewardCards4({Key key, this.reward, this.isMyReward = false})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -78,19 +79,20 @@ class RewardCards4 extends StatelessWidget {
                               Colors.white,
                               Colors.white
                             ]),
-                            fontSize: size.height < 700 ? 25 : 30,
+                        fontSize: size.height < 700 ? 25 : 30,
                       ),
                       point: reward.point,
                       rewardPoint: reward.point,
                       userActivePoint: isMyReward ? null : userPoint,
                     ),
-                    Align(
-                      alignment: Alignment.bottomRight,
-                      child: LikeRewardWidget(
-                        reward: reward,
-                        likedRewards: [],
+                    if (!isMyReward)
+                      Align(
+                        alignment: Alignment.bottomRight,
+                        child: LikeRewardWidget(
+                          reward: reward,
+                          likedRewards: [],
+                        ),
                       ),
-                    ),
                   ],
                 ),
               ),

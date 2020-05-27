@@ -81,6 +81,7 @@ class _HomePageState extends State<HomePage> {
                       SizedBox(height: size.height / 40),
                       Text(
                         AuthenticationService.verifiedUser.name,
+                        textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 24,
                           color: Theme.of(context).accentColor,
@@ -225,9 +226,9 @@ class _HomePageState extends State<HomePage> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
                             Padding(
-                              padding: const EdgeInsets.all(16.0),
-                              child: Text(title)
-                            ),
+                                padding: const EdgeInsets.all(16.0),
+                                child: Text(title)
+                                ),
                             Row(
                               mainAxisSize: MainAxisSize.max,
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
