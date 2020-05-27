@@ -56,7 +56,7 @@ class RewardDetail extends StatelessWidget {
               width: size.width,
               child: Column(
                 mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: <Widget>[
                   Flexible(
                     flex: 5,

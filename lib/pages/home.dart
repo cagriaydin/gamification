@@ -226,10 +226,7 @@ class _HomePageState extends State<HomePage> {
                           children: <Widget>[
                             Padding(
                               padding: const EdgeInsets.all(16.0),
-                              child: Text(
-                                title,
-                                style: Theme.of(context).textTheme.headline5,
-                              ),
+                              child: Text(title)
                             ),
                             Row(
                               mainAxisSize: MainAxisSize.max,

@@ -124,7 +124,7 @@ class _TaskListPageState extends State<TaskListPage> {
             secondChild: Padding(
               padding: const EdgeInsets.only(bottom: 8),
               child: Container(
-                height: (size.width * 16 / 9) / 8,
+                height: (size.width * 16 / 9) / 7,
                 width: size.width,
                 padding: EdgeInsets.only(top: padding.top),
                 decoration: BoxDecoration(
