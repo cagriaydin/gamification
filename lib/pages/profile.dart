@@ -59,13 +59,20 @@ class ProfilePage extends StatelessWidget {
   }
 }
 
-class BuildProfileTabs extends StatelessWidget {
+class BuildProfileTabs extends StatefulWidget {
+  @override
+  _BuildProfileTabsState createState() => _BuildProfileTabsState();
+}
+
+class _BuildProfileTabsState extends State<BuildProfileTabs> {
   final PageController pageController = PageController(initialPage: 0);
 
   final List<ContentOption> options = [
     ContentOption(title: 'Liderler', isActive: true),
     ContentOption(title: 'Ödüllerim'),
   ];
+
+  Future<List<User>> leaderListFeature;
 
   Future pushRewardsPage(BuildContext context) {
     return Navigator.push(
@@ -81,13 +88,25 @@ class BuildProfileTabs extends StatelessWidget {
   }
 
   onContentSelectorChange(ContentOption contentOption) {
-    WidgetsBinding.instance
-        .addPostFrameCallback((_) => pageController.animateToPage(
-              contentOption.title == 'Liderler' ? 0 : 1,
-              duration: Duration(milliseconds: 300),
-              curve: Curves.easeOut,
-            ));
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (getPage(contentOption) == 0) {
+        setState(() {
+          leaderListFeature = null;
+        });
+        setState(() {
+          leaderListFeature = UserRepository.instance.getTopUserPointList();
+        });
+      }
+      return pageController.animateToPage(
+        getPage(contentOption),
+        duration: Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+      );
+    });
   }
+
+  int getPage(ContentOption contentOption) =>
+      contentOption.title == 'Liderler' ? 0 : 1;
 
   @override
   Widget build(BuildContext context) {
@@ -114,7 +133,7 @@ class BuildProfileTabs extends StatelessWidget {
             physics: NeverScrollableScrollPhysics(),
             controller: pageController,
             children: [
-              BuildLeadersTab(),
+              BuildLeadersTab(leaderListFeature: leaderListFeature),
               SingleChildScrollView(
                 child: Transform.scale(
                   scale: size.height < 600 ? .7 : 1,
@@ -164,14 +183,16 @@ class BuildProfileTabs extends StatelessWidget {
 }
 
 class BuildLeadersTab extends StatefulWidget {
+  final Future<List<User>> leaderListFeature;
+
+  BuildLeadersTab({this.leaderListFeature});
+
   @override
   _BuildLeadersTabState createState() => _BuildLeadersTabState();
 }
 
 class _BuildLeadersTabState extends State<BuildLeadersTab>
     with AutomaticKeepAliveClientMixin {
-  final future = UserRepository.instance.getTopUserPointList();
-
   List<User> initialLeaders;
 
   @override
@@ -182,7 +203,7 @@ class _BuildLeadersTabState extends State<BuildLeadersTab>
       children: [
         Expanded(
           child: FutureBuilder<List<User>>(
-            future: future,
+            future: widget.leaderListFeature,
             builder:
                 (BuildContext context, AsyncSnapshot<List<User>> snapshot) {
               if (snapshot.hasData) {
@@ -194,14 +215,15 @@ class _BuildLeadersTabState extends State<BuildLeadersTab>
                         MaterialPageRoute(
                           builder: (BuildContext context) {
                             BranchRepository.instance;
-                            List<LeaderBoardItem> newList = (initialLeaders ?? snapshot.data)
-                                .map((e) => LeaderBoardItem(
-                                      imageId: e.image,
-                                      point: e.point,
-                                      name: e.name,
-                                      branchName: e.branchName,
-                                    ))
-                                .toList();
+                            List<LeaderBoardItem> newList =
+                                (initialLeaders ?? snapshot.data)
+                                    .map((e) => LeaderBoardItem(
+                                          imageId: e.image,
+                                          point: e.point,
+                                          name: e.name,
+                                          branchName: e.branchName,
+                                        ))
+                                    .toList();
                             return LeaderBoardPage(leaderBoardUsers: newList);
                           },
                         ),
@@ -249,14 +271,15 @@ class _BuildLeadersTabState extends State<BuildLeadersTab>
                               MaterialPageRoute(
                                 builder: (BuildContext context) {
                                   BranchRepository.instance;
-                                  List<LeaderBoardItem> newList = (initialLeaders ?? snapshot.data)
-                                      .map((e) => LeaderBoardItem(
-                                            imageId: e.image,
-                                            point: e.point,
-                                            name: e.name,
-                                            branchName: e.branchName,
-                                          ))
-                                      .toList();
+                                  List<LeaderBoardItem> newList =
+                                      (initialLeaders ?? snapshot.data)
+                                          .map((e) => LeaderBoardItem(
+                                                imageId: e.image,
+                                                point: e.point,
+                                                name: e.name,
+                                                branchName: e.branchName,
+                                              ))
+                                          .toList();
                                   return LeaderBoardPage(
                                       leaderBoardUsers: newList);
                                 },
