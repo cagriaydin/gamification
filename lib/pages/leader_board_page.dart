@@ -24,7 +24,7 @@ class LeaderBoardPage extends StatefulWidget {
   _LeaderBoardPageState createState() => _LeaderBoardPageState();
 }
 
-class _LeaderBoardPageState extends State<LeaderBoardPage> {
+class _LeaderBoardPageState extends State<LeaderBoardPage> with AutomaticKeepAliveClientMixin{
   final PageController pageController =
       PageController(initialPage: 0, keepPage: true);
   final ScrollController scrollController = ScrollController();
@@ -490,4 +490,7 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
     );
     return leaderBoardList;
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
