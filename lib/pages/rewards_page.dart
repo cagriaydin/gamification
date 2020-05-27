@@ -26,7 +26,6 @@ class RewardsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    final aspectRatio = size.width / size.height;
     final padding = MediaQuery.of(context).padding;
     return ChangeNotifierProvider.value(
       value: RewardRepository.instance.userRewardData,
@@ -56,8 +55,11 @@ class RewardsPage extends StatelessWidget {
                       mainAxisSize: MainAxisSize.max,
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
+                        SizedBox(
+                          height: 25,
+                        ),
                         Padding(
-                          padding: const EdgeInsets.all(8.0),
+                          padding: const EdgeInsets.all(8),
                           child: Text(
                             "İnsanlara Faydam Olsun",
                             style: TextStyle(
@@ -67,10 +69,13 @@ class RewardsPage extends StatelessWidget {
                           ),
                         ),
                         RewardSliderOne(
-                          height: 300,
+                          height: 250,
+                        ),
+                        SizedBox(
+                          height: 10,
                         ),
                         Padding(
-                          padding: const EdgeInsets.all(8.0),
+                          padding: const EdgeInsets.all(8),
                           child: Text(
                             "Şirin Hayvan Dostlarımıza",
                             style: TextStyle(
@@ -79,10 +84,15 @@ class RewardsPage extends StatelessWidget {
                                 fontWeight: FontWeight.w300),
                           ),
                         ),
+                        SizedBox(
+                          height: 10,
+                        ),
                         RewardSliderTwo(width: size.width),
-                        //TODO: type 3 start here
+                        SizedBox(
+                          height: 50,
+                        ),
                         Padding(
-                          padding: const EdgeInsets.all(8.0),
+                          padding: const EdgeInsets.all(8),
                           child: Text(
                             "Kendimi mutlu etme zamanı!",
                             style: TextStyle(
@@ -111,12 +121,10 @@ class RewardsPage extends StatelessWidget {
                             } else
                               return Center(child: CircularProgressIndicator());
                           },
-                        )
-                        //TODO type 3 finish
+                        ),
                       ],
                     ),
                   ),
-                  //TODO ödüllerim sayfası
                   BuildMyRewards(),
                 ],
               ),
@@ -183,18 +191,30 @@ class BuildMyRewards extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final myRewards = context.select((UserReward value) => value.rewards);
-    return GridView.count(
-      scrollDirection: Axis.vertical,
-      childAspectRatio: 90 / 165,
-      padding: EdgeInsets.all(8),
-      crossAxisCount: 2,
-      children: myRewards.map((e) {
-        return RewardCards4(
-          reward: e,
-          isMyReward: true,
-        );
-      }).toList(),
-    );
+    return myRewards.length > 0
+        ? GridView.count(
+            scrollDirection: Axis.vertical,
+            childAspectRatio: 90 / 165,
+            padding: EdgeInsets.all(8),
+            crossAxisCount: 2,
+            children: myRewards.map((e) {
+              return RewardCards4(
+                reward: e,
+                isMyReward: true,
+              );
+            }).toList(),
+          )
+        : Center(
+            child: Padding(
+            padding: const EdgeInsets.all(24.0),
+            child: Text(
+              "Şimdilik ödülün bulunmamakta, puan toplamaya devam et!",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontWeight: FontWeight.w300,
+              ),
+            ),
+          ));
   }
 }
 

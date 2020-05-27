@@ -33,10 +33,10 @@ class RewardCards3 extends StatelessWidget {
           color: Colors.white,
           boxShadow: [
             BoxShadow(
-              offset: Offset(-2, 2),
+              offset: Offset(0, 3),
               spreadRadius: 1,
               blurRadius: 2,
-              color: const Color(0xff1A8EA7).withOpacity(.2),
+              color: const Color(0xffABF3F8),
             ),
           ],
         ),
