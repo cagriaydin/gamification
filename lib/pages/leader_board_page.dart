@@ -91,6 +91,7 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> with AutomaticKeepAli
                 onChange: onContentSelectorChange,
                 options: options,
                 contentSelectorType: ContentSelectorType.tab,
+                rowMainAxisAlignment: MainAxisAlignment.start,
                 activeColor: Colors.white,
                 isLeaderBoard: true,
                 disabledColor: Colors.white.withOpacity(.6),
