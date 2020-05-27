@@ -172,6 +172,8 @@ class _BuildLeadersTabState extends State<BuildLeadersTab>
     with AutomaticKeepAliveClientMixin {
   final future = UserRepository.instance.getTopUserPointList();
 
+  List<User> initialLeaders;
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -186,13 +188,13 @@ class _BuildLeadersTabState extends State<BuildLeadersTab>
               if (snapshot.hasData) {
                 return SingleChildScrollView(
                   child: GestureDetector(
-                    onTap: () {
-                      Navigator.push(
+                    onTap: () async {
+                      var push = await Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (BuildContext context) {
                             BranchRepository.instance;
-                            List<LeaderBoardItem> newList = snapshot.data
+                            List<LeaderBoardItem> newList = (initialLeaders ?? snapshot.data)
                                 .map((e) => LeaderBoardItem(
                                       imageId: e.image,
                                       point: e.point,
@@ -204,12 +206,19 @@ class _BuildLeadersTabState extends State<BuildLeadersTab>
                           },
                         ),
                       );
+                      if (push != null) {
+                        if (mounted) {
+                          setState(() {
+                            initialLeaders = push;
+                          });
+                        }
+                      }
                     },
                     child: Column(
                       children: [
                         LeaderBoard(
                           isLeaderBoard: true,
-                          list: snapshot.data
+                          list: (initialLeaders ?? snapshot.data)
                               .map((e) => LeaderBoardItem(
                                     imageId: e.image,
                                     point: e.point,
@@ -234,13 +243,13 @@ class _BuildLeadersTabState extends State<BuildLeadersTab>
                           shape: RoundedRectangleBorder(
                               borderRadius:
                                   BorderRadius.all(Radius.circular(20))),
-                          onPressed: () {
-                            Navigator.push(
+                          onPressed: () async {
+                            var push = await Navigator.push(
                               context,
                               MaterialPageRoute(
                                 builder: (BuildContext context) {
                                   BranchRepository.instance;
-                                  List<LeaderBoardItem> newList = snapshot.data
+                                  List<LeaderBoardItem> newList = (initialLeaders ?? snapshot.data)
                                       .map((e) => LeaderBoardItem(
                                             imageId: e.image,
                                             point: e.point,
@@ -253,6 +262,13 @@ class _BuildLeadersTabState extends State<BuildLeadersTab>
                                 },
                               ),
                             );
+                            if (push != null) {
+                              if (mounted) {
+                                setState(() {
+                                  initialLeaders = push;
+                                });
+                              }
+                            }
                           },
                         ),
                       ],

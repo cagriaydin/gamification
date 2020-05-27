@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:yorglass_ik/helpers/popup_helper.dart';
 import 'package:yorglass_ik/models/suggestion.dart';
+import 'package:yorglass_ik/models/user.dart';
 import 'package:yorglass_ik/repositories/suggestion_repository.dart';
 import 'package:yorglass_ik/services/authentication-service.dart';
 import 'package:yorglass_ik/shared/custom_box_shadow.dart';
@@ -11,6 +12,7 @@ import 'package:yorglass_ik/widgets/get_circle_avatar.dart';
 import 'package:yorglass_ik/widgets/loading_builder.dart';
 import 'package:yorglass_ik/widgets/outcome-button.dart';
 import 'package:yorglass_ik/widgets/point-widget.dart';
+import 'package:provider/provider.dart';
 
 class SuggestionPage extends StatefulWidget {
   @override
@@ -226,7 +228,7 @@ class _SuggestionPageState extends State<SuggestionPage> {
                           text: "Önerimi Paylaş",
                           action: () => titleController.text.isNotEmpty &&
                                   descriptionController.text.isNotEmpty
-                              ? sendSuggestion()
+                              ? sendSuggestion(context)
                               : null,
                           color: titleController.text.isNotEmpty &&
                                   descriptionController.text.isNotEmpty
@@ -245,17 +247,17 @@ class _SuggestionPageState extends State<SuggestionPage> {
     );
   }
 
-  sendSuggestion() async {
+  sendSuggestion(BuildContext context) async {
     setState(() {
       isLoading = true;
     });
-    await send();
+    await send(context);
     setState(() {
       isLoading = false;
     });
   }
 
-  send() async {
+  send(BuildContext context) async {
     bool hasLimit = await SuggestionRepository.instance.hasSuggestionLimit();
     if (hasLimit) {
       if (descriptionController.text.length >= 10) {
@@ -264,6 +266,8 @@ class _SuggestionPageState extends State<SuggestionPage> {
         await SuggestionRepository.instance.sendSuggestion(suggestion);
         titleController.text = '';
         descriptionController.text = '';
+        final user = context.read<User>();
+        user.suggestionUpdate();
         return PopupHelper().showPopup(
           context,
           Text(

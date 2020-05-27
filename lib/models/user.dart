@@ -135,6 +135,12 @@ class User extends ChangeNotifier {
     this.taskCount = newUser.taskCount;
     notifyListeners();
   }
+
+  suggestionUpdate() async {
+    var newUser = (await AuthenticationService.instance.verifyUser());
+    this.point = newUser.point;
+    notifyListeners();
+  }
 }
 
 //{

@@ -140,12 +140,19 @@ class _HomePageState extends State<HomePage> {
                           MenuButton(
                             text: "Önerilerim",
                             icon: Icons.question_answer,
-                            click: () => Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => SuggestionPage(),
-                              ),
-                            ),
+                            click: () {
+                              return Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) {
+                                    final userProvider = Provider.of<User>(context);
+                                    return ChangeNotifierProvider.value(
+                                        value: userProvider,
+                                        child: SuggestionPage());
+                                  },
+                                ),
+                              );
+                            },
                           ),
                           // MenuButton(
                           //   text: "KVKK Onayı",
@@ -227,8 +234,7 @@ class _HomePageState extends State<HomePage> {
                           children: <Widget>[
                             Padding(
                                 padding: const EdgeInsets.all(16.0),
-                                child: Text(title)
-                                ),
+                                child: Text(title)),
                             Row(
                               mainAxisSize: MainAxisSize.max,
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
