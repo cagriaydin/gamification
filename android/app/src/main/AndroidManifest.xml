@@ -8,7 +8,8 @@
     <application
         android:name="io.flutter.app.FlutterApplication"
         android:label="Yorglass IK"
-        android:icon="@mipmap/launcher_icon">
+        android:icon="@mipmap/launcher_icon"
+        android:screenOrientation="portrait" >
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
