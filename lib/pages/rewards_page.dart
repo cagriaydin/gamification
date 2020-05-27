@@ -139,7 +139,7 @@ class RewardsPage extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
       child: Container(
-        height: 125,
+        height: 170,
         width: size.width,
         padding: EdgeInsets.only(top: padding.top),
         decoration: BoxDecoration(
@@ -163,7 +163,7 @@ class RewardsPage extends StatelessWidget {
               child: ContentSelector(
                 onChange: onContentSelectorChange,
                 options: options,
-                rowMainAxisAlignment: MainAxisAlignment.spaceAround,
+                rowMainAxisAlignment: MainAxisAlignment.spaceBetween,
                 contentSelectorType: ContentSelectorType.tab,
                 activeColor: Color(0xff4BADBB),
                 fontSize: 18,
@@ -227,7 +227,7 @@ class BuildActivePoint extends StatelessWidget {
         Flexible(
           child: GradientText(
             (point ?? 0).toString(),
-            fontSize: 20,
+            fontSize: 40,
           ),
         ),
         Flexible(
