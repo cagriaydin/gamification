@@ -19,6 +19,14 @@ class GetCircleAvatar extends StatelessWidget {
     final circleAvatarWidget = FutureBuilder(
       future: ImageRepository.instance.getImage(imageId),
       builder: (BuildContext context, AsyncSnapshot<image.Image> snapshot) {
+        if (ImageRepository.instance.containsKey(imageId)) {
+          return CircleAvatar(
+            radius: radius ?? 70,
+            backgroundImage: MemoryImage(
+              ImageRepository.instance.storedImage[imageId].decodedImage,
+            ),
+          );
+        }
         if (snapshot.hasData) {
           try {
             return CircleAvatar(
