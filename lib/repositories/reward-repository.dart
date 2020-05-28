@@ -129,6 +129,10 @@ class RewardRepository {
         AuthenticationService.verifiedUser.id,
       ],
     );
+    if (res.length == 0){
+      userRewardData.update(point: 0);
+      return 0;
+    }
     int earn = (res.single[0] as double).floor();
     int cost = (res.single[1] as double).floor();
     int budget = (earn == null ? 0 : earn) - (cost == null ? 0 : cost);

@@ -45,6 +45,7 @@ class RewardSliderTwo extends StatelessWidget {
                   } else
                     return Center(child: CircularProgressIndicator());
                 },
+                loop: false,
                 itemCount: snapshot.data.length,
                 itemWidth: 200,
                 pagination:

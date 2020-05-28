@@ -18,6 +18,7 @@ class RewardCards4 extends StatelessWidget {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final userPoint = context.select((UserReward value) => value.point);
+    final percentage = ((userPoint * 100) / reward.point > 100 ? 100 : (userPoint * 100) / reward.point).floor();
     return GestureDetector(
       onTap: () {
         return Navigator.push(context, MaterialPageRoute(builder: (_) {
@@ -70,7 +71,7 @@ class RewardCards4 extends StatelessWidget {
                       imageId: reward.imageId,
                       titleColor: Color(0xff26315F),
                       centerWidget: GradientText(
-                        '%${(reward.point / userPoint).floor()}',
+                        '%'+ percentage.toString(),
                         linearGradient: LinearGradient(
                             begin: Alignment.topCenter,
                             end: Alignment.bottomCenter,
