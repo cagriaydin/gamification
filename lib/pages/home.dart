@@ -1,11 +1,13 @@
 import 'dart:convert';
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/material.dart';
 import 'package:get_version/get_version.dart';
 import 'package:open_appstore/open_appstore.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:yorglass_ik/helpers/popup_helper.dart';
 import 'package:yorglass_ik/models/user.dart';
 import 'package:yorglass_ik/pages/bottom_navigation.dart';
 import 'package:yorglass_ik/pages/suggestion.dart';
@@ -21,11 +23,13 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   GlobalKey<CustomDrawerState> drawerController;
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
 
   @override
   void initState() {
     drawerController = GlobalKey<CustomDrawerState>();
     handleRemoteConfig(context);
+    handleFCM();
     super.initState();
   }
 
@@ -145,7 +149,8 @@ class _HomePageState extends State<HomePage> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (_) {
-                                    final userProvider = Provider.of<User>(context);
+                                    final userProvider =
+                                        Provider.of<User>(context);
                                     return ChangeNotifierProvider.value(
                                         value: userProvider,
                                         child: SuggestionPage());
@@ -322,6 +327,36 @@ class _HomePageState extends State<HomePage> {
       print(e);
       return;
     }
+  }
+
+  void handleFCM() {
+    PopupHelper popupHelper = PopupHelper();
+    _firebaseMessaging.configure(
+      onMessage: (Map<String, dynamic> message) async {
+        print("onMessage: $message");
+        popupHelper.showPopup(context, Text(message.toString()));
+      },
+      onLaunch: (Map<String, dynamic> message) async {
+        print("onLaunch: $message");
+        popupHelper.showPopup(context, Text(message.toString()));
+      },
+      onResume: (Map<String, dynamic> message) async {
+        print("onResume: $message");
+        popupHelper.showPopup(context, Text(message.toString()));
+      },
+    );
+    _firebaseMessaging.requestNotificationPermissions(
+        const IosNotificationSettings(
+            sound: true, badge: true, alert: true, provisional: true));
+    _firebaseMessaging.onIosSettingsRegistered
+        .listen((IosNotificationSettings settings) {
+      print("Settings registered: $settings");
+    });
+//TODO: for sending individual notification we need to save this token for each user.
+//    _firebaseMessaging.getToken().then((String token) {
+//      assert(token != null);
+//      print(token);
+//    });
   }
 }
 
