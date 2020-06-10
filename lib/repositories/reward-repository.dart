@@ -1,6 +1,10 @@
+import 'dart:async';
+
 import 'package:mysql1/mysql1.dart';
+import 'package:yorglass_ik/models/buyed-reward.dart';
 import 'package:yorglass_ik/models/reward-type.dart';
 import 'package:yorglass_ik/models/reward.dart';
+import 'package:yorglass_ik/models/user-reward.dart';
 import 'package:yorglass_ik/services/authentication-service.dart';
 import 'package:yorglass_ik/services/db-connection.dart';
 
@@ -8,9 +12,13 @@ class RewardRepository {
   static final RewardRepository _instance =
       RewardRepository._privateConstructor();
 
-  RewardRepository._privateConstructor();
+  RewardRepository._privateConstructor() {
+    getActivePoint()
+        .then((value) => likedRewards().then((value) => getMyRewards()));
+  }
 
   static RewardRepository get instance => _instance;
+  UserReward userRewardData = UserReward();
 
   Future<List<Reward>> getRewards({String type}) async {
     Results res;
@@ -40,25 +48,32 @@ class RewardRepository {
     return rewardItemList;
   }
 
-  Future<List<Reward>> getMyRewards() async {
+  Future<List<BuyedReward>> getMyRewards() async {
     Results res = await DbConnection.query(
-        "SELECT reward.*, (SELECT count(1) FROM rewardlike WHERE rewardid = reward.id) as count FROM reward, userreward WHERE userreward.rewardid = reward.id AND userreward.userid = ?",
+        "SELECT reward.*, userreward.date, userreward.status, userreward.point, (SELECT count(1) FROM rewardlike WHERE rewardid = reward.id) as count FROM reward, userreward WHERE userreward.rewardid = reward.id AND userreward.userid = ?",
         [AuthenticationService.verifiedUser.id]);
-    List<Reward> rewardItemList = [];
+    List<BuyedReward> rewardItemList = [];
     if (res.length > 0) {
       for (Row r in res) {
         rewardItemList.add(
-          Reward(
+          BuyedReward(
             id: r[0],
-            title: r[1],
+            title: r[1].toString(),
             imageId: r[2],
-            point: r[3],
+            point: r[7],
             itemType: r[4],
-            likeCount: r[5],
+            likeCount: r[8],
+            buyDate: r[5].toLocal(),
+            status: r[6],
           ),
         );
       }
+//      userRewardStream.map((reward) {
+//        reward.rewards = rewardItemList;
+//        return reward;
+//      });
     }
+    userRewardData.update(rewards: rewardItemList);
     return rewardItemList;
   }
 
@@ -98,7 +113,12 @@ class RewardRepository {
       for (Row r in res) {
         likedList.add(r[0]);
       }
+//      userRewardStream.map((reward) {
+//        reward.liked = likedList;
+//        return reward;
+//      });
     }
+    userRewardData.update(liked: likedList);
     return likedList;
   }
 
@@ -109,24 +129,60 @@ class RewardRepository {
         AuthenticationService.verifiedUser.id,
       ],
     );
+    if (res.length == 0){
+      userRewardData.update(point: 0);
+      return 0;
+    }
     int earn = (res.single[0] as double).floor();
-    int cost =  (res.single[1] as double).floor();
-    return (earn == null ? 0 : earn) - (cost == null ? 0 : cost);
+    int cost = (res.single[1] as double).floor();
+    int budget = (earn == null ? 0 : earn) - (cost == null ? 0 : cost);
+    userRewardData.update(point: budget);
+//    userRewardStream.map((reward) {
+//      reward.point = budget;
+//      return reward;
+//    });
+    return budget;
   }
 
-  Future buyReward(String id) async {
+  Future<bool> buyReward(String id) async {
     Reward r = await getRewardItem(id);
     int budget = await getActivePoint();
+    DateTime buyDate = DateTime.now();
     if (budget > r.point) {
       await DbConnection.query(
           "INSERT INTO userreward (userid, rewardid, date, status, point) VALUES (?, ?, ?, ?, ?)",
           [
             AuthenticationService.verifiedUser.id,
             r.id,
-            DateTime.now().toUtc(),
+            buyDate.toUtc(),
             0,
             r.point,
           ]);
+      userRewardData.addReward(BuyedReward(
+        id: r.id,
+        title: r.title,
+        imageId: r.imageId,
+        itemType: r.itemType,
+        likeCount: r.likeCount,
+        point: r.point,
+        buyDate: buyDate.toLocal(),
+        status: 0,
+      ));
+      getActivePoint();
+      return true;
+//      userRewardStream.map((reward) {
+//        reward.rewards.add(BuyedReward(
+//          id: r.id,
+//          title: r.title,
+//          imageId: r.imageId,
+//          itemType: r.itemType,
+//          likeCount: r.likeCount,
+//          point: r.point,
+//          buyDate: buyDate.toLocal(),
+//          status: 0,
+//        ));
+//        return reward;
+//      });
     } else {
       throw Exception("Puanınız bu hediyeyi almak için yetersiz");
     }
@@ -143,7 +199,13 @@ class RewardRepository {
         ],
       );
       if (res.affectedRows > 0) {
-        return true;
+        userRewardData.liked.remove(id);
+        userRewardData.update(liked: userRewardData.liked);
+//        userRewardStream.map((reward) {
+//          reward.liked.remove(id);
+//          return reward;
+//        });
+        return false;
       }
     } else {
       Results res = await DbConnection.query(
@@ -155,9 +217,14 @@ class RewardRepository {
         ],
       );
       if (res.affectedRows > 0) {
+        userRewardData.liked.add(id);
+        userRewardData.update(liked: userRewardData.liked);
+//        userRewardStream.map((reward) {
+//          reward.liked.add(id);
+//          return reward;
+//        });
         return true;
       }
     }
-    return false;
   }
 }

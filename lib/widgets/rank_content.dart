@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:yorglass_ik/widgets/image_widget.dart';
 
@@ -92,14 +91,17 @@ class _RankContentState extends State<RankContent> {
                             width: 8,
                           ),
                           Flexible(
-                            child: Text(
-                              widget.subTitle,
-                              textAlign: TextAlign.left,
-                              style: TextStyle(
-                                color: Color(0xFF4BADBB).withOpacity(.6),
-                                fontSize: widget.selfContent ? 16 : 14,
+                            child: Tooltip(
+                              message: widget.subTitle,
+                              child: Text(
+                                widget.subTitle,
+                                textAlign: TextAlign.left,
+                                style: TextStyle(
+                                  color: Color(0xFF4BADBB).withOpacity(.6),
+                                  fontSize: widget.selfContent ? 16 : 14,
+                                ),
+                                overflow: TextOverflow.ellipsis,
                               ),
-                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
                         ],

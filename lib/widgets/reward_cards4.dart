@@ -1,110 +1,104 @@
-import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
-import 'package:icon_shadow/icon_shadow.dart';
-import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:provider/provider.dart';
 import 'package:yorglass_ik/models/reward.dart';
+import 'package:yorglass_ik/models/user-reward.dart';
 import 'package:yorglass_ik/pages/reward_detail.dart';
 import 'package:yorglass_ik/widgets/flag_avatar.dart';
-import 'package:yorglass_ik/widgets/reward_cards.dart';
+import 'package:yorglass_ik/widgets/gradient_text.dart';
+import 'package:yorglass_ik/widgets/reward_like_widget.dart';
 
-class RewardCards4 extends StatefulWidget {
+class RewardCards4 extends StatelessWidget {
   final Reward reward;
-  const RewardCards4({Key key, this.reward}) : super(key: key);
-  @override
-  _RewardCards4State createState() => _RewardCards4State();
-}
+  final bool isMyReward;
 
-class _RewardCards4State extends State<RewardCards4> {
+  const RewardCards4({Key key, this.reward, this.isMyReward = false})
+      : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(8)),
-          color: Colors.white,
-          boxShadow: [
-            BoxShadow(
-              offset: Offset(-2, 2),
-              spreadRadius: 1,
-              blurRadius: 2,
-              color: const Color(0xff1A8EA7).withOpacity(.2),
+    final userPoint = context.select((UserReward value) => value.point);
+    final percentage = ((userPoint * 100) / reward.point > 100 ? 100 : (userPoint * 100) / reward.point).floor();
+    return GestureDetector(
+      onTap: () {
+        return Navigator.push(context, MaterialPageRoute(builder: (_) {
+          final provider = Provider.of<UserReward>(context);
+          return ChangeNotifierProvider.value(
+            value: provider,
+            child: RewardDetail(
+              reward: reward,
             ),
-          ],
-        ),
-        child: Stack(
-          alignment: AlignmentDirectional.center,
-          children: <Widget>[
-            Positioned(
-              left: 0,
-              top: 0,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  widget.reward.title.length > 10
-                      ? widget.reward.title.split(" ").join("\n")
-                      : widget.reward.title,
-                  style: TextStyle(fontSize: 20),
-                ),
+          );
+        }));
+      },
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.all(Radius.circular(8)),
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                spreadRadius: 1,
+                blurRadius: 3,
+                color: const Color(0xffABF3F8),
               ),
-            ),
-            Positioned(
-              top: 72,
-              child: FutureBuilder(
-                future: widget.reward.image64.future,
-                builder:
-                    (BuildContext context, AsyncSnapshot<Uint8List> snapshot) {
-                  if (snapshot.hasError) {
-                    return Center(
-                        child: FlagAvatar(
-                      split: true,
-                      name: "",
-                      point: widget.reward.point,
-                      titleColor: Color(0xff26315F),
-                    ));
-                  }
-                  if (snapshot.hasData) {
-                    return FlagAvatar(
-                      name: "",
-                      split: true,
-                      point: widget.reward.point,
-                      image64: snapshot.data,
-                      titleColor: Color(0xff26315F),
-                    );
-                  } else
-                    return Center(child: CircularProgressIndicator());
-                },
-              ),
-            ),
-            Positioned(
-              top: 80,
-              child: new CircularPercentIndicator(
-                radius: 90.0,
-                lineWidth: 7.0,
-                percent: widget.reward.point / 1600 > 1.0
-                    ? 1.0
-                    : widget.reward.point / 1600,
-                center: IconShadowWidget(
-                  Icon(
-                    //user.point
-                    widget.reward.point < 1600 ? Icons.lock : Icons.lock_open,
-                    color: Colors.white,
-                    size: 36,
+            ],
+          ),
+          child: Column(
+            children: [
+              Expanded(
+                flex: 29,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
+                  child: Text(
+                    reward.title,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 2,
+                    style: TextStyle(fontSize: 20, color: Color(0xff26315F)),
                   ),
-                  shadowColor: Colors.lightBlueAccent.shade100,
                 ),
-                backgroundColor: Colors.black12,
-                linearGradient: LinearGradient(
-                  colors: [
-                    Color(0xff1A8EA7),
-                    Colors.white,
+              ),
+              Expanded(
+                flex: 110,
+                child: Stack(
+                  alignment: Alignment.topCenter,
+                  children: [
+                    FlagAvatar(
+                      radius: size.height < 700 ? 40 : 50,
+                      name: "",
+                      isLeaderBoard: true,
+                      imageId: reward.imageId,
+                      titleColor: Color(0xff26315F),
+                      centerWidget: GradientText(
+                        '%'+ percentage.toString(),
+                        linearGradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                              Color(0xff2FB4C2),
+                              Colors.white,
+                              Colors.white
+                            ]),
+                        fontSize: size.height < 700 ? 25 : 30,
+                      ),
+                      point: reward.point,
+                      rewardPoint: reward.point,
+                      userActivePoint: isMyReward ? null : userPoint,
+                    ),
+                    if (!isMyReward)
+                      Align(
+                        alignment: Alignment.bottomRight,
+                        child: LikeRewardWidget(
+                          reward: reward,
+                          likedRewards: [],
+                        ),
+                      ),
                   ],
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

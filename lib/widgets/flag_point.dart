@@ -20,7 +20,6 @@ class FlagPoint extends StatelessWidget {
         child: Container(
           decoration: BoxDecoration(
             image: DecorationImage(
-//                scale: scale,
               image: AssetImage('assets/flag.png'),
               fit: BoxFit.contain,
             ),

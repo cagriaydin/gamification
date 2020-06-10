@@ -1,6 +1,9 @@
+import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:icon_shadow/icon_shadow.dart';
+import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:yorglass_ik/widgets/flag_point.dart';
 import 'package:yorglass_ik/widgets/get_circle_avatar.dart';
 
@@ -18,6 +21,11 @@ class FlagAvatar extends StatelessWidget {
 
   final bool isLeaderBoard;
 
+  final int rewardPoint;
+  final int userActivePoint;
+
+  final Widget centerWidget;
+
   const FlagAvatar(
       {Key key,
       this.imageId,
@@ -29,7 +37,10 @@ class FlagAvatar extends StatelessWidget {
       this.branchName,
       this.split = true,
       this.radius,
-      this.isLeaderBoard = false})
+      this.isLeaderBoard = false,
+      this.rewardPoint,
+      this.userActivePoint,
+      this.centerWidget})
       : super(key: key);
 
   @override
@@ -39,8 +50,10 @@ class FlagAvatar extends StatelessWidget {
       color: Colors.transparent,
       child: Column(
         children: [
-          name.isNotEmpty
-              ? Text(
+          if (name.isNotEmpty)
+              Tooltip(
+                message: name,
+                child: Text(
                   split
                       ? name.length > 10 ? name.split(" ").join("\n") : name
                       : name.length > 20
@@ -53,8 +66,8 @@ class FlagAvatar extends StatelessWidget {
                     fontSize: 16,
                   ),
                   textAlign: TextAlign.center,
-                )
-              : Text(""),
+                ),
+              ),
           if (branchName != null)
             SizedBox(
               height: 10,
@@ -79,7 +92,7 @@ class FlagAvatar extends StatelessWidget {
                     style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.w300,
-                        fontSize: 12),
+                        fontSize: name == "\n" ? 16 : 12),
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
@@ -91,27 +104,71 @@ class FlagAvatar extends StatelessWidget {
               if (point != null)
                 Transform.scale(
                     alignment: Alignment.bottomCenter,
-                    scale: isLeaderBoard ? 1.1 : .7,
+                    scale: isLeaderBoard ? .9 : .7,
                     child: FlagPoint(point: point)),
               Stack(
                 alignment: Alignment.topCenter,
                 children: [
                   Padding(
                     padding: isLeaderBoard
-                        ? const EdgeInsets.fromLTRB(8, 20, 8, 80)
+                        ? const EdgeInsets.fromLTRB(8, 20, 8, 70)
                         : const EdgeInsets.fromLTRB(8, 20, 8, 40),
-                    child: Material(
-                      elevation: 5,
-                      color: Colors.white,
-                      borderRadius:
-                          BorderRadius.all(Radius.circular(getRadius(size))),
-                      child: Padding(
-                        padding: const EdgeInsets.all(3.0),
-                        child: GetCircleAvatar(
-                          radius: radius ?? getRadius(size),
-                          imageId: imageId,
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        Material(
+                          elevation: 5,
+                          color: Colors.white,
+                          borderRadius: BorderRadius.all(Radius.circular(90)),
+                          child: Padding(
+                            padding: const EdgeInsets.all(3.0),
+                            child: GetCircleAvatar(
+                              radius: radius ?? getRadius(size),
+                              imageId: imageId,
+                            ),
+                          ),
                         ),
-                      ),
+                        if (userActivePoint != null && rewardPoint != null)
+                          CircularPercentIndicator(
+                            radius: (radius ?? getRadius(size)) * 2.2,
+                            lineWidth: 7.0,
+                            circularStrokeCap: CircularStrokeCap.round,
+                            percent: userActivePoint / rewardPoint > 1.0
+                                ? 1.0
+                                : userActivePoint / rewardPoint,
+                            center: Container(
+                              decoration: BoxDecoration(shape: BoxShape.circle),
+                              width: double.infinity,
+                              height: double.infinity,
+                              child: Center(
+                                child: CustomPaint(
+                                  painter: CircleBlurPainter(
+                                      circleWidth: radius ?? getRadius(size),
+                                      blurSigma: 3.0),
+                                  child: centerWidget ??
+                                      IconShadowWidget(
+                                        Icon(
+                                          userActivePoint < rewardPoint
+                                              ? Icons.lock
+                                              : Icons.lock_open,
+                                          color: Colors.white,
+                                          size: 36,
+                                        ),
+                                        shadowColor:
+                                            Colors.lightBlueAccent.shade100,
+                                      ),
+                                ),
+                              ),
+                            ),
+                            backgroundColor: Colors.white,
+                            linearGradient: LinearGradient(
+                              colors: [
+                                Color(0xff1A8EA7),
+                                Colors.white,
+                              ],
+                            ),
+                          ),
+                      ],
                     ),
                   ),
                   if (rank == 1)
@@ -199,5 +256,39 @@ class FlagAvatar extends StatelessWidget {
     } else {
       return 2.8;
     }
+  }
+}
+
+class CircleBlurPainter extends CustomPainter {
+  CircleBlurPainter({@required this.circleWidth, this.blurSigma});
+
+  double circleWidth;
+  double blurSigma;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    Offset center = new Offset(size.width / 2, size.height / 2);
+    Paint line = new Paint()
+      ..color = Colors.lightBlue.withOpacity(.3)
+      ..strokeCap = StrokeCap.round
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = circleWidth
+      ..maskFilter = MaskFilter.blur(BlurStyle.normal, blurSigma)
+      ..shader = LinearGradient(
+        colors: <Color>[Colors.black, Colors.black54, Colors.transparent],
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+      ).createShader(Rect.fromCenter(
+        center: center,
+        width: circleWidth,
+        height: circleWidth,
+      ));
+    double radius = min(size.width / 2, size.height / 2);
+    canvas.drawCircle(center, radius, line);
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) {
+    return true;
   }
 }

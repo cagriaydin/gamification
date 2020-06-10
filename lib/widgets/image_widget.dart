@@ -28,6 +28,16 @@ class ImageWidget extends StatelessWidget {
     return FutureBuilder(
       future: ImageRepository.instance.getImage(id),
       builder: (BuildContext context, AsyncSnapshot<image.Image> snapshot) {
+        if (ImageRepository.instance.containsKey(id)) {
+          return ClipRRect(
+            borderRadius: borderRadius,
+            child: Image.memory(
+              ImageRepository.instance.storedImage[id].decodedImage,
+              fit: BoxFit.cover,
+              gaplessPlayback: true,
+            ),
+          );
+        }
         switch (snapshot.connectionState) {
           case ConnectionState.none:
           case ConnectionState.waiting:

@@ -1,20 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:yorglass_ik/helpers/popup_helper.dart';
 import 'package:yorglass_ik/helpers/statusbar-helper.dart';
 import 'package:yorglass_ik/models/reward.dart';
+import 'package:yorglass_ik/models/user-reward.dart';
 import 'package:yorglass_ik/repositories/reward-repository.dart';
 import 'package:yorglass_ik/widgets/image_widget.dart';
 
 class RewardDetail extends StatelessWidget {
   final Reward reward;
 
-  final num currentPoint;
-
-  RewardDetail({this.reward, this.currentPoint = 0}) {
+  RewardDetail({this.reward}) {
     StatusbarHelper.setSatusBar();
   }
 
   @override
   Widget build(BuildContext context) {
+    final int point =
+        context.select((UserReward userReward) => userReward.point);
     final size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
@@ -28,10 +31,12 @@ class RewardDetail extends StatelessWidget {
             top: 0,
             child: Container(
               width: size.width,
+              height: size.height / 2,
               child: FittedBox(
-                fit: BoxFit.fitWidth,
+                fit: BoxFit.cover,
                 child: ImageWidget(
                   id: reward.imageId,
+                  borderRadius: BorderRadius.all(Radius.circular(0)),
                 ),
               ),
             ),
@@ -50,58 +55,69 @@ class RewardDetail extends StatelessWidget {
               height: size.height / 1.75,
               width: size.width,
               child: Column(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: <Widget>[
-                  Expanded(
+                  Flexible(
+                    flex: 5,
                     child: Padding(
-                      padding: const EdgeInsets.all(24.0),
+                      padding: const EdgeInsets.fromLTRB(15.0,20.0,10.0,0.0),
                       child: Text(
                         reward.title,
-                        style: TextStyle(
-                          fontSize: 28,
-                        ),
+                        style:
+                            TextStyle(fontSize: 24, color: Color(0xFF26315F)),
                         textAlign: TextAlign.center,
                       ),
                     ),
                   ),
-                  Visibility(
-                    visible: reward.point > currentPoint,
-                    child: Expanded(
+                  Flexible(
+                    flex: 4,
+                    child: Visibility(
+                      visible: reward.point > point,
                       child: Padding(
-                        padding: const EdgeInsets.all(24.0),
+                        padding: const EdgeInsets.all(16.0),
                         child: Text(
-                          "Bu ödül için ${reward.point - currentPoint} puan daha kazanmalısın !",
+                          "Bu ödül için ${reward.point - point} puan daha kazanmalısın !",
                           style: TextStyle(
-                            fontSize: 20,
-                            color: Colors.pink,
-                          ),
+                              fontSize: 20,
+                              color: Color(0xFFF90A60),
+                              fontWeight: FontWeight.w300),
                           textAlign: TextAlign.center,
                         ),
                       ),
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(24.0),
-                    child: OutlineButton(
-                      child: Text('Ödülü Al!'),
-                      textColor: Color(0xff2DB3C1),
-                      borderSide: BorderSide(
-                        color: Color(0xff2DB3C1),
-                        style: BorderStyle.solid,
-                        width: 1,
+                  Flexible(
+                    flex: 3,
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: OutlineButton(
+                        child: Text('Ödülü Al!'),
+                        textColor: Color(0xff2DB3C1),
+                        borderSide: BorderSide(
+                          color: Color(0xff2DB3C1),
+                          style: BorderStyle.solid,
+                          width: 1,
+                        ),
+                        shape: RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(20))),
+                        onPressed: reward.point > point
+                            ? null
+                            : () async {
+                                try {
+                                  var y = await RewardRepository.instance
+                                      .buyReward(reward.id);
+                                  Navigator.pop(context);
+                                  if (y) {
+                                    PopupHelper().showPopup(context,
+                                        Text('Ödülü başarıyla aldınız!'));
+                                  }
+                                } catch (e) {
+                                  PopupHelper().showPopup(context, Text(e));
+                                }
+                              },
                       ),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(20))),
-                      onPressed: reward.point > currentPoint
-                          ? null
-                          : () async {
-                              try {
-                                var y = await RewardRepository.instance
-                                    .buyReward(reward.id);
-                                print(y);
-                              } catch (e) {
-                                print(e);
-                              }
-                            },
                     ),
                   ),
                 ],

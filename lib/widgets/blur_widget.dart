@@ -23,7 +23,7 @@ class BlurWidget extends StatelessWidget {
           child: backgroundChild,
         ),
         BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
+          filter: ImageFilter.blur(sigmaX: 1, sigmaY: 1),
           child: Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(

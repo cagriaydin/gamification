@@ -14,8 +14,14 @@ class ImageRepository {
   Map<String, Image> storedImage = {};
 
   Future<Image> getImage(String id) async {
+//    CachedNetworkImage(imageUrl: '');
+//    ImageStreamCompleter imageStreamCompleter =
+//        MyImageCache.instance.putIfAbsent(id, () {
+//        });
     try {
-      if (!storedImage.containsKey(id)) {
+      if (containsKey(id)) {
+        return storedImage[id];
+      } else {
         Results res =
             await DbConnection.query('SELECT * FROM images WHERE id = ?', [id]);
         if (res.length > 0) {
@@ -30,14 +36,15 @@ class ImageRepository {
           storedImage[data.id] = data;
         }
       }
-      return storedImage[id];
     } catch (e) {
       print(e);
     }
   }
 
+  bool containsKey(String id) => storedImage.containsKey(id);
+
   Future<String> getImage64(String id) async {
-    if (!storedImage.containsKey(id)) {
+    if (!containsKey(id)) {
       Results res =
           await DbConnection.query('SELECT * FROM images WHERE id = ?', [id]);
       if (res.length > 0) {

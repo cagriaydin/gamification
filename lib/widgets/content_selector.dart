@@ -159,6 +159,7 @@ class _ContentSelectorState extends State<ContentSelector>
             return widget.customWidgetBuilder(context, index);
           } else {
             return GestureDetector(
+              behavior: HitTestBehavior.opaque,
               onTap: () {
                 widget.options.forEach((element) {
                   element.isActive = false;

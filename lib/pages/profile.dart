@@ -1,9 +1,11 @@
 import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:yorglass_ik/models/content_option.dart';
 import 'package:yorglass_ik/models/leader_board_item.dart';
 import 'package:yorglass_ik/models/reward.dart';
+import 'package:yorglass_ik/models/user-reward.dart';
 import 'package:yorglass_ik/models/user.dart';
 import 'package:yorglass_ik/pages/leader_board_page.dart';
 import 'package:yorglass_ik/pages/rewards_page.dart';
@@ -70,33 +72,41 @@ class _BuildProfileTabsState extends State<BuildProfileTabs> {
     ContentOption(title: 'Ödüllerim'),
   ];
 
-  var future;
-
-  @override
-  void initState() {
-    future = UserRepository.instance.getTopUserPointList();
-    super.initState();
-  }
+  Future<List<User>> leaderListFeature;
 
   Future pushRewardsPage(BuildContext context) {
     return Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (BuildContext context) {
-          return RewardsPage();
+        builder: (_) {
+          final userRewardProvider = Provider.of<UserReward>(context);
+          return ChangeNotifierProvider.value(
+              value: userRewardProvider, child: RewardsPage());
         },
       ),
     );
   }
 
   onContentSelectorChange(ContentOption contentOption) {
-    WidgetsBinding.instance
-        .addPostFrameCallback((_) => pageController.animateToPage(
-              contentOption.title == 'Liderler' ? 0 : 1,
-              duration: Duration(milliseconds: 300),
-              curve: Curves.easeOut,
-            ));
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (getPage(contentOption) == 0) {
+        setState(() {
+          leaderListFeature = null;
+        });
+        setState(() {
+          leaderListFeature = UserRepository.instance.getTopUserPointList();
+        });
+      }
+      return pageController.animateToPage(
+        getPage(contentOption),
+        duration: Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+      );
+    });
   }
+
+  int getPage(ContentOption contentOption) =>
+      contentOption.title == 'Liderler' ? 0 : 1;
 
   @override
   Widget build(BuildContext context) {
@@ -120,117 +130,10 @@ class _BuildProfileTabsState extends State<BuildProfileTabs> {
         Expanded(
           flex: 10,
           child: PageView(
-//                    physics: NeverScrollableScrollPhysics(),
-            onPageChanged: (i) {
-              options.forEach((element) {
-                element.isActive = false;
-              });
-              setState(() {
-                options.elementAt(i).isActive = true;
-              });
-            },
+            physics: NeverScrollableScrollPhysics(),
             controller: pageController,
             children: [
-              Column(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: FutureBuilder<List<User>>(
-                      future: future,
-                      builder: (BuildContext context,
-                          AsyncSnapshot<List<User>> snapshot) {
-                        if (snapshot.hasData) {
-                          return SingleChildScrollView(
-                            child: GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (BuildContext context) {
-                                      BranchRepository.instance;
-                                      List<LeaderBoardItem> newList =
-                                          snapshot.data
-                                              .map((e) => LeaderBoardItem(
-                                                    imageId: e.image,
-                                                    point: e.point,
-                                                    name: e.name,
-                                                    branchName: e.branchName,
-                                                  ))
-                                              .toList();
-                                      return LeaderBoardPage(
-                                          leaderBoardUsers: newList);
-                                    },
-                                  ),
-                                );
-                              },
-                              child: Column(
-                                children: [
-                                  LeaderBoard(
-                                    isLeaderBoard: true,
-                                    list: snapshot.data
-                                        .map((e) => LeaderBoardItem(
-                                              imageId: e.image,
-                                              point: e.point,
-                                              name: e.name,
-                                            ))
-                                        .toList(),
-                                  ),
-                                  OutlineButton(
-                                    child: Text(
-                                      'Lider Tablosunu Gör',
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.w300,
-                                        fontSize: 18,
-                                      ),
-                                    ),
-                                    textColor: Color(0xff2DB3C1),
-                                    borderSide: BorderSide(
-                                      color: Color(0xff2DB3C1),
-                                      style: BorderStyle.solid,
-                                      width: 1,
-                                    ),
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(20))),
-                                    onPressed: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (BuildContext context) {
-                                            BranchRepository.instance;
-                                            List<LeaderBoardItem> newList =
-                                                snapshot.data
-                                                    .map((e) =>
-                                                        LeaderBoardItem(
-                                                          imageId: e.image,
-                                                          point: e.point,
-                                                          name: e.name,
-                                                          branchName:
-                                                              e.branchName,
-                                                        ))
-                                                    .toList();
-                                            return LeaderBoardPage(
-                                                leaderBoardUsers: newList);
-                                          },
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
-                        } else {
-                          return Center(
-                            child: CircularProgressIndicator(),
-                          );
-                        }
-                      },
-                    ),
-                  ),
-                ],
-              ),
+              BuildLeadersTab(leaderListFeature: leaderListFeature),
               SingleChildScrollView(
                 child: Transform.scale(
                   scale: size.height < 600 ? .7 : 1,
@@ -239,7 +142,7 @@ class _BuildProfileTabsState extends State<BuildProfileTabs> {
                     children: [
                       RewardCards(
                         reward: Reward(
-                            imageId: "c9a560ac-63f2-401b-8185-2bae139957ad",
+                            imageId: "21eb8c71-9f90-11ea-b559-005056b3b493",
                             point: 0,
                             likeCount: 0),
                       ),
@@ -277,6 +180,138 @@ class _BuildProfileTabsState extends State<BuildProfileTabs> {
       ],
     );
   }
+}
+
+class BuildLeadersTab extends StatefulWidget {
+  final Future<List<User>> leaderListFeature;
+
+  BuildLeadersTab({this.leaderListFeature});
+
+  @override
+  _BuildLeadersTabState createState() => _BuildLeadersTabState();
+}
+
+class _BuildLeadersTabState extends State<BuildLeadersTab>
+    with AutomaticKeepAliveClientMixin {
+  List<User> initialLeaders;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.max,
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Expanded(
+          child: FutureBuilder<List<User>>(
+            future: widget.leaderListFeature,
+            builder:
+                (BuildContext context, AsyncSnapshot<List<User>> snapshot) {
+              if (snapshot.hasData) {
+                return SingleChildScrollView(
+                  child: GestureDetector(
+                    onTap: () async {
+                      var push = await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (BuildContext context) {
+                            BranchRepository.instance;
+                            List<LeaderBoardItem> newList =
+                                (initialLeaders ?? snapshot.data)
+                                    .map((e) => LeaderBoardItem(
+                                          imageId: e.image,
+                                          point: e.point,
+                                          name: e.name,
+                                          branchName: e.branchName,
+                                        ))
+                                    .toList();
+                            return LeaderBoardPage(leaderBoardUsers: newList);
+                          },
+                        ),
+                      );
+                      if (push != null) {
+                        if (mounted) {
+                          setState(() {
+                            initialLeaders = push;
+                          });
+                        }
+                      }
+                    },
+                    child: Column(
+                      children: [
+                        LeaderBoard(
+                          isLeaderBoard: true,
+                          list: (initialLeaders ?? snapshot.data)
+                              .map((e) => LeaderBoardItem(
+                                    imageId: e.image,
+                                    point: e.point,
+                                    name: e.name,
+                                  ))
+                              .toList(),
+                        ),
+                        OutlineButton(
+                          child: Text(
+                            'Lider Tablosunu Gör',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w300,
+                              fontSize: 18,
+                            ),
+                          ),
+                          textColor: Color(0xff2DB3C1),
+                          borderSide: BorderSide(
+                            color: Color(0xff2DB3C1),
+                            style: BorderStyle.solid,
+                            width: 1,
+                          ),
+                          shape: RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(20))),
+                          onPressed: () async {
+                            var push = await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (BuildContext context) {
+                                  BranchRepository.instance;
+                                  List<LeaderBoardItem> newList =
+                                      (initialLeaders ?? snapshot.data)
+                                          .map((e) => LeaderBoardItem(
+                                                imageId: e.image,
+                                                point: e.point,
+                                                name: e.name,
+                                                branchName: e.branchName,
+                                              ))
+                                          .toList();
+                                  return LeaderBoardPage(
+                                      leaderBoardUsers: newList);
+                                },
+                              ),
+                            );
+                            if (push != null) {
+                              if (mounted) {
+                                setState(() {
+                                  initialLeaders = push;
+                                });
+                              }
+                            }
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              } else {
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  @override
+  bool get wantKeepAlive => true;
 }
 
 class BuildProfileInfo extends StatelessWidget {

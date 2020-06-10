@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:yorglass_ik/helpers/statusbar-helper.dart';
 import 'package:yorglass_ik/pages/feed.dart';
 import 'package:yorglass_ik/pages/profile.dart';
+import 'package:yorglass_ik/repositories/reward-repository.dart';
 import 'package:yorglass_ik/widgets/bottom.navi.bar.dart';
 import 'package:yorglass_ik/widgets/custom_drawer/custom_drawer.dart';
 
@@ -86,8 +88,11 @@ class _BottomNavigationState extends State<BottomNavigation> {
           FeedPage(
             menuFunction: toggleDrawer,
           ),
-          ProfilePage(
-            menuFunction: toggleDrawer,
+          ChangeNotifierProvider.value(
+            value: RewardRepository.instance.userRewardData,
+            child: ProfilePage(
+              menuFunction: toggleDrawer,
+            ),
           ),
         ],
       ),

@@ -1,10 +1,17 @@
 import 'dart:math';
 import 'dart:typed_data';
-
+import 'package:provider/provider.dart';
+import 'package:yorglass_ik/models/image.dart' as image;
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:yorglass_ik/models/reward.dart';
+import 'package:yorglass_ik/models/user-reward.dart';
+import 'package:yorglass_ik/repositories/image-repository.dart';
 import 'package:yorglass_ik/widgets/flag_point.dart';
+import 'package:yorglass_ik/widgets/reward_like_widget.dart';
+
+import 'gradient_text.dart';
+import 'image_widget.dart';
 
 class RewardCards3 extends StatelessWidget {
   final Reward reward;
@@ -13,115 +20,149 @@ class RewardCards3 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final pixelRatio = MediaQuery.of(context).devicePixelRatio;
+    final size = MediaQuery.of(context).size * pixelRatio;
+    final point = context.select((UserReward userReward) => userReward.point);
+    final containerHeight = (size.width * 16 / 9) / 3;
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Container(
+        height: containerHeight,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(8)),
           color: Colors.white,
-          // gradient: getGradient(),
           boxShadow: [
             BoxShadow(
-              offset: Offset(-2, 2),
+              offset: Offset(0, 3),
               spreadRadius: 1,
               blurRadius: 2,
-              color: const Color(0xff1A8EA7).withOpacity(.2),
+              color: const Color(0xffABF3F8),
             ),
           ],
         ),
         child: Stack(
-          alignment: AlignmentDirectional.center,
           children: <Widget>[
-            Positioned(
-              left: 20,
-              top: 0,
-              child: Container(
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Flexible(
+                  flex: 13,
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(16.0, 0, 0, 0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Flexible(
+                          child: Padding(
+                            padding: const EdgeInsets.all(4.0),
+                            child: ImageWidget(
+                              id: reward.imageId,
+                              borderRadius:
+                                  BorderRadius.circular(containerHeight / 25),
+                            ),
+                          ),
+                        ),
+                        Text(
+                          reward.title,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w300,
+                              color: Color(0xFF26315F)),
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 2,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                Flexible(
+                  flex: 10,
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
                     children: <Widget>[
-                      SizedBox(
-                        height: 220,
-                        child: FutureBuilder(
-                          future: reward.image64.future,
-                          builder: (BuildContext context,
-                              AsyncSnapshot<Uint8List> snapshot) {
-                            if (snapshot.hasError) {
-                              return ClipRRect(
-                                borderRadius: BorderRadius.circular(20.0),
-                                child: Image.asset('assets/default-profile.png'),
-                              );
-                            }
-                            if (snapshot.hasData) {
-                              // return Image.memory(snapshot.data);
-                              return ClipRRect(
-                                borderRadius: BorderRadius.circular(20.0),
-                                child: Image.memory(snapshot.data),
-                              );
-                            } else
-                              return Center(child: CircularProgressIndicator());
-                          },
+                      FlagPoint(
+                        point: reward.point,
+                      ),
+                      Expanded(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: <Widget>[
+                            Padding(
+                              padding: const EdgeInsets.all(4.0),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  GradientText(
+                                    (point ?? 0).toString(),
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: size.width < 400 ? 20 : 25,
+                                    linearGradient: LinearGradient(
+                                      colors: [
+                                        Color(0xFF26315F),
+                                        Color(0xFF2FB4C2)
+                                      ],
+                                      begin: Alignment.bottomCenter,
+                                      end: Alignment.topCenter,
+                                    ),
+                                  ),
+                                  GradientText(
+                                    'puan',
+                                    fontWeight: FontWeight.w300,
+                                    fontSize: size.width < 400 ? 15 : 20,
+                                    linearGradient: LinearGradient(
+                                      colors: [
+                                        Color(0xFF26315F),
+                                        Color(0xFF2FB4C2)
+                                      ],
+                                      begin: Alignment.bottomCenter,
+                                      end: Alignment.topCenter,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(4.0, 0, 43, 8),
+                              child: RotatedBox(
+                                quarterTurns: 3,
+                                child: LinearPercentIndicator(
+                                  linearStrokeCap: LinearStrokeCap.roundAll,
+                                  lineHeight: 12.0,
+                                  percent: point / reward.point > 1.0
+                                      ? 1.0
+                                      : point / reward.point,
+                                  backgroundColor:
+                                      Colors.black12.withOpacity(0.05),
+                                  linearGradient: LinearGradient(
+                                    colors: [
+                                      Color(0xFFABF3F8).withOpacity(0.5),
+                                      Color(0xFF80CEDF),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(reward.title),
-                      )
                     ],
                   ),
                 ),
-              ),
+              ],
             ),
             Positioned(
+              bottom: 7,
               right: 0,
-              top: 0,
-              child: FlagPoint(
-                point: reward.point,
+              child: LikeRewardWidget(
+                reward: reward,
+                likedRewards: [],
               ),
-            ),
-            Positioned(
-              right: -30,
-              bottom: 100,
-              child: Transform.rotate(
-                angle: 270 * pi / 180,
-                child: LinearPercentIndicator(
-                  linearStrokeCap: LinearStrokeCap.roundAll,
-                  width: 140.0,
-                  lineHeight: 14.0,
-                  percent: reward.point / 700 > 1.0 ? 1.0 : reward.point / 700,
-                  backgroundColor: Colors.black12,
-                  linearGradient: LinearGradient(
-                    colors: [
-                      Color(0xFFABF3F8),
-                      Color(0xFF80CEDF),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            // FlagAvatar(
-            //   name: widget.reward.title,
-            //   point: widget.reward.point,
-            //   image64: widget.decodedImage,
-            //   titleColor: Color(0xff26315F),
-            // ),
+            )
           ],
         ),
       ),
     );
   }
-}
-
-LinearGradient getGradient({
-  Color firstColor = Colors.white,
-  Color lastColor = const Color(0xff80CEDF),
-}) {
-  return LinearGradient(
-    begin: Alignment.topRight,
-    end: Alignment.bottomLeft,
-    colors: [
-      firstColor,
-      lastColor,
-    ],
-  );
 }

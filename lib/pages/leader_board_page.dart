@@ -16,7 +16,6 @@ import 'package:yorglass_ik/widgets/rank_content.dart';
 
 class LeaderBoardPage extends StatefulWidget {
   List<LeaderBoardItem> leaderBoardUsers;
-  bool isSelfCardVisible = true;
 
   LeaderBoardPage({Key key, this.leaderBoardUsers}) : super(key: key);
 
@@ -25,10 +24,13 @@ class LeaderBoardPage extends StatefulWidget {
 }
 
 class _LeaderBoardPageState extends State<LeaderBoardPage> {
+  bool isSelfCardVisible = true;
+
   final PageController pageController =
       PageController(initialPage: 0, keepPage: true);
   final ScrollController scrollController = ScrollController();
-  final GlobalKey<FetchMoreBuilderState> _fetchMoreController = GlobalKey<FetchMoreBuilderState>();
+  final GlobalKey<FetchMoreBuilderState> _fetchMoreController =
+      GlobalKey<FetchMoreBuilderState>();
 
   final List<ContentOption> options = [
     ContentOption(title: 'Bireysel', isActive: true),
@@ -85,12 +87,21 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
         Scaffold(
           extendBodyBehindAppBar: true,
           appBar: AppBar(
+            leading: BackButton(
+              onPressed: () {
+                Navigator.pop(
+                  context,
+                  userList.take(3).toList(),
+                );
+              },
+            ),
             title: Container(
               height: 36,
               child: ContentSelector(
                 onChange: onContentSelectorChange,
                 options: options,
                 contentSelectorType: ContentSelectorType.tab,
+                rowMainAxisAlignment: MainAxisAlignment.start,
                 activeColor: Colors.white,
                 isLeaderBoard: true,
                 disabledColor: Colors.white.withOpacity(.6),
@@ -100,296 +111,327 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
             backgroundColor: Colors.transparent,
           ),
           backgroundColor: Colors.transparent,
-          body: SafeArea(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Expanded(
-                  flex: 19,
-                  child: PageView(
-                    controller: pageController,
-                    onPageChanged: (i) {
-                      options.forEach((element) {
-                        element.isActive = false;
-                      });
-                      setState(() {
-                        options.elementAt(i).isActive = true;
-                      });
-                    },
-                    children: [
-                      Column(
-                        children: [
-                          Container(
-                            child: LeaderBoard(
-                              isLeaderBoard: true,
-                              list: widget.leaderBoardUsers,
+          body: WillPopScope(
+            onWillPop: () {
+              Navigator.pop(
+                context,
+                userList.take(3).toList(),
+              );
+              return new Future(() => false);
+            },
+            child: SafeArea(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Expanded(
+                    flex: 19,
+                    child: PageView(
+                      controller: pageController,
+                      onPageChanged: (i) {
+                        options.forEach((element) {
+                          element.isActive = false;
+                        });
+                        setState(() {
+                          options.elementAt(i).isActive = true;
+                        });
+                      },
+                      children: [
+                        Column(
+                          children: [
+                            Container(
+                              child: LeaderBoard(
+                                isLeaderBoard: true,
+                                list: widget.leaderBoardUsers,
+                              ),
                             ),
-                          ),
-                          if (size.height > 600)
-                            SizedBox(
-                              height: size.height / 14,
-                            ),
-                          Expanded(
-                            child: FutureBuilder(
-                              future: future,
-                              builder: (BuildContext context,
-                                  AsyncSnapshot<dynamic> snapshot) {
-                                if (snapshot.hasData) {
-                                  branchLeaderList = snapshot.data[0];
-                                  branchTopList = snapshot.data[1];
-                                  branchList = snapshot.data[2];
-                                  userList = snapshot.data[3];
-                                  userLeaderList = snapshot.data[4];
-                                  return Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      if (widget.isSelfCardVisible &&
-                                          myRank > 5)
-                                        GestureDetector(
-                                          onTap: () async {
-                                            showMyRank = true;
-                                            await _fetchMoreController.currentState.refresh();
+                            if (size.height > 600)
+                              SizedBox(
+                                height: size.height / 14,
+                              ),
+                            Expanded(
+                              child: FutureBuilder(
+                                future: future,
+                                builder: (BuildContext context,
+                                    AsyncSnapshot<dynamic> snapshot) {
+                                  if (snapshot.hasData) {
+                                    branchLeaderList = snapshot.data[0];
+                                    branchTopList = snapshot.data[1];
+                                    branchList = snapshot.data[2];
+                                    userList = snapshot.data[3];
+                                    userLeaderList = snapshot.data[4];
+                                    return Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [
+                                        if (isSelfCardVisible && myRank > 5)
+                                          GestureDetector(
+                                            onTap: () async {
+                                              showMyRank = true;
+                                              await _fetchMoreController
+                                                  .currentState
+                                                  .refresh();
 
-                                            setState(() {
-                                              widget.isSelfCardVisible = false;
-                                            });
-                                          },
-                                          child: Container(
-                                            margin: EdgeInsets.all(11),
-                                            child: RankContent(
-                                              image: AuthenticationService.verifiedUser.image,
-                                              selfContent: true,
-                                              title: AuthenticationService.verifiedUser.name,
-                                              rank: myRank,
-                                              point: AuthenticationService.verifiedUser.point,
-                                              subTitle: AuthenticationService.verifiedUser.branchName,
-                                            ),
-                                            decoration: BoxDecoration(
-                                              color: Colors.white,
-                                              borderRadius:
-                                                  BorderRadius.circular(12),
-                                              boxShadow: <BoxShadow>[
-                                                BoxShadow(
-                                                  color: Color(0xFFC2F6FC),
-                                                  spreadRadius: 0,
-                                                  blurRadius: 5,
-                                                  offset: Offset(0, 4),
-                                                ),
-                                              ],
+                                              setState(() {
+                                                isSelfCardVisible = false;
+                                              });
+                                            },
+                                            child: Container(
+                                              margin: EdgeInsets.all(11),
+                                              child: RankContent(
+                                                image: AuthenticationService
+                                                    .verifiedUser.image,
+                                                selfContent: true,
+                                                title: AuthenticationService
+                                                    .verifiedUser.name,
+                                                rank: myRank,
+                                                point: AuthenticationService
+                                                    .verifiedUser.point,
+                                                subTitle: AuthenticationService
+                                                    .verifiedUser.branchName,
+                                              ),
+                                              decoration: BoxDecoration(
+                                                color: Colors.white,
+                                                borderRadius:
+                                                    BorderRadius.circular(12),
+                                                boxShadow: <BoxShadow>[
+                                                  BoxShadow(
+                                                    color: Color(0xFFC2F6FC),
+                                                    spreadRadius: 0,
+                                                    blurRadius: 5,
+                                                    offset: Offset(0, 4),
+                                                  ),
+                                                ],
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                      Flexible(
-                                        child: MediaQuery.removePadding(
-                                          context: context,
-                                          removeTop: true,
-                                          child: FetchMoreBuilder(
-                                            fetchMoreController: _fetchMoreController,
-                                            dataFetcher: dataFetcher,
-                                            itemBuilder: (BuildContext context,
-                                                List<dynamic> list, int index) {
-                                              UserLeaderBoard item =
-                                                  list.elementAt(index);
-                                              return Visibility(
-                                                visible: showMyRank
-                                                    ? true
-                                                    : (index != 0 && index != 1 && index != 2),
-                                                child: Padding(
-                                                  padding:
-                                                      const EdgeInsets.fromLTRB(
-                                                          18, 0, 18, 0),
-                                                  child: Container(
-                                                    decoration: item.userId ==
-                                                            AuthenticationService.verifiedUser.id
-                                                        ? BoxDecoration(
-                                                            color: Colors.white,
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        12),
-                                                            boxShadow: <
-                                                                BoxShadow>[
-                                                              BoxShadow(
-                                                                color: Color(
-                                                                    0xFFC2F6FC),
-                                                                spreadRadius: 0,
-                                                                blurRadius: 5,
-                                                                offset: Offset(
-                                                                    0, 4),
-                                                              ),
-                                                            ],
-                                                          )
-                                                        : BoxDecoration(),
-                                                    child: RankContent(
-                                                      image: userList
-                                                          .singleWhere(
-                                                              (element) =>
-                                                                  element.id ==
-                                                                  item.userId)
-                                                          .image,
-                                                      selfContent: item
-                                                              .userId ==
-                                                          AuthenticationService
-                                                              .verifiedUser.id,
-                                                      title: userList
-                                                          .singleWhere(
-                                                              (element) =>
-                                                                  element.id ==
-                                                                  item.userId)
-                                                          .name,
-                                                      subTitle: branchList
-                                                          .singleWhere((element) =>
-                                                              element.id ==
-                                                              (userList
-                                                                  .singleWhere((element) =>
-                                                                      element
-                                                                          .id ==
-                                                                      item.userId)
-                                                                  .branchId))
-                                                          .name,
-                                                      rank: showMyRank
-                                                          ? (myRank - 1 + index)
-                                                          : index + 1,
-                                                      point: item.point,
+                                        Flexible(
+                                          child: MediaQuery.removePadding(
+                                            context: context,
+                                            removeTop: true,
+                                            child: FetchMoreBuilder(
+                                              fetchMoreController:
+                                                  _fetchMoreController,
+                                              dataFetcher: dataFetcher,
+                                              itemBuilder:
+                                                  (BuildContext context,
+                                                      List<dynamic> list,
+                                                      int index) {
+                                                UserLeaderBoard item =
+                                                    list.elementAt(index);
+                                                return Visibility(
+                                                  visible: showMyRank
+                                                      ? true
+                                                      : (index != 0 &&
+                                                          index != 1 &&
+                                                          index != 2),
+                                                  child: Padding(
+                                                    padding: const EdgeInsets
+                                                        .fromLTRB(18, 0, 18, 0),
+                                                    child: Container(
+                                                      decoration: item.userId ==
+                                                              AuthenticationService
+                                                                  .verifiedUser
+                                                                  .id
+                                                          ? BoxDecoration(
+                                                              color:
+                                                                  Colors.white,
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          12),
+                                                              boxShadow: <
+                                                                  BoxShadow>[
+                                                                BoxShadow(
+                                                                  color: Color(
+                                                                      0xFFC2F6FC),
+                                                                  spreadRadius:
+                                                                      0,
+                                                                  blurRadius: 5,
+                                                                  offset:
+                                                                      Offset(
+                                                                          0, 4),
+                                                                ),
+                                                              ],
+                                                            )
+                                                          : BoxDecoration(),
+                                                      child: RankContent(
+                                                        image: userList
+                                                            .singleWhere(
+                                                                (element) =>
+                                                                    element
+                                                                        .id ==
+                                                                    item.userId)
+                                                            .image,
+                                                        selfContent: item
+                                                                .userId ==
+                                                            AuthenticationService
+                                                                .verifiedUser
+                                                                .id,
+                                                        title: userList
+                                                            .singleWhere(
+                                                                (element) =>
+                                                                    element
+                                                                        .id ==
+                                                                    item.userId)
+                                                            .name,
+                                                        subTitle: branchList
+                                                            .singleWhere((element) =>
+                                                                element.id ==
+                                                                (userList
+                                                                    .singleWhere((element) =>
+                                                                        element
+                                                                            .id ==
+                                                                        item.userId)
+                                                                    .branchId))
+                                                            .name,
+                                                        rank: showMyRank
+                                                            ? (myRank -
+                                                                1 +
+                                                                index)
+                                                            : index + 1,
+                                                        point: item.point,
+                                                      ),
                                                     ),
                                                   ),
-                                                ),
-                                              );
-                                            },
-                                            limit: limit,
+                                                );
+                                              },
+                                              limit: limit,
+                                            ),
                                           ),
-                                        ),
-                                      )
-                                    ],
-                                  );
-                                } else {
-                                  return Center(
-                                    child: CircularProgressIndicator(),
-                                  );
-                                }
-                              },
+                                        )
+                                      ],
+                                    );
+                                  } else {
+                                    return Center(
+                                      child: CircularProgressIndicator(),
+                                    );
+                                  }
+                                },
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                      FutureBuilder(
-                        future: future,
-                        builder: (BuildContext context,
-                            AsyncSnapshot<dynamic> snapshot) {
-                          if (snapshot.hasData) {
-                            branchLeaderList = snapshot.data[0];
-                            branchTopList = snapshot.data[1];
-                            branchList = snapshot.data[2];
-                            userList = snapshot.data[3];
-                            userLeaderList = snapshot.data[4];
-                            return Column(
-                              children: [
-                                Container(
-                                  child: LeaderBoard(
-                                    isLeaderBoard: true,
-                                    list: [
-                                      LeaderBoardItem(
-                                        name: "",
-                                        imageId: branchTopList[0].image,
-                                        point: branchTopList[0].point,
-                                        branchName: branchTopList[0].name,
-                                      ),
-                                      LeaderBoardItem(
-                                        name: "",
-                                        imageId: branchTopList[1].image,
-                                        point: branchTopList[1].point,
-                                        branchName: branchTopList[1].name,
-                                      ),
-                                      LeaderBoardItem(
-                                        name: "",
-                                        imageId: branchTopList[2].image,
-                                        point: branchTopList[2].point,
-                                        branchName: branchTopList[2].name,
-                                      ),
-                                    ],
+                          ],
+                        ),
+                        FutureBuilder(
+                          future: future,
+                          builder: (BuildContext context,
+                              AsyncSnapshot<dynamic> snapshot) {
+                            if (snapshot.hasData) {
+                              branchLeaderList = snapshot.data[0];
+                              branchTopList = snapshot.data[1];
+                              branchList = snapshot.data[2];
+                              userList = snapshot.data[3];
+                              userLeaderList = snapshot.data[4];
+                              return Column(
+                                children: [
+                                  Container(
+                                    child: LeaderBoard(
+                                      isLeaderBoard: true,
+                                      list: [
+                                        LeaderBoardItem(
+                                          name: "\n",
+                                          imageId: branchTopList[0].image,
+                                          point: branchTopList[0].point,
+                                          branchName: branchTopList[0].name,
+                                        ),
+                                        LeaderBoardItem(
+                                          name: "\n",
+                                          imageId: branchTopList[1].image,
+                                          point: branchTopList[1].point,
+                                          branchName: branchTopList[1].name,
+                                        ),
+                                        LeaderBoardItem(
+                                          name: "\n",
+                                          imageId: branchTopList[2].image,
+                                          point: branchTopList[2].point,
+                                          branchName: branchTopList[2].name,
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ),
-                                if (size.height > 600)
-                                  SizedBox(
-                                    height: size.height / 10,
-                                  ),
-                                Flexible(
-                                  child: MediaQuery.removePadding(
-                                    context: context,
-                                    removeTop: true,
-                                    child: ListView.builder(
-                                        controller: scrollController,
-                                        scrollDirection: Axis.vertical,
-                                        itemCount: branchLeaderList.length - 3,
-                                        itemBuilder:
-                                            (BuildContext context, int index) {
-                                          BranchLeaderBoard item =
-                                              branchLeaderList
-                                                  .skip(3)
-                                                  .elementAt(index);
-                                          return Padding(
-                                              padding:
-                                                  const EdgeInsets.fromLTRB(
-                                                      18, 0, 18, 0),
-                                              child: Container(
-                                                child: RankContent(
-                                                    image: branchList
-                                                        .singleWhere(
-                                                            (element) =>
-                                                                element.id ==
-                                                                item.branchId)
-                                                        .image,
-                                                    selfContent: item
-                                                            .branchId ==
-                                                        AuthenticationService
-                                                            .verifiedUser
-                                                            .branchId,
-                                                    point: item.point,
-                                                    subTitle: branchList
-                                                        .singleWhere(
-                                                            (element) =>
-                                                                element.id ==
-                                                                item.branchId)
-                                                        .name,
-                                                    rank: index + 4),
-                                                decoration: item.branchId ==
-                                                        AuthenticationService
-                                                            .verifiedUser
-                                                            .branchId
-                                                    ? BoxDecoration(
-                                                        color: Colors.white,
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(12),
-                                                        boxShadow: <BoxShadow>[
-                                                          BoxShadow(
-                                                            color: Color(
-                                                                0xFFC2F6FC),
-                                                            spreadRadius: 0,
-                                                            blurRadius: 5,
-                                                            offset:
-                                                                Offset(0, 4),
-                                                          ),
-                                                        ],
-                                                      )
-                                                    : BoxDecoration(),
-                                              ));
-                                        }),
-                                  ),
-                                )
-                              ],
-                            );
-                          } else
-                            return Center(
-                              child: CircularProgressIndicator(),
-                            );
-                        },
-                      ),
-                    ],
+                                  if (size.height > 600)
+                                    SizedBox(
+                                      height: size.height / 10,
+                                    ),
+                                  Flexible(
+                                    child: MediaQuery.removePadding(
+                                      context: context,
+                                      removeTop: true,
+                                      child: ListView.builder(
+                                          controller: scrollController,
+                                          scrollDirection: Axis.vertical,
+                                          itemCount:
+                                              branchLeaderList.length - 3,
+                                          itemBuilder: (BuildContext context,
+                                              int index) {
+                                            BranchLeaderBoard item =
+                                                branchLeaderList
+                                                    .skip(3)
+                                                    .elementAt(index);
+                                            return Padding(
+                                                padding:
+                                                    const EdgeInsets.fromLTRB(
+                                                        18, 0, 18, 0),
+                                                child: Container(
+                                                  child: RankContent(
+                                                      image: branchList
+                                                          .singleWhere(
+                                                              (element) =>
+                                                                  element.id ==
+                                                                  item.branchId)
+                                                          .image,
+                                                      selfContent: item
+                                                              .branchId ==
+                                                          AuthenticationService
+                                                              .verifiedUser
+                                                              .branchId,
+                                                      point: item.point,
+                                                      subTitle: branchList
+                                                          .singleWhere(
+                                                              (element) =>
+                                                                  element.id ==
+                                                                  item.branchId)
+                                                          .name,
+                                                      rank: index + 4),
+                                                  decoration: item.branchId ==
+                                                          AuthenticationService
+                                                              .verifiedUser
+                                                              .branchId
+                                                      ? BoxDecoration(
+                                                          color: Colors.white,
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(12),
+                                                          boxShadow: <
+                                                              BoxShadow>[
+                                                            BoxShadow(
+                                                              color: Color(
+                                                                  0xFFC2F6FC),
+                                                              spreadRadius: 0,
+                                                              blurRadius: 5,
+                                                              offset:
+                                                                  Offset(0, 4),
+                                                            ),
+                                                          ],
+                                                        )
+                                                      : BoxDecoration(),
+                                                ));
+                                          }),
+                                    ),
+                                  )
+                                ],
+                              );
+                            } else
+                              return Center(
+                                child: CircularProgressIndicator(),
+                              );
+                          },
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
@@ -403,7 +445,6 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
 
     UserLeaderBoard user = userList.singleWhere(
         (element) => element.userId == AuthenticationService.verifiedUser.id);
-
 
     int i = userList.indexOf(user);
     myRank = i > 3 ? i : i + 1;
@@ -420,8 +461,13 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
 
   resetUserList(int index) async {
     userList.clear();
+    userLeaderList.clear();
     userList.addAll(
       await UserRepository.instance.getUserList(limit: limit, offset: index),
+    );
+    userLeaderList.addAll(
+      await UserRepository.instance
+          .getUserPointList(limit: limit, offset: index),
     );
   }
 
@@ -448,6 +494,19 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
         )
       ];
     });
+    if (userList
+        .take(5)
+        .map((e) => e.id)
+        .toList()
+        .contains(AuthenticationService.verifiedUser.id)) {
+      setState(() {
+        isSelfCardVisible = false;
+      });
+    } else {
+      setState(() {
+        isSelfCardVisible = true;
+      });
+    }
   }
 
   Future<List> dataFetcher(int index, int limit) async {
@@ -456,14 +515,12 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
       showMyRank = false;
       await resetUserList(index);
       setState(() {
-        widget.isSelfCardVisible = true;
+        isSelfCardVisible = true;
       });
     }
     if (!fetchMore) return [];
     if (index == 0 && !showMyRank) {
-      if (userList.length > 10) {
-        await resetUserList(index);
-      }
+      await resetUserList(index);
       if (!isFirst) refreshTopThree();
 
       if (isFirst) {
@@ -479,7 +536,6 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
       userList.addAll(
         await UserRepository.instance.getUserList(
             limit: limit, offset: !showMyRank ? index : myRank - 1),
-
       );
     }
 
