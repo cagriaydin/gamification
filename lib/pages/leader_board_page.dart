@@ -283,7 +283,7 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
                                                                         element
                                                                             .id ==
                                                                         item.userId)
-                                                                    .branchId))
+                                                                    .branch))
                                                             .name,
                                                         rank: showMyRank
                                                             ? (myRank -
@@ -384,7 +384,7 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
                                                               .branchId ==
                                                           AuthenticationService
                                                               .verifiedUser
-                                                              .branchId,
+                                                              .branch,
                                                       point: item.point,
                                                       subTitle: branchList
                                                           .singleWhere(
@@ -396,7 +396,7 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
                                                   decoration: item.branchId ==
                                                           AuthenticationService
                                                               .verifiedUser
-                                                              .branchId
+                                                              .branch
                                                       ? BoxDecoration(
                                                           color: Colors.white,
                                                           borderRadius:

@@ -1,10 +1,11 @@
+import 'package:dio/src/response.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:yorglass_ik/enums/authentication-enum.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:yorglass_ik/enums/verification-status-enum.dart';
-import 'package:yorglass_ik/models/authentication-status.dart';
+import 'package:yorglass_ik/models/authentication_model.dart';
 import 'package:yorglass_ik/models/user.dart';
+import 'package:yorglass_ik/repositories/dio_repository.dart';
 import 'package:yorglass_ik/repositories/task-repository.dart';
 import 'package:yorglass_ik/repositories/user_repository.dart';
 
@@ -13,17 +14,20 @@ class AuthenticationService {
 
   AuthenticationService._privateConstructor();
 
-  static final AuthenticationService _instance = AuthenticationService._privateConstructor();
+  static final AuthenticationService _instance =
+      AuthenticationService._privateConstructor();
 
   static AuthenticationService get instance => _instance;
 
   static User verifiedUser;
+  static AuthenticationModel verifiedAuth;
 
   Future<User> verifyUser() async {
     FirebaseUser result = await firebaseAuthInstance.currentUser();
     User user = await UserRepository.instance.getUserByAuthId(result.uid);
     if (user == null) {
-      user = await UserRepository.instance.getUserByPhoneNumber(result.phoneNumber);
+      user = await UserRepository.instance
+          .getUserByPhoneNumber(result.phoneNumber);
       if (user != null) {
         verifiedUser = user;
         await UserRepository.instance.addAuthIdToUser(user.id, result.uid);
@@ -62,8 +66,10 @@ class AuthenticationService {
     }
   }
 
-  Future<VerificationStatusEnum> signInWithOTP(String smsCode, String verId) async {
-    AuthCredential _authCredential = PhoneAuthProvider.getCredential(verificationId: verId, smsCode: smsCode);
+  Future<VerificationStatusEnum> signInWithOTP(
+      String smsCode, String verId) async {
+    AuthCredential _authCredential = PhoneAuthProvider.getCredential(
+        verificationId: verId, smsCode: smsCode);
     VerificationStatusEnum status = await signIn(_authCredential);
     return status;
   }
@@ -72,34 +78,40 @@ class AuthenticationService {
     await firebaseAuthInstance.signOut();
   }
 
-  verifyPhone(String phoneNo, BuildContext context, Function callback(AuthenticationStatus authenticationStatus)) async {
-    AuthenticationStatus status;
-    final PhoneVerificationCompleted verified = (AuthCredential auth) {
-      status = AuthenticationStatus(authenticationEnum: AuthenticationEnum.success);
-      callback(status);
-    };
-    final PhoneVerificationFailed verificationFailed = (AuthException authException) {
-      status = AuthenticationStatus(authenticationEnum: AuthenticationEnum.fail, exceptionCode: authException.code);
-      callback(status);
-    };
-    final PhoneCodeSent smsSent = (String verId, [int forceResend]) {
-      status = AuthenticationStatus(authenticationEnum: AuthenticationEnum.smsSent, verificationId: verId);
-      callback(status);
-    };
-    final PhoneCodeAutoRetrievalTimeout autoTimeout = (String verId) {
-      status = AuthenticationStatus(authenticationEnum: AuthenticationEnum.timeout, verificationId: verId);
-      callback(status);
-    };
+  Future<bool> sendMessage(
+    String code,
+  ) async {
+    Response post = await RestApi.instance.dio.post('/auth/sendMessage/$code');
+    return post.statusCode == 200;
+  }
 
-    await firebaseAuthInstance.verifyPhoneNumber(
-        phoneNumber: phoneNo,
-        timeout: const Duration(
-          seconds: 30,
-        ),
-        verificationCompleted: verified,
-        verificationFailed: verificationFailed,
-        codeSent: smsSent,
-        codeAutoRetrievalTimeout: autoTimeout);
-    return status;
+  Future<User> authenticate(String userCode, String phoneCode) async {
+    Response future = await RestApi.instance.dio
+        .post('/auth/', data: {"authCode": phoneCode, "userCode": userCode});
+    await fillUser(future);
+    final sharedPref = await SharedPreferences.getInstance();
+    //TODO: this is not safe encrypt it or save locally with another way.
+    sharedPref.setString("refreshToken", verifiedAuth.refreshToken);
+    return verifiedUser;
+  }
+
+  Future<void> fillUser(Response future) async {
+    verifiedAuth = AuthenticationModel.fromJson(future.data);
+    verifiedUser = verifiedAuth.user;
+    verifiedUser = await UserRepository.instance.fillUserWithRest(verifiedUser, true);
+  }
+
+  Future<User> refreshAuthenticate() async {
+    final sharedPref = await SharedPreferences.getInstance();
+    final refreshToken = sharedPref.getString('refreshToken');
+    if (refreshToken == null) return null;
+    var response = await RestApi.instance.dio
+        .post('/auth/refreshToken', data: refreshToken);
+    if (response.statusCode == 200) {
+      await fillUser(response);
+      return verifiedUser;
+    } else {
+      return null;
+    }
   }
 }

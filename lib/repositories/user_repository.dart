@@ -3,6 +3,7 @@ import 'package:yorglass_ik/models/user.dart';
 import 'package:yorglass_ik/models/user_leader_board.dart';
 import 'package:mysql1/mysql1.dart';
 import 'package:yorglass_ik/repositories/branch_repository.dart';
+import 'package:yorglass_ik/repositories/dio_repository.dart';
 import 'package:yorglass_ik/repositories/task-repository.dart';
 import 'package:yorglass_ik/services/db-connection.dart';
 
@@ -33,13 +34,13 @@ class UserRepository {
         User user = User(
           id: element[0],
           name: element[1],
-          branchId: element[3],
+          branch: element[3],
           phone: element[2],
           code: element[4],
           image: element[5],
           point: element[7],
         );
-        user.branchName = bList.firstWhere((element) => element.id == user.branchId).name;
+        user.branchName = bList.firstWhere((element) => element.id == user.branch).name;
         list.add(user);
       }
     }
@@ -56,9 +57,10 @@ class UserRepository {
     return userList;
   }
 
-  Future<User> getUserByAuthId(String authId) async {
-    Results res = await DbConnection.query('SELECT * FROM user WHERE authid = ?', [authId]);
-    return await _fillUser(res, true);
+  Future<User> getUserByAuthId(String userCode) async {
+    final res = await RestApi.instance.dio.get('/user/byCode/$userCode');
+    final user = User.fromMap(res.data);
+    return await fillUserWithRest(user, true);
   }
 
   Future<User> getUser(String id) async {
@@ -74,10 +76,34 @@ class UserRepository {
     return await _fillUser(res, true);
   }
 
+  Future<User> fillUserWithRest(User user, bool detailed) async {
+    if (user != null) {
+      Branch b = await BranchRepository.instance.getBranch(user.branch);
+      user.branchName = b.name;
+      if (detailed) {
+        Results results = await DbConnection.query('SELECT * FROM feedaction WHERE userid = ?', [user.id]);
+        List<String> deletedFeeds = [];
+        List<String> likedFeeds = [];
+        forEach(results, (element) {
+          if (element["operation"] == 0) {
+            deletedFeeds.add(element["feedid"]);
+          } else {
+            likedFeeds.add(element["feedid"]);
+          }
+        });
+        user.likedFeeds = likedFeeds;
+        user.deletedFeeds = deletedFeeds;
+      }
+      return user;
+    } else {
+      return null;
+    }
+  }
+
   Future<User> _fillUser(Results res, bool detailed) async {
     if (res.length > 0) {
-      User user = User(id: res.single[0], name: res.single[1], branchId: res.single[3], phone: res.single[2], code: res.single[4], image: res.single[5]);
-      Branch b = await BranchRepository.instance.getBranch(user.branchId);
+      User user = User(id: res.single[0], name: res.single[1], branch: res.single[3], phone: res.single[2], code: res.single[4], image: res.single[5]);
+      Branch b = await BranchRepository.instance.getBranch(user.branch);
       user.branchName = b.name;
       if (detailed) {
         Results results = await DbConnection.query('SELECT * FROM feedaction WHERE userid = ?', [user.id]);

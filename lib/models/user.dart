@@ -17,7 +17,7 @@ class User extends ChangeNotifier {
   String id;
   String name;
   String branchName;
-  String branchId;
+  String branch;
   String phone;
   int code;
   String image;
@@ -40,7 +40,7 @@ class User extends ChangeNotifier {
     @required this.image,
     @required this.likedFeeds,
     @required this.deletedFeeds,
-    this.branchId,
+    this.branch,
   });
 
   User copyWith({
@@ -50,7 +50,7 @@ class User extends ChangeNotifier {
     int taskCount,
     int percentage,
     String branchName,
-    String branchId,
+    String branch,
     String phone,
     int code,
     String image,
@@ -64,7 +64,7 @@ class User extends ChangeNotifier {
         percentage: percentage ?? this.percentage,
         taskCount: taskCount ?? this.taskCount,
         branchName: branchName ?? this.branchName,
-        branchId: branchId ?? this.branchId,
+        branch: branch ?? this.branch,
         phone: phone ?? this.phone,
         code: code ?? this.code,
         image: image ?? this.image,
@@ -79,12 +79,12 @@ class User extends ChangeNotifier {
         percentage: json["percentage"] == null ? null : json["percentage"],
         taskCount: json["taskCount"] == null ? null : json["taskCount"],
         branchName: json["branchName"] == null ? null : json["branchName"],
-        branchId: json["branchId"] == null ? null : json["branchId"],
+        branch: json["branch"] == null ? null : json["branch"],
         phone: json["phone"] == null ? null : json["phone"],
         code: json["code"] == null ? null : json["code"],
         image: json["image"] == null ? null : json["image"],
-        likedFeeds: List<String>.from(json["likedFeeds"].map((x) => x)),
-        deletedFeeds: List<String>.from(json["deletedFeeds"].map((x) => x)),
+        likedFeeds: List<String>.from(json["likedFeeds"] ?? [].map((x) => x)),
+        deletedFeeds: List<String>.from(json["deletedFeeds"] ?? [].map((x) => x)),
       );
 
   factory User.fromSnapshot(DocumentSnapshot snapshot) => User(
@@ -100,9 +100,9 @@ class User extends ChangeNotifier {
         branchName: snapshot.data["branchName"] == null
             ? null
             : snapshot.data["branchName"],
-        branchId: snapshot.data["branchId"] == null
+        branch: snapshot.data["branch"] == null
             ? null
-            : snapshot.data["branchId"],
+            : snapshot.data["branch"],
         phone: snapshot.data["phone"] == null ? null : snapshot.data["phone"],
         code: snapshot.data["code"] == null ? null : snapshot.data["code"],
         image: snapshot.data["image"] == null ? null : snapshot.data["image"],
@@ -119,7 +119,7 @@ class User extends ChangeNotifier {
         "percentage": percentage == null ? null : percentage,
         "taskCount": taskCount == null ? null : taskCount,
         "branchName": branchName == null ? null : branchName,
-        "branchId": branchId == null ? null : branchId,
+        "branch": branch == null ? null : branch,
         "phone": phone == null ? null : phone,
         "code": code == null ? null : code,
         "image": image == null ? null : image,
@@ -147,7 +147,7 @@ class User extends ChangeNotifier {
 //"id": "id",
 //"name":"",
 //"branchName":"",
-//"branchId":"",
+//"branch":"",
 //"phone":"",
 //"extraInfo":{},
 //"model": "hex",
