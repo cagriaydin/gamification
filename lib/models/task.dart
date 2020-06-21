@@ -10,6 +10,9 @@ Task taskFromJson(String str) => Task.fromJson(json.decode(str));
 
 String taskToJson(Task data) => json.encode(data.toJson());
 
+List<Task> taskListFromJson(List<dynamic> listOfString) =>
+    (listOfString).map((e) => Task.fromJson(e)).toList();
+
 class Task {
   String id;
   String name;
@@ -28,24 +31,23 @@ class Task {
   });
 
   factory Task.fromJson(Map<String, dynamic> json) => Task(
-    id: json["id"],
-    name: json["name"],
-    point: json["point"],
-    interval: json["interval"],
-    renewableTime: json["renewableTime"],
-    count: json["counter"],
-  );
+        id: json["id"],
+        name: json["name"],
+        point: json["point"],
+        interval: json["taskinterval"],
+        renewableTime: json["renwableday"],
+        count: json["count"],
+      );
 
   Map<String, dynamic> toJson() => {
-    "id": id,
-    "name": name,
-    "point": point,
-    "interval": interval,
-    "renewableTime": renewableTime,
-    "counter": count,
-  };
+        "id": id,
+        "name": name,
+        "point": point,
+        "taskinterval": interval,
+        "renwableday": renewableTime,
+        "count": count,
+      };
 }
-
 
 //{
 //  "id":"id",

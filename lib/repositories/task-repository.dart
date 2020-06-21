@@ -28,31 +28,13 @@ class TaskRepository {
   Stream get currentUserTasks => _currentTasks.stream;
 
   Future<List<UserTask>> getUserTasks() async {
-    Results res =
-        await DbConnection.query("SELECT * FROM task WHERE active = 1");
     List<Task> taskList = [];
-    if (res.length > 0) {
-      forEach(res, (element) {
-        taskList.add(
-          Task(
-            id: element[0],
-            name: element[1],
-            point: element[2],
-            interval: element[3],
-            count: element[4],
-            renewableTime: element[5],
-          ),
-        );
-      });
-    }
-
-    Results userTasks = await DbConnection.query(
-      "SELECT * FROM usertask WHERE userid = ? AND (lastupdate, taskid) IN (SELECT MAX(lastupdate), taskid FROM usertask WHERE userid = ? GROUP BY taskid)",
-      [
-        AuthenticationService.verifiedUser.id,
-        AuthenticationService.verifiedUser.id,
-      ],
+    Response allTaskResponse = await RestApi.instance.dio.get(
+      '/task/getAllTasks',
     );
+    if (allTaskResponse.data != null) {
+      taskList = taskListFromJson(allTaskResponse.data);
+    }
 
     Response userTaskResponse = await RestApi.instance.dio.get(
       '/usertask/getUserTasks/${AuthenticationService.verifiedUser.id}',
