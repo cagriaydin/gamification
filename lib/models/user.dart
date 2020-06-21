@@ -129,7 +129,7 @@ class User extends ChangeNotifier {
 
   updatePoint() async {
 //    point = await RewardRepository.instance.getActivePoint();
-    var newUser = (await AuthenticationService.instance.verifyUser());
+    var newUser = (await AuthenticationService.instance.refreshAuthenticate());
     this.point = newUser.point;
     this.percentage = newUser.percentage;
     this.taskCount = newUser.taskCount;
@@ -137,7 +137,7 @@ class User extends ChangeNotifier {
   }
 
   suggestionUpdate() async {
-    var newUser = (await AuthenticationService.instance.verifyUser());
+    var newUser = (await AuthenticationService.instance.refreshAuthenticate());
     this.point = newUser.point;
     notifyListeners();
   }

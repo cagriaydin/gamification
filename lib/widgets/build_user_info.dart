@@ -40,7 +40,7 @@ class BuildUserInfo extends StatelessWidget {
                   radius: (radius ?? getRadius(size)) * 2.2,
                   lineWidth: 10.0,
                   circularStrokeCap: CircularStrokeCap.round,
-                  percent: user.percentage / 100 ?? 0,
+                  percent: user.percentage ?? 0 / 100 ?? 0,
                   backgroundColor: Colors.white,
                   linearGradient: LinearGradient(
                     colors: [

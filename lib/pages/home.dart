@@ -174,9 +174,12 @@ class _HomePageState extends State<HomePage> {
                     ],
                   ),
                   MenuButton(
-                      text: "Çıkış",
-                      icon: Icons.power_settings_new,
-                      click: () => AuthenticationService.instance.signOut()),
+                    text: "Çıkış",
+                    icon: Icons.power_settings_new,
+                    click: () => AuthenticationService.instance.signOut(
+                      context,
+                    ),
+                  ),
                 ],
               ),
             ),
