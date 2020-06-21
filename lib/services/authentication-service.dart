@@ -6,6 +6,7 @@ import 'package:yorglass_ik/models/authentication_model.dart';
 import 'package:yorglass_ik/models/user.dart';
 import 'package:yorglass_ik/pages/welcome.dart';
 import 'package:yorglass_ik/repositories/dio_repository.dart';
+import 'package:yorglass_ik/repositories/task-repository.dart';
 import 'package:yorglass_ik/repositories/user_repository.dart';
 
 class AuthenticationService {
@@ -59,6 +60,7 @@ class AuthenticationService {
     verifiedUser = verifiedAuth.user;
     verifiedUser =
         await UserRepository.instance.fillUserWithRest(verifiedUser, true);
+    await TaskRepository.instance.updateUserInfo();
   }
 
   Future<User> refreshAuthenticate() async {
