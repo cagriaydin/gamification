@@ -288,7 +288,7 @@ class _BuildTaskState extends State<BuildTask> {
                       width: size.width / 2,
                       height: 20,
                       stepCount: widget.userTask.task.count,
-                      currentCount: widget.userTask.count,
+                      currentCount: widget.userTask.count ?? 0,
                     ),
                   ),
                 ],

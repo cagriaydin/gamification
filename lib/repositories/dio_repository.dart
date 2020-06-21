@@ -11,7 +11,7 @@ class RestApi {
     final Map<String,dynamic> headers = {};
     if (AuthenticationService?.verifiedAuth?.token != null) {
       headers.putIfAbsent(
-          'Authorization', () => AuthenticationService?.verifiedAuth?.token);
+          'Authorization', () => 'Bearer ' + AuthenticationService?.verifiedAuth?.token);
     }
     BaseOptions options = new BaseOptions(
       baseUrl: baseUrl,

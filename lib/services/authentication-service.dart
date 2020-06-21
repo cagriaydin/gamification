@@ -58,6 +58,8 @@ class AuthenticationService {
   Future<void> fillUser(Response future) async {
     verifiedAuth = AuthenticationModel.fromJson(future.data);
     verifiedUser = verifiedAuth.user;
+    RestApi.instance.dio.options.headers['Authorization'] =
+        'Bearer ' + AuthenticationService?.verifiedAuth?.token;
     verifiedUser =
         await UserRepository.instance.fillUserWithRest(verifiedUser, true);
     await TaskRepository.instance.updateUserInfo();

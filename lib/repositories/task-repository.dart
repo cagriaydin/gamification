@@ -1,10 +1,12 @@
 import 'dart:async';
 
+import 'package:dio/src/response.dart';
 import 'package:mysql1/mysql1.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:uuid/uuid.dart';
 import 'package:yorglass_ik/models/task.dart';
 import 'package:yorglass_ik/models/user-task.dart';
+import 'package:yorglass_ik/repositories/dio_repository.dart';
 import 'package:yorglass_ik/services/authentication-service.dart';
 import 'package:yorglass_ik/services/db-connection.dart';
 
@@ -51,28 +53,15 @@ class TaskRepository {
         AuthenticationService.verifiedUser.id,
       ],
     );
+
+    Response userTaskResponse = await RestApi.instance.dio.get(
+      '/usertask/getUserTasks/${AuthenticationService.verifiedUser.id}',
+    );
     List<UserTask> userTaskList = [];
-    if (userTasks.length > 0) {
-      forEach(userTasks, (element) {
-        userTaskList.add(
-          UserTask(
-            id: element[0],
-            taskId: element[1],
-            userId: element[2],
-            lastUpdate: element[3],
-            nextActive: element[4],
-            nextdeadline: element[5],
-            count: element[6],
-            complete: element[7],
-            point: element[8],
-          ),
-        );
-        userTaskList.last.nextdeadline =
-            userTaskList.last.nextdeadline.toLocal();
-        userTaskList.last.lastUpdate = userTaskList.last.lastUpdate.toLocal();
-        userTaskList.last.nextActive = userTaskList.last.nextActive.toLocal();
-      });
+    if (userTaskResponse.data != null) {
+      userTaskList = userTaskListFromJson(userTaskResponse.data);
     }
+
 
     forEach(taskList, (task) {
       List<UserTask> tasks = userTaskList.where((userTask) {
