@@ -7,7 +7,8 @@ UserTask userTaskFromJson(String str) => UserTask.fromJson(json.decode(str));
 
 String userTaskToJson(UserTask data) => json.encode(data.toJson());
 
-List<UserTask> userTaskListFromJson(List<dynamic> listOfString) => (listOfString).map((e) => UserTask.fromJson(e)).toList();
+List<UserTask> userTaskListFromJson(List<dynamic> listOfString) =>
+    (listOfString).map((e) => UserTask.fromJson(e)).toList();
 
 class UserTask {
   String id;
@@ -37,9 +38,15 @@ class UserTask {
         id: json["id"],
         taskId: json["taskid"],
         userId: json["userid"],
-        lastUpdate: json["lastapdate"] == null ? DateTime.now() : DateTime.tryParse(json["lastapdate"]),
-        nextActive: json["nextactive"] == null ? DateTime.now() : DateTime.tryParse(json["nextactive"]),
-        nextdeadline: json["nextdeadline"] == null ? DateTime.now() : DateTime.tryParse(json["nextdeadline"]),
+        lastUpdate: json["lastupdate"] == null
+            ? DateTime.now()
+            : DateTime.tryParse(json["lastupdate"]),
+        nextActive: json["nextactive"] == null
+            ? DateTime.now()
+            : DateTime.tryParse(json["nextactive"]),
+        nextdeadline: json["nextdeadline"] == null
+            ? DateTime.now()
+            : DateTime.tryParse(json["nextdeadline"]),
         count: json["count"],
         complete: json["complete"],
         point: json["point"],
@@ -48,16 +55,18 @@ class UserTask {
 
   Map<String, dynamic> toJson() => {
         "id": id,
-        "taskId": taskId,
-        "userId": userId,
-        "lastUpdate": lastUpdate,
-        "nextActive": nextActive,
-        "nextdeadline": nextdeadline,
+        "taskid": taskId,
+        "userid": userId,
+        "lastupdate": iso8601string(lastUpdate),
+        "nextactive": iso8601string(nextActive),
+        "nextdeadline": iso8601string(nextdeadline),
         "count": count,
         "complete": complete,
         "point": point,
         "task": task != null ? taskToJson(task) : null,
       };
+
+  String iso8601string(value) => value == null ? null : value.toIso8601String();
 }
 
 //{

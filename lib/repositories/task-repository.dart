@@ -44,7 +44,6 @@ class TaskRepository {
       userTaskList = userTaskListFromJson(userTaskResponse.data);
     }
 
-
     forEach(taskList, (task) {
       List<UserTask> tasks = userTaskList.where((userTask) {
         return userTask.taskId == task.id;
@@ -160,38 +159,17 @@ class TaskRepository {
   }
 
   Future<UserTask> _updateUserTaskData(UserTask task) async {
-    Results res;
+    Response post;
     if (task.id != null) {
-      res = await DbConnection.query(
-        "UPDATE usertask SET lastupdate = ?, nextactive = ?, nextdeadline = ?, count = ?, complete = ?, point = ? WHERE id = ?",
-        [
-          task.lastUpdate.toUtc(),
-          task.nextActive.toUtc(),
-          task.nextdeadline.toUtc(),
-          task.count,
-          task.complete,
-          task.point,
-          task.id,
-        ],
-      );
+      post = await RestApi.instance.dio
+          .post('/usertask/updateUserTask', data: task.toJson());
+      print(post.statusCode);
     } else {
       task.id = Uuid().v4();
-      res = await DbConnection.query(
-        "INSERT INTO usertask (id, taskid, userid, lastupdate, nextactive, nextdeadline, count, complete, point) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
-        [
-          task.id,
-          task.taskId,
-          task.userId,
-          task.lastUpdate.toUtc(),
-          task.nextActive.toUtc(),
-          task.nextdeadline.toUtc(),
-          task.count,
-          task.complete,
-          task.point,
-        ],
-      );
+      post = await RestApi.instance.dio
+          .post('/usertask/insertUserTask', data: task.toJson());
     }
-    if (res != null && res.affectedRows > 0) {
+    if (post != null && post.data != null && post.statusCode == 200) {
       if (task.complete == 1) {
         await updateLeaderboardPoint(task.point);
       }
