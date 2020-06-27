@@ -15,10 +15,10 @@ class RestApi {
           'Authorization', () => 'Bearer ' + AuthenticationService?.verifiedAuth?.token);
     }
     BaseOptions options = new BaseOptions(
-      baseUrl: localUrl,
-      connectTimeout: 5000,
+      baseUrl: baseUrl,
+      connectTimeout: 10000,
       headers: headers,
-      receiveTimeout: 3000,
+      receiveTimeout: 10000,
     );
     dio = Dio(options);
   }
