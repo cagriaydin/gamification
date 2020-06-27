@@ -141,7 +141,7 @@ class TaskRepository {
         int hours = 0;
         int minutes = 0;
         if (task.task.renewableTime > days) {
-          double totalHours = 24 * (task.task.renewableTime - days);
+          double totalHours = (24 * (task.task.renewableTime - days)).toDouble();
           hours = totalHours.toInt();
           if (totalHours > hours) {
             double totalMins = 60 * (totalHours - hours);
