@@ -42,6 +42,7 @@ class TaskRepository {
     List<UserTask> userTaskList = [];
     if (userTaskResponse.data != null) {
       userTaskList = userTaskListFromJson(userTaskResponse.data);
+      print(userTaskList.length);
     }
 
     forEach(taskList, (task) {
