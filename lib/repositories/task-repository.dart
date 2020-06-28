@@ -1,14 +1,12 @@
 import 'dart:async';
 
 import 'package:dio/src/response.dart';
-import 'package:mysql1/mysql1.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:uuid/uuid.dart';
 import 'package:yorglass_ik/models/task.dart';
 import 'package:yorglass_ik/models/user-task.dart';
 import 'package:yorglass_ik/repositories/dio_repository.dart';
 import 'package:yorglass_ik/services/authentication-service.dart';
-import 'package:yorglass_ik/services/db-connection.dart';
 
 forEach(Iterable list, Function(dynamic) function) {
   for (var element in list) {
@@ -42,6 +40,7 @@ class TaskRepository {
     List<UserTask> userTaskList = [];
     if (userTaskResponse.data != null) {
       userTaskList = userTaskListFromJson(userTaskResponse.data);
+      print(userTaskList.length);
     }
 
     forEach(taskList, (task) {
@@ -140,7 +139,8 @@ class TaskRepository {
         int hours = 0;
         int minutes = 0;
         if (task.task.renewableTime > days) {
-          double totalHours = 24 * (task.task.renewableTime - days);
+          double totalHours =
+              (24 * (task.task.renewableTime - days)).toDouble();
           hours = totalHours.toInt();
           if (totalHours > hours) {
             double totalMins = 60 * (totalHours - hours);
@@ -179,12 +179,8 @@ class TaskRepository {
   }
 
   Future updateLeaderboardPoint(int point) async {
-    await DbConnection.query(
-      "UPDATE leaderboard SET point = point + ? WHERE userid = ? AND enddate IS NULL",
-      [
-        point,
-        AuthenticationService.verifiedUser.id,
-      ],
+    await RestApi.instance.dio.get(
+      '/leaderboard/updatePoint/${AuthenticationService.verifiedUser.id}/$point',
     );
   }
 
@@ -247,11 +243,11 @@ class TaskRepository {
   }
 
   Future updateUserInfo() async {
-    Results res = await DbConnection.query(
-        "SELECT * FROM leaderboard WHERE enddate IS NULL AND userid = ?",
-        [AuthenticationService.verifiedUser.id]);
-    if (res.length > 0) {
-      AuthenticationService.verifiedUser.point = res.single[1];
+    var response = await RestApi.instance.dio.get(
+      '/leaderboard/byId/${AuthenticationService.verifiedUser.id}',
+    );
+    if (response.statusCode == 200) {
+      AuthenticationService.verifiedUser.point = response.data['point'];
     }
     List<UserTask> tasks = await TaskRepository.instance.getUserTasks();
     int count = 0;

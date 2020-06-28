@@ -18,7 +18,7 @@ class Task {
   String name;
   int point;
   int interval;
-  double renewableTime;
+  int renewableTime;
   int count;
 
   Task({
@@ -35,7 +35,7 @@ class Task {
         name: json["name"],
         point: json["point"],
         interval: json["taskinterval"],
-        renewableTime: json["renwableday"],
+        renewableTime: json["renewableday"],
         count: json["count"],
       );
 
@@ -44,7 +44,7 @@ class Task {
         "name": name,
         "point": point,
         "taskinterval": interval,
-        "renwableday": renewableTime,
+        "renewableday": renewableTime,
         "count": count,
       };
 }

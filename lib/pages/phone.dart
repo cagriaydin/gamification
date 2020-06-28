@@ -180,22 +180,31 @@ class _PhoneValidationPageState extends State<PhoneValidationPage> {
   }
 
   verifyPhone(context) async {
-    String userCode = registrationNumberController.text;
-    if (userCode != "" && userCode != null) {
-      setState(() {
-        isLoading = true;
-      });
-      var bool = await AuthenticationService.instance.sendMessage(userCode);
-      if (bool) {
-        pushToValidationPage(context, userCode);
-      } else {
-        showWarning('Lütfen geçerli bir sicil numarası giriniz');
-      }
-    } else {
+    try {
+      String userCode = registrationNumberController.text;
+      if (userCode != "" && userCode != null) {
+            setState(() {
+              isLoading = true;
+            });
+            var bool = await AuthenticationService.instance.sendMessage(userCode);
+            if (bool) {
+              pushToValidationPage(context, userCode);
+            } else {
+              showWarning('Lütfen geçerli bir sicil numarası giriniz');
+            }
+          } else {
+            setState(() {
+              isLoading = false;
+            });
+            showWarning('Lütfen geçerli bir sicil numarası giriniz');
+          }
+    } catch (e) {
+
       setState(() {
         isLoading = false;
       });
       showWarning('Lütfen geçerli bir sicil numarası giriniz');
+      print(e);
     }
   }
 

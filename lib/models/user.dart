@@ -130,13 +130,14 @@ class User extends ChangeNotifier {
         "deletedFeeds": List<dynamic>.from(deletedFeeds.map((x) => x)),
       };
 
-  updatePoint() async {
+  Future<User> updatePoint() async {
 //    point = await RewardRepository.instance.getActivePoint();
     var newUser = (await AuthenticationService.instance.refreshAuthenticate());
     this.point = newUser.point;
     this.percentage = newUser.percentage;
     this.taskCount = newUser.taskCount;
     notifyListeners();
+    return newUser;
   }
 
   suggestionUpdate() async {
