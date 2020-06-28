@@ -13,6 +13,9 @@ User userFromJson(String str) => User.fromMap(json.decode(str));
 
 String userToJson(User data) => json.encode(data.toMap());
 
+List<User> userListFromJson(List<dynamic> listOfString) =>
+    (listOfString).map((e) => User.fromMap(e)).toList();
+
 class User extends ChangeNotifier {
   String id;
   String name;

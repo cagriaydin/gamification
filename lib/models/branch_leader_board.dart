@@ -10,6 +10,9 @@ BranchLeaderBoard branchLeaderBoardFromJson(String str) =>
 String branchLeaderBoardToJson(BranchLeaderBoard data) =>
     json.encode(data.toJson());
 
+List<BranchLeaderBoard> branchLeaderBoardListFromJson(List<dynamic> listOfString) =>
+    (listOfString).map((e) => BranchLeaderBoard.fromJson(e)).toList();
+
 class BranchLeaderBoard {
   String branchId;
   int point;
@@ -21,12 +24,12 @@ class BranchLeaderBoard {
 
   factory BranchLeaderBoard.fromJson(Map<String, dynamic> json) =>
       BranchLeaderBoard(
-        branchId: json["branchId"],
+        branchId: json["branchid"],
         point: json["point"],
       );
 
   Map<String, dynamic> toJson() => {
-        "branchId": branchId,
+        "branchid": branchId,
         "point": point,
       };
 }

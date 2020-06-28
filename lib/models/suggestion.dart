@@ -48,8 +48,10 @@ class Suggestion {
         "type": type,
         "status": status,
         "flag": flag,
-        "date": date,
+        "date": iso8601string(date),
       };
+
+  String iso8601string(value) => value == null ? null : value.toIso8601String();
 }
 
 // {

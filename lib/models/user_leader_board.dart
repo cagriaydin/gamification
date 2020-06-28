@@ -8,6 +8,9 @@ UserLeaderBoard userLeaderBoardFromJson(String str) => UserLeaderBoard.fromJson(
 
 String userLeaderBoardToJson(UserLeaderBoard data) => json.encode(data.toJson());
 
+List<UserLeaderBoard> leaderBoardListFromJson(List<dynamic> listOfString) =>
+    (listOfString).map((e) => UserLeaderBoard.fromJson(e)).toList();
+
 class UserLeaderBoard {
     String userId;
     int point;
@@ -18,12 +21,12 @@ class UserLeaderBoard {
     });
 
     factory UserLeaderBoard.fromJson(Map<String, dynamic> json) => UserLeaderBoard(
-        userId: json["userId"],
+        userId: json["userid"],
         point: json["point"],
     );
 
     Map<String, dynamic> toJson() => {
-        "userId": userId,
+        "userid": userId,
         "point": point,
     };
 }

@@ -8,6 +8,9 @@ Branch branchFromJson(String str) => Branch.fromJson(json.decode(str));
 
 String branchToJson(Branch data) => json.encode(data.toJson());
 
+List<Branch> branchListFromJson(List<dynamic> listOfString) =>
+    (listOfString).map((e) => Branch.fromJson(e)).toList();
+
 class Branch {
   String id;
   String name;
@@ -33,7 +36,7 @@ class Branch {
         point: json["point"],
         image: json["image"],
         // location: json["location"],
-        employeeCount: json["employeeCount"],
+        employeeCount: json["employee"],
         color: json["color"],
       );
 
@@ -43,7 +46,7 @@ class Branch {
         "point": point,
         "image": image,
         // "location": location,
-        "employeeCount": employeeCount,
+        "employee": employeeCount,
         "color": color,
       };
 }

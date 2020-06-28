@@ -58,8 +58,8 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
       BranchRepository.instance.getBoardPointList(),
       BranchRepository.instance.getTopBranchPointList(),
       BranchRepository.instance.getBranchList(),
-      UserRepository.instance.getUserList(limit: limit),
-      UserRepository.instance.getUserPointList(limit: limit)
+      UserRepository.instance.getUserList(limit: limit, offset: 0),
+      UserRepository.instance.getUserPointList(limit: limit, offset: 0)
     ]);
     getMyRank();
     super.initState();
@@ -441,7 +441,7 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
 
   getMyRank() async {
     List<UserLeaderBoard> userList =
-        await UserRepository.instance.getUserPointList();
+        await UserRepository.instance.getUserPointList(limit: 0, offset: 0);
 
     UserLeaderBoard user = userList.singleWhere(
         (element) => element.userId == AuthenticationService.verifiedUser.id);
