@@ -180,7 +180,7 @@ class TaskRepository {
 
   Future updateLeaderboardPoint(int point) async {
     await RestApi.instance.dio.get(
-      '/leaderboard/updatePoint/${AuthenticationService.verifiedUser.id}/$point',
+      '/leaderboard/updatePoint?userId=${AuthenticationService.verifiedUser.id}&point=$point',
     );
   }
 
