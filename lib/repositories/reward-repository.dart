@@ -1,12 +1,19 @@
 import 'dart:async';
+import 'dart:convert';
 
+import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:mysql1/mysql1.dart';
 import 'package:yorglass_ik/models/buyed-reward.dart';
+import 'package:yorglass_ik/models/reward-like-dto.dart';
 import 'package:yorglass_ik/models/reward-type.dart';
 import 'package:yorglass_ik/models/reward.dart';
+import 'package:yorglass_ik/models/user-reward-dto.dart';
 import 'package:yorglass_ik/models/user-reward.dart';
+import 'package:yorglass_ik/repositories/task-repository.dart';
 import 'package:yorglass_ik/services/authentication-service.dart';
 import 'package:yorglass_ik/services/db-connection.dart';
+import 'package:yorglass_ik/repositories/dio_repository.dart';
 
 class RewardRepository {
   static final RewardRepository _instance =
@@ -21,127 +28,73 @@ class RewardRepository {
   UserReward userRewardData = UserReward();
 
   Future<List<Reward>> getRewards({String type}) async {
-    Results res;
-    if (type == null) {
-      res = await DbConnection.query(
-          "SELECT *, (SELECT count(1) FROM rewardlike WHERE rewardid = reward.id) as count FROM reward ORDER BY point DESC");
-    } else {
-      res = await DbConnection.query(
-          "SELECT *, (SELECT count(1) FROM rewardlike WHERE rewardid = reward.id) as count FROM reward WHERE type = ? ORDER BY point DESC",
-          [type]);
-    }
+    Response response = await RestApi.instance.dio.get(
+      type == null
+          ? '/reward/getRewardDTOs'
+          : '/reward/getRewardDTOsByType/$type',
+    );
     List<Reward> rewardItemList = [];
-    if (res.length > 0) {
-      for (Row r in res) {
-        rewardItemList.add(
-          Reward(
-            id: r[0],
-            title: r[1].toString(),
-            imageId: r[2],
-            point: r[3],
-            itemType: r[4],
-            likeCount: r[5],
-          ),
-        );
-      }
-    }
+
+    if (response.data != null)
+      rewardItemList = rewardListFromJson(response.data);
+
     return rewardItemList;
   }
 
   Future<List<BuyedReward>> getMyRewards() async {
-    Results res = await DbConnection.query(
-        "SELECT reward.*, userreward.date, userreward.status, userreward.point, (SELECT count(1) FROM rewardlike WHERE rewardid = reward.id) as count FROM reward, userreward WHERE userreward.rewardid = reward.id AND userreward.userid = ?",
-        [AuthenticationService.verifiedUser.id]);
     List<BuyedReward> rewardItemList = [];
-    if (res.length > 0) {
-      for (Row r in res) {
-        rewardItemList.add(
-          BuyedReward(
-            id: r[0],
-            title: r[1].toString(),
-            imageId: r[2],
-            point: r[7],
-            itemType: r[4],
-            likeCount: r[8],
-            buyDate: r[5].toLocal(),
-            status: r[6],
-          ),
-        );
-      }
-//      userRewardStream.map((reward) {
-//        reward.rewards = rewardItemList;
-//        return reward;
-//      });
-    }
+    String id = AuthenticationService.verifiedUser.id;
+    Response response = await RestApi.instance.dio.get(
+      '/userreward/getBuyedRewards/$id',
+    );
+    if (response.data != null)
+      rewardItemList = buyedRewardListFromJson(response.data);
+
     userRewardData.update(rewards: rewardItemList);
     return rewardItemList;
   }
 
   Future<Reward> getRewardItem(String id) async {
-    Results res;
-    res = await DbConnection.query(
-        "SELECT *, (SELECT count(1) FROM rewardlike WHERE rewardid = reward.id) as count FROM reward WHERE id = ?",
-        [id]);
-    return Reward(
-      id: res.single[0],
-      title: res.single[1].toString(),
-      imageId: res.single[2],
-      point: res.single[3],
-      itemType: res.single[4],
-      likeCount: res.single[5],
-    );
+    Response response =
+        await RestApi.instance.dio.get('/reward/getRewardDTOsById/$id');
+    if (response.data != null) return rewardFromJson(response.data);
   }
 
   Future<List<RewardType>> getRewardTypes() async {
     List<RewardType> typeList = [];
-    Results res =
-        await DbConnection.query("SELECT * FROM rewardtype ORDER BY showorder");
-    if (res.length > 0) {
-      for (Row r in res) {
-        typeList.add(RewardType(id: r[0], title: r[1]));
-      }
-    }
+    Response response =
+        await RestApi.instance.dio.get('/reward/getRewardTypes');
+    if (response.data != null) typeList = rewardTypeListFromJson(response.data);
     return typeList;
   }
 
   Future<List<String>> likedRewards() async {
-    Results res = await DbConnection.query(
-        "SELECT rewardid FROM rewardlike WHERE userid = ?",
-        [AuthenticationService.verifiedUser.id]);
-    List<String> likedList = [];
-    if (res.length > 0) {
-      for (Row r in res) {
-        likedList.add(r[0]);
-      }
-//      userRewardStream.map((reward) {
-//        reward.liked = likedList;
-//        return reward;
-//      });
+    String id = AuthenticationService.verifiedUser.id;
+    Response response =
+        await RestApi.instance.dio.get('/reward/getRewardIdListByUserid/$id');
+
+    List<String> likedList = new List<String>();
+    if (response.data != null && response.data.length != 0)
+    {
+      forEach(response.data, (r){
+        likedList.add(r);
+      });
     }
     userRewardData.update(liked: likedList);
     return likedList;
   }
 
   Future<int> getActivePoint() async {
-    Results res = await DbConnection.query(
-      "SELECT COALESCE(SUM(point),0), (SELECT COALESCE(SUM(point),0) FROM userreward where userid = usertask.userid) FROM usertask where complete = 1 AND userid = ? GROUP BY userid",
-      [
-        AuthenticationService.verifiedUser.id,
-      ],
-    );
-    if (res.length == 0){
-      userRewardData.update(point: 0);
-      return 0;
+    String id = AuthenticationService.verifiedUser.id;
+    Response response =
+        await RestApi.instance.dio.get('/userreward/getActivePoints/$id');
+
+    if (response.data > 0) {
+      userRewardData.update(point: response.data);
+      return response.data;
     }
-    int earn = (res.single[0] as double).floor();
-    int cost = (res.single[1] as double).floor();
-    int budget = (earn == null ? 0 : earn) - (cost == null ? 0 : cost);
-    userRewardData.update(point: budget);
-//    userRewardStream.map((reward) {
-//      reward.point = budget;
-//      return reward;
-//    });
-    return budget;
+    userRewardData.update(point: 0);
+    return 0;
   }
 
   Future<bool> buyReward(String id) async {
@@ -149,15 +102,15 @@ class RewardRepository {
     int budget = await getActivePoint();
     DateTime buyDate = DateTime.now();
     if (budget > r.point) {
-      await DbConnection.query(
-          "INSERT INTO userreward (userid, rewardid, date, status, point) VALUES (?, ?, ?, ?, ?)",
-          [
-            AuthenticationService.verifiedUser.id,
-            r.id,
-            buyDate.toUtc(),
-            0,
-            r.point,
-          ]);
+      Response post =
+          await RestApi.instance.dio.post('/userreward/addUserReward',
+              data: UserRewardDTO(
+                userid: AuthenticationService.verifiedUser.id,
+                rewardid: r.id,
+                date: buyDate.toUtc(),
+                status: 0,
+                point: r.point,
+              ).toJson());
       userRewardData.addReward(BuyedReward(
         id: r.id,
         title: r.title,
@@ -170,54 +123,35 @@ class RewardRepository {
       ));
       getActivePoint();
       return true;
-//      userRewardStream.map((reward) {
-//        reward.rewards.add(BuyedReward(
-//          id: r.id,
-//          title: r.title,
-//          imageId: r.imageId,
-//          itemType: r.itemType,
-//          likeCount: r.likeCount,
-//          point: r.point,
-//          buyDate: buyDate.toLocal(),
-//          status: 0,
-//        ));
-//        return reward;
-//      });
     } else {
       throw Exception("Puanınız bu hediyeyi almak için yetersiz");
     }
   }
 
-  Future<bool> changeLike(String id) async {
+  Future<bool> changeLike(String rewardid) async {
     List<String> liked = await likedRewards();
-    if (liked.contains(id)) {
-      Results res = await DbConnection.query(
-        'DELETE FROM rewardlike WHERE userid = ? AND rewardid = ?',
-        [
-          AuthenticationService.verifiedUser.id,
-          id,
-        ],
-      );
-      if (res.affectedRows > 0) {
-        userRewardData.liked.remove(id);
+    String userid = AuthenticationService.verifiedUser.id;
+
+    if (liked.contains(rewardid)) {
+      Response response = await RestApi.instance.dio.delete('/reward/deleteRewardLike/$userid/$rewardid');
+      if (response != null &&
+        response.data != null &&
+        response.statusCode == 200) {
+        userRewardData.liked.remove(rewardid);
         userRewardData.update(liked: userRewardData.liked);
-//        userRewardStream.map((reward) {
-//          reward.liked.remove(id);
-//          return reward;
-//        });
         return false;
       }
     } else {
-      Results res = await DbConnection.query(
-        'INSERT INTO rewardlike (userid, rewardid, date) VALUES (?, ?, ?)',
-        [
-          AuthenticationService.verifiedUser.id,
-          id,
-          DateTime.now().toUtc(),
-        ],
+      RewardLikeDTO reward = RewardLikeDTO(
+          userid: userid,
+          rewardid: rewardid,
+          date: DateTime.now()
       );
-      if (res.affectedRows > 0) {
-        userRewardData.liked.add(id);
+      Response response = await RestApi.instance.dio.post('/reward/addRewardLike', data: reward.toJson());
+      if (response != null &&
+        response.data != null &&
+        response.statusCode == 200) {
+        userRewardData.liked.add(rewardid);
         userRewardData.update(liked: userRewardData.liked);
 //        userRewardStream.map((reward) {
 //          reward.liked.add(id);
