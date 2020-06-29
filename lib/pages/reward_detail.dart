@@ -114,7 +114,7 @@ class RewardDetail extends StatelessWidget {
                                         Text('Ödülü başarıyla aldınız!'));
                                   }
                                 } catch (e) {
-                                  PopupHelper().showPopup(context, Text(e));
+                                  PopupHelper().showPopup(context, Text(e.toString()));
                                 }
                               },
                       ),

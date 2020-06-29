@@ -6,6 +6,7 @@ import 'package:uuid/uuid.dart';
 import 'package:yorglass_ik/models/task.dart';
 import 'package:yorglass_ik/models/user-task.dart';
 import 'package:yorglass_ik/repositories/dio_repository.dart';
+import 'package:yorglass_ik/repositories/reward-repository.dart';
 import 'package:yorglass_ik/services/authentication-service.dart';
 
 forEach(Iterable list, Function(dynamic) function) {
@@ -172,6 +173,7 @@ class TaskRepository {
     if (post != null && post.data != null && post.statusCode == 200) {
       if (task.complete == 1) {
         await updateLeaderboardPoint(task.point);
+        await RewardRepository.instance.getActivePoint();
       }
     }
     await updateUserInfo();

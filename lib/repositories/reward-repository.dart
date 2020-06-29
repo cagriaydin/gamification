@@ -57,7 +57,7 @@ class RewardRepository {
   Future<Reward> getRewardItem(String id) async {
     Response response =
         await RestApi.instance.dio.get('/reward/getRewardDTOsById/$id');
-    if (response.data != null) return rewardFromJson(response.data);
+    if (response.data != null) return Reward.fromJson(response.data[0]);
   }
 
   Future<List<RewardType>> getRewardTypes() async {
@@ -121,7 +121,7 @@ class RewardRepository {
         buyDate: buyDate.toLocal(),
         status: 0,
       ));
-      getActivePoint();
+      await getActivePoint();
       return true;
     } else {
       throw Exception("Puanınız bu hediyeyi almak için yetersiz");
