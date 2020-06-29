@@ -53,16 +53,15 @@ class FeedRepository {
   }
 
   Future<bool> changeLike(String id) async {
-    if (AuthenticationService.verifiedUser.likedFeeds.contains(id)) {
+    if (!AuthenticationService.verifiedUser.likedFeeds.contains(id)) {
       var future = await RestApi.instance.dio.get('/feed_action/delete?userId=${AuthenticationService.verifiedUser.id}&feedId=$id');
       if (future.statusCode == 200) {
         var updateLike = await RestApi.instance.dio.get('/feed/updateLikeCount?id=$id&value=-1');
         return updateLike.statusCode == 200;
       }
     } else {
-      var future = await RestApi.instance.dio.get('/feed_action/add?userId=${AuthenticationService.verifiedUser.id}&feedId=$id&operation=0');
+      var future = await RestApi.instance.dio.get('/feed_action/add?userId=${AuthenticationService.verifiedUser.id}&feedId=$id&operation=1');
       if (future.statusCode == 200) {
-        AuthenticationService.verifiedUser.likedFeeds.add(id);
         var updateLike = await RestApi.instance.dio.get('/feed/updateLikeCount?id=$id&value=1');
         return updateLike.statusCode == 200;
       }
