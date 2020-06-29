@@ -159,17 +159,36 @@ class _LikeWidgetState extends State<LikeWidget> {
             color: Color(0xFFF90A60),
             icon: AuthenticationService.verifiedUser.likedFeeds.contains(widget.feedItem.id) ? Icon(Icons.favorite) : Icon(Icons.favorite_border),
             onPressed: () {
-              FeedRepository.instance.changeLike(widget.feedItem.id).then(
-                    (value) => setState(
-                      () {
-                        if (AuthenticationService.verifiedUser.likedFeeds.contains(widget.feedItem.id)) {
-                          widget.feedItem.likeCount++;
-                        } else {
-                          widget.feedItem.likeCount--;
-                        }
-                      },
-                    ),
-                  );
+              setState(() {
+                if (AuthenticationService.verifiedUser.likedFeeds.contains(widget.feedItem.id)) {
+                  AuthenticationService.verifiedUser.likedFeeds.remove(widget.feedItem.id);
+                  widget.feedItem.likeCount--;
+                } else {
+                  AuthenticationService.verifiedUser.likedFeeds.add(widget.feedItem.id);
+                  widget.feedItem.likeCount++;
+                }
+              });
+              FeedRepository.instance.changeLike(widget.feedItem.id).then((value) {
+                if (!value) {
+                  setState(() {
+                    if (AuthenticationService.verifiedUser.likedFeeds.contains(widget.feedItem.id)) {
+                      AuthenticationService.verifiedUser.likedFeeds.remove(widget.feedItem.id);
+                      widget.feedItem.likeCount--;
+                    } else {
+                      AuthenticationService.verifiedUser.likedFeeds.add(widget.feedItem.id);
+                      widget.feedItem.likeCount++;
+                    }
+                  });
+                }
+              }).catchError((onError) => setState(() {
+                    if (AuthenticationService.verifiedUser.likedFeeds.contains(widget.feedItem.id)) {
+                      AuthenticationService.verifiedUser.likedFeeds.remove(widget.feedItem.id);
+                      widget.feedItem.likeCount--;
+                    } else {
+                      AuthenticationService.verifiedUser.likedFeeds.add(widget.feedItem.id);
+                      widget.feedItem.likeCount++;
+                    }
+                  }));
             },
           ),
           Padding(
