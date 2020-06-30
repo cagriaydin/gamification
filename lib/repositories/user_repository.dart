@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:yorglass_ik/models/branch.dart';
 import 'package:yorglass_ik/models/user.dart';
 import 'package:yorglass_ik/models/user_leader_board.dart';
@@ -15,41 +16,35 @@ class UserRepository {
   static UserRepository get instance => _instance;
 
   Future<List<UserLeaderBoard>> getUserPointList({int limit, int offset}) async {
-    Results res = await DbConnection.query("SELECT * FROM leaderboard, user WHERE enddate IS NULL AND user.id = leaderboard.userid ORDER BY point DESC, user.name" + (limit != null ? (" LIMIT " + limit.toString()) : "") + (offset != null ? (" OFFSET " + offset.toString()) : ""));
     List<UserLeaderBoard> list = [];
-    if (res.length > 0) {
-      forEach(res, (element) {
-        list.add(UserLeaderBoard(userId: element[0], point: element[1]));
-      });
+    Response userLeaderBoardRes = await RestApi.instance.dio.get(
+      '/leaderboard/getAllLeaderBoard' + (limit!=null ? '?limit=' + limit.toString() : '') + (offset!=null ? '&offset=' + offset.toString() : '')
+    );
+    if (userLeaderBoardRes.data != null) {
+      list = leaderBoardListFromJson(userLeaderBoardRes.data);
     }
     return list;
   }
 
   Future<List<User>> getUserList({int limit, int offset}) async {
     List<Branch> bList = await BranchRepository.instance.getBranchList();
-    Results res = await DbConnection.query("SELECT user.*, lb.point FROM user, leaderboard as lb WHERE user.id = lb.userid AND lb.enddate IS NULL ORDER BY lb.point DESC, user.name" + (limit != null ? (" LIMIT " + limit.toString()) : "") + (offset != null ? (" OFFSET " + offset.toString()) : ""));
+    
     List<User> list = [];
-    if (res.length > 0) {
-      for (Row element in res) {
-        User user = User(
-          id: element[0],
-          name: element[1],
-          branch: element[3],
-          phone: element[2],
-          code: element[4],
-          image: element[5],
-          point: element[7],
-        );
-        user.branchName = bList.firstWhere((element) => element.id == user.branch).name;
-        list.add(user);
-      }
+    Response userRes = await RestApi.instance.dio.get(
+      '/user/getAllUserList' + (limit!=null ? '?limit=' + limit.toString() : '') + (offset!=null ? '&offset=' + offset.toString() : '')
+    );
+    if (userRes.data != null) {
+      list = userListFromJson(userRes.data);
+      for (var item in list) {
+          item.branchName = bList.firstWhere((element) => element.id == item.branch).name;
+        }
     }
     return list;
   }
 
   Future<List<User>> getTopUserPointList() async {
     var userList = new List<User>();
-    var userPointList = await getUserPointList(limit: 3);
+    var userPointList = await getUserPointList(limit: 3, offset: 0);
     for (var user in userPointList) {
       userList.add(await getUser(user.userId));
       userList.last.point = user.point;
