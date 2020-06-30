@@ -129,16 +129,16 @@ class RewardRepository {
   }
 
   Future<bool> changeLike(String rewardid) async {
-    List<String> liked = await likedRewards();
+    List<String> liked = userRewardData.liked;
     String userid = AuthenticationService.verifiedUser.id;
 
-    if (liked.contains(rewardid)) {
+    if (!liked.contains(rewardid)) {
       Response response = await RestApi.instance.dio.delete('/reward/deleteRewardLike/$userid/$rewardid');
       if (response != null &&
         response.data != null &&
         response.statusCode == 200) {
-        userRewardData.liked.remove(rewardid);
-        userRewardData.update(liked: userRewardData.liked);
+        return true;
+      } else {
         return false;
       }
     } else {
@@ -151,13 +151,9 @@ class RewardRepository {
       if (response != null &&
         response.data != null &&
         response.statusCode == 200) {
-        userRewardData.liked.add(rewardid);
-        userRewardData.update(liked: userRewardData.liked);
-//        userRewardStream.map((reward) {
-//          reward.liked.add(id);
-//          return reward;
-//        });
         return true;
+      } else {
+        return false;
       }
     }
   }
