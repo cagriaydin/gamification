@@ -9,6 +9,8 @@ RewardType rewardTypeFromJson(String str) => RewardType.fromMap(json.decode(str)
 
 String rewardTypeToJson(RewardType data) => json.encode(data.toMap());
 
+List<RewardType> rewardTypeListFromJson(List<dynamic> listOfString) =>
+    (listOfString).map((e) => RewardType.fromMap(e)).toList();
 class RewardType {
     String id;
     String title;

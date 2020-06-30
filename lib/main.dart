@@ -69,26 +69,7 @@ class _MyAppState extends State<MyApp> {
     StatusbarHelper.setSatusBar();
     // AuthenticationService().signOut();
     listenConnection();
-    AuthenticationService.firebaseAuthInstance.onAuthStateChanged
-        .listen((event) {
-      if (event != null) {
-        AuthenticationService.instance.verifyUser().then((user) {
-          if (user != null) {
-            setState(() {
-              loggedIn = true;
-            });
-          } else {
-            setState(() {
-              loggedIn = false;
-            });
-          }
-        });
-      } else {
-        setState(() {
-          loggedIn = false;
-        });
-      }
-    });
+    handleAutoLogin();
 //    Future.delayed(Duration(seconds: 2))
 //        .then((val) => Catcher.sendTestException());
     Future.delayed(Duration(seconds: 5)).then((val) =>
@@ -174,5 +155,18 @@ class _MyAppState extends State<MyApp> {
         body: getMainPage(loggedIn, hasConnection),
       ),
     );
+  }
+
+  Future<void> handleAutoLogin() async {
+    var user = await AuthenticationService.instance.refreshAuthenticate();
+    if (user != null) {
+      setState(() {
+        loggedIn = true;
+      });
+    }else {
+      setState(() {
+        loggedIn = false;
+      });
+    }
   }
 }

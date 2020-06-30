@@ -1,12 +1,13 @@
 import 'dart:async';
 
-import 'package:mysql1/mysql1.dart';
+import 'package:dio/src/response.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:uuid/uuid.dart';
 import 'package:yorglass_ik/models/task.dart';
 import 'package:yorglass_ik/models/user-task.dart';
+import 'package:yorglass_ik/repositories/dio_repository.dart';
+import 'package:yorglass_ik/repositories/reward-repository.dart';
 import 'package:yorglass_ik/services/authentication-service.dart';
-import 'package:yorglass_ik/services/db-connection.dart';
 
 forEach(Iterable list, Function(dynamic) function) {
   for (var element in list) {
@@ -26,52 +27,21 @@ class TaskRepository {
   Stream get currentUserTasks => _currentTasks.stream;
 
   Future<List<UserTask>> getUserTasks() async {
-    Results res =
-        await DbConnection.query("SELECT * FROM task WHERE active = 1");
     List<Task> taskList = [];
-    if (res.length > 0) {
-      forEach(res, (element) {
-        taskList.add(
-          Task(
-            id: element[0],
-            name: element[1],
-            point: element[2],
-            interval: element[3],
-            count: element[4],
-            renewableTime: element[5],
-          ),
-        );
-      });
+    Response allTaskResponse = await RestApi.instance.dio.get(
+      '/task/getAllTasks',
+    );
+    if (allTaskResponse.data != null) {
+      taskList = taskListFromJson(allTaskResponse.data);
     }
 
-    Results userTasks = await DbConnection.query(
-      "SELECT * FROM usertask WHERE userid = ? AND (lastupdate, taskid) IN (SELECT MAX(lastupdate), taskid FROM usertask WHERE userid = ? GROUP BY taskid)",
-      [
-        AuthenticationService.verifiedUser.id,
-        AuthenticationService.verifiedUser.id,
-      ],
+    Response userTaskResponse = await RestApi.instance.dio.get(
+      '/usertask/getUserTasks/${AuthenticationService.verifiedUser.id}',
     );
     List<UserTask> userTaskList = [];
-    if (userTasks.length > 0) {
-      forEach(userTasks, (element) {
-        userTaskList.add(
-          UserTask(
-            id: element[0],
-            taskId: element[1],
-            userId: element[2],
-            lastUpdate: element[3],
-            nextActive: element[4],
-            nextdeadline: element[5],
-            count: element[6],
-            complete: element[7],
-            point: element[8],
-          ),
-        );
-        userTaskList.last.nextdeadline =
-            userTaskList.last.nextdeadline.toLocal();
-        userTaskList.last.lastUpdate = userTaskList.last.lastUpdate.toLocal();
-        userTaskList.last.nextActive = userTaskList.last.nextActive.toLocal();
-      });
+    if (userTaskResponse.data != null) {
+      userTaskList = userTaskListFromJson(userTaskResponse.data);
+      print(userTaskList.length);
     }
 
     forEach(taskList, (task) {
@@ -170,7 +140,8 @@ class TaskRepository {
         int hours = 0;
         int minutes = 0;
         if (task.task.renewableTime > days) {
-          double totalHours = 24 * (task.task.renewableTime - days);
+          double totalHours =
+              (24 * (task.task.renewableTime - days)).toDouble();
           hours = totalHours.toInt();
           if (totalHours > hours) {
             double totalMins = 60 * (totalHours - hours);
@@ -189,40 +160,20 @@ class TaskRepository {
   }
 
   Future<UserTask> _updateUserTaskData(UserTask task) async {
-    Results res;
+    Response post;
     if (task.id != null) {
-      res = await DbConnection.query(
-        "UPDATE usertask SET lastupdate = ?, nextactive = ?, nextdeadline = ?, count = ?, complete = ?, point = ? WHERE id = ?",
-        [
-          task.lastUpdate.toUtc(),
-          task.nextActive.toUtc(),
-          task.nextdeadline.toUtc(),
-          task.count,
-          task.complete,
-          task.point,
-          task.id,
-        ],
-      );
+      post = await RestApi.instance.dio
+          .post('/usertask/updateUserTask', data: task.toJson());
+      print(post.statusCode);
     } else {
       task.id = Uuid().v4();
-      res = await DbConnection.query(
-        "INSERT INTO usertask (id, taskid, userid, lastupdate, nextactive, nextdeadline, count, complete, point) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
-        [
-          task.id,
-          task.taskId,
-          task.userId,
-          task.lastUpdate.toUtc(),
-          task.nextActive.toUtc(),
-          task.nextdeadline.toUtc(),
-          task.count,
-          task.complete,
-          task.point,
-        ],
-      );
+      post = await RestApi.instance.dio
+          .post('/usertask/insertUserTask', data: task.toJson());
     }
-    if (res != null && res.affectedRows > 0) {
+    if (post != null && post.data != null && post.statusCode == 200) {
       if (task.complete == 1) {
         await updateLeaderboardPoint(task.point);
+        await RewardRepository.instance.getActivePoint();
       }
     }
     await updateUserInfo();
@@ -230,12 +181,8 @@ class TaskRepository {
   }
 
   Future updateLeaderboardPoint(int point) async {
-    await DbConnection.query(
-      "UPDATE leaderboard SET point = point + ? WHERE userid = ? AND enddate IS NULL",
-      [
-        point,
-        AuthenticationService.verifiedUser.id,
-      ],
+    await RestApi.instance.dio.get(
+      '/leaderboard/updatePoint?userId=${AuthenticationService.verifiedUser.id}&point=$point',
     );
   }
 
@@ -298,11 +245,11 @@ class TaskRepository {
   }
 
   Future updateUserInfo() async {
-    Results res = await DbConnection.query(
-        "SELECT * FROM leaderboard WHERE enddate IS NULL AND userid = ?",
-        [AuthenticationService.verifiedUser.id]);
-    if (res.length > 0) {
-      AuthenticationService.verifiedUser.point = res.single[1];
+    var response = await RestApi.instance.dio.get(
+      '/leaderboard/byId/${AuthenticationService.verifiedUser.id}',
+    );
+    if (response.statusCode == 200) {
+      AuthenticationService.verifiedUser.point = response.data['point'];
     }
     List<UserTask> tasks = await TaskRepository.instance.getUserTasks();
     int count = 0;

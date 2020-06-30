@@ -1,11 +1,17 @@
-import 'dart:async';
-import 'dart:typed_data';
+
+import 'dart:convert';
+
+Reward rewardFromJson(String str) => Reward.fromJson(json.decode(str));
+
+String rewardToJson(Reward data) => json.encode(data.toJson());
+
+List<Reward> rewardListFromJson(List<dynamic> listOfString) =>
+    (listOfString).map((e) => Reward.fromJson(e)).toList();
 
 class Reward {
   final String id;
   final String title;
   final String imageId;
-  Completer<Uint8List> image64 = Completer();
   final int point;
   final String itemType;
   int likeCount;
@@ -15,7 +21,25 @@ class Reward {
     this.title,
     this.imageId,
     this.point,
-    this.likeCount = 112,
+    this.likeCount,
     this.itemType,
   });
+
+  factory Reward.fromJson(Map<String, dynamic> json) => Reward(
+        id: json["id"],
+        title: json["title"],
+        imageId: json["image"],
+        point: json["point"],
+        itemType: json["type"],
+        likeCount: json["likecount"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        "title": title,
+        "image": imageId,
+        "point": point,
+        "type": itemType,
+        "likecount": likeCount,
+      };
 }

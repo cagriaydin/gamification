@@ -18,14 +18,15 @@ dependencies:
   device_preview: ^0.4.4
   connectivity: ^0.4.2
   firebase_core: ^0.4.4+3
-  firebase_auth: ^0.16.0
   cloud_firestore: ^0.13.5
+  firebase_messaging: ^6.0.16
   excel: ^1.0.2
   path_provider: ^1.6.7
   url_launcher: ^5.4.7
   flutter_swiper: ^1.1.6
   icon_shadow: ^1.0.1
   confetti: ^0.5.2
+  dio: ^3.0.9
 
   get_version: ^0.2.2
   firebase_remote_config: ^0.3.0+3

@@ -13,11 +13,14 @@ User userFromJson(String str) => User.fromMap(json.decode(str));
 
 String userToJson(User data) => json.encode(data.toMap());
 
+List<User> userListFromJson(List<dynamic> listOfString) =>
+    (listOfString).map((e) => User.fromMap(e)).toList();
+
 class User extends ChangeNotifier {
   String id;
   String name;
   String branchName;
-  String branchId;
+  String branch;
   String phone;
   int code;
   String image;
@@ -40,8 +43,17 @@ class User extends ChangeNotifier {
     @required this.image,
     @required this.likedFeeds,
     @required this.deletedFeeds,
-    this.branchId,
+    this.branch,
   });
+
+  factory User.fromJson(Map<String, dynamic> json) => User(
+        id: json["id"],
+        name: json["name"],
+        phone: json["phone"],
+        branch: json["branch"],
+        code: json["code"],
+        image: json["image"],
+      );
 
   User copyWith({
     String id,
@@ -50,7 +62,7 @@ class User extends ChangeNotifier {
     int taskCount,
     int percentage,
     String branchName,
-    String branchId,
+    String branch,
     String phone,
     int code,
     String image,
@@ -64,7 +76,7 @@ class User extends ChangeNotifier {
         percentage: percentage ?? this.percentage,
         taskCount: taskCount ?? this.taskCount,
         branchName: branchName ?? this.branchName,
-        branchId: branchId ?? this.branchId,
+        branch: branch ?? this.branch,
         phone: phone ?? this.phone,
         code: code ?? this.code,
         image: image ?? this.image,
@@ -79,12 +91,13 @@ class User extends ChangeNotifier {
         percentage: json["percentage"] == null ? null : json["percentage"],
         taskCount: json["taskCount"] == null ? null : json["taskCount"],
         branchName: json["branchName"] == null ? null : json["branchName"],
-        branchId: json["branchId"] == null ? null : json["branchId"],
+        branch: json["branch"] == null ? null : json["branch"],
         phone: json["phone"] == null ? null : json["phone"],
         code: json["code"] == null ? null : json["code"],
         image: json["image"] == null ? null : json["image"],
-        likedFeeds: List<String>.from(json["likedFeeds"].map((x) => x)),
-        deletedFeeds: List<String>.from(json["deletedFeeds"].map((x) => x)),
+        likedFeeds: List<String>.from(json["likedFeeds"] ?? [].map((x) => x)),
+        deletedFeeds:
+            List<String>.from(json["deletedFeeds"] ?? [].map((x) => x)),
       );
 
   factory User.fromSnapshot(DocumentSnapshot snapshot) => User(
@@ -100,9 +113,8 @@ class User extends ChangeNotifier {
         branchName: snapshot.data["branchName"] == null
             ? null
             : snapshot.data["branchName"],
-        branchId: snapshot.data["branchId"] == null
-            ? null
-            : snapshot.data["branchId"],
+        branch:
+            snapshot.data["branch"] == null ? null : snapshot.data["branch"],
         phone: snapshot.data["phone"] == null ? null : snapshot.data["phone"],
         code: snapshot.data["code"] == null ? null : snapshot.data["code"],
         image: snapshot.data["image"] == null ? null : snapshot.data["image"],
@@ -119,7 +131,7 @@ class User extends ChangeNotifier {
         "percentage": percentage == null ? null : percentage,
         "taskCount": taskCount == null ? null : taskCount,
         "branchName": branchName == null ? null : branchName,
-        "branchId": branchId == null ? null : branchId,
+        "branch": branch == null ? null : branch,
         "phone": phone == null ? null : phone,
         "code": code == null ? null : code,
         "image": image == null ? null : image,
@@ -127,17 +139,18 @@ class User extends ChangeNotifier {
         "deletedFeeds": List<dynamic>.from(deletedFeeds.map((x) => x)),
       };
 
-  updatePoint() async {
+  Future<User> updatePoint() async {
 //    point = await RewardRepository.instance.getActivePoint();
-    var newUser = (await AuthenticationService.instance.verifyUser());
+    var newUser = (await AuthenticationService.instance.refreshAuthenticate());
     this.point = newUser.point;
     this.percentage = newUser.percentage;
     this.taskCount = newUser.taskCount;
     notifyListeners();
+    return newUser;
   }
 
   suggestionUpdate() async {
-    var newUser = (await AuthenticationService.instance.verifyUser());
+    var newUser = (await AuthenticationService.instance.refreshAuthenticate());
     this.point = newUser.point;
     notifyListeners();
   }
@@ -147,7 +160,7 @@ class User extends ChangeNotifier {
 //"id": "id",
 //"name":"",
 //"branchName":"",
-//"branchId":"",
+//"branch":"",
 //"phone":"",
 //"extraInfo":{},
 //"model": "hex",

@@ -31,7 +31,7 @@ class Image {
 
   factory Image.fromMap(Map<String, dynamic> json) => Image(
         id: json["id"],
-        base64: json["base64"],
+        base64: json["data"],
         code: json["code"],
         base64Prefix: json["base64prefix"],
         suffix: json["suffix"],
@@ -40,7 +40,7 @@ class Image {
 
   Map<String, dynamic> toMap() => {
         "id": id,
-        "base64": base64,
+        "data": base64,
         "code": code,
         "base64prefix": base64Prefix,
         "suffix": suffix,

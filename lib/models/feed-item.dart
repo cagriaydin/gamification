@@ -4,6 +4,10 @@ FeedItem feedItemFromJson(String str) => FeedItem.fromJson(json.decode(str));
 
 String feedItemToJson(FeedItem data) => json.encode(data.toJson());
 
+List<FeedItem> feedItemListFromJson(List<dynamic> listOfString) =>
+    (listOfString).map((e) => FeedItem.fromJson(e)).toList();
+
+
 class FeedItem {
   final String id;
   final String title;
@@ -29,10 +33,12 @@ class FeedItem {
         id: json["id"],
         title: json["title"],
         description: json["description"],
-        date: json["date"],
-        likeCount: json["likeCount"],
-        itemType: json["itemType"],
-        imageId: json["imageId"],
+        date: json["date"] == null
+            ? DateTime.now()
+            : DateTime.tryParse(json["date"]),
+        likeCount: json["likeCount"] ?? 0,
+        itemType: json["type"],
+        imageId: json["image"],
         url: json["url"],
       );
 
@@ -40,12 +46,14 @@ class FeedItem {
         "id": id,
         "title": title,
         "description": description,
-        "dare": date,
+        "date": iso8601string(date),
         "likeCount": likeCount,
-        "itemType": itemType,
-        "imageId": imageId,
+        "type": itemType,
+        "image": imageId,
         "url": url,
       };
+
+  String iso8601string(value) => value == null ? null : value.toIso8601String();
 }
 
 // {

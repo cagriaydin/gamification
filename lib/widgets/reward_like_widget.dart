@@ -28,36 +28,44 @@ class _LikeRewardWidgetState extends State<LikeRewardWidget> {
       children: <Widget>[
         IconButton(
           color: Color(0xFFF90A60),
-          icon: likedRewards.contains(widget.reward.id)
-              ? Icon(Icons.favorite)
-              : Icon(Icons.favorite_border),
+          icon: likedRewards.contains(widget.reward.id) ? Icon(Icons.favorite) : Icon(Icons.favorite_border),
           onPressed: () {
+            setState(
+              () {
+                if (!likedRewards.contains(widget.reward.id)) {
+                  widget.reward.likeCount++;
+                  likedRewards.add(widget.reward.id);
+                } else {
+                  likedRewards.remove(widget.reward.id);
+                  if (widget.reward.likeCount == 0) return;
+                  widget.reward.likeCount--;
+                }
+              },
+            );
             RewardRepository.instance.changeLike(widget.reward.id).then(
-                  (value) =>
-                  setState(
-                        () {
-                      if (value) {
-                        widget.reward.likeCount++;
-                      } else {
-                        if (widget.reward.likeCount == 0) return;
-                        widget.reward.likeCount--;
+                  (value) => setState(
+                    () {
+                      if (!value) {
+                        if (!likedRewards.contains(widget.reward.id)) {
+                          widget.reward.likeCount++;
+                          likedRewards.add(widget.reward.id);
+                        } else {
+                          likedRewards.remove(widget.reward.id);
+                          if (widget.reward.likeCount == 0) return;
+                          widget.reward.likeCount--;
+                        }
                       }
                     },
                   ),
-            );
+                );
           },
         ),
         Padding(
           padding: const EdgeInsets.fromLTRB(19.0, 36.0, 18, 0),
           child: Text(
-            widget.reward.likeCount != null
-                ? widget.reward.likeCount.toString()
-                : "0",
+            widget.reward.likeCount != null ? widget.reward.likeCount.toString() : "0",
             textAlign: TextAlign.center,
-            style: TextStyle(
-                color: Color(0xFFF90A60),
-                fontWeight: FontWeight.w300,
-                fontSize: 16),
+            style: TextStyle(color: Color(0xFFF90A60), fontWeight: FontWeight.w300, fontSize: 16),
           ),
         ),
       ],

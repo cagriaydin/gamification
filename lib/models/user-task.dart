@@ -7,6 +7,9 @@ UserTask userTaskFromJson(String str) => UserTask.fromJson(json.decode(str));
 
 String userTaskToJson(UserTask data) => json.encode(data.toJson());
 
+List<UserTask> userTaskListFromJson(List<dynamic> listOfString) =>
+    (listOfString).map((e) => UserTask.fromJson(e)).toList();
+
 class UserTask {
   String id;
   String taskId;
@@ -33,12 +36,18 @@ class UserTask {
 
   factory UserTask.fromJson(Map<String, dynamic> json) => UserTask(
         id: json["id"],
-        taskId: json["taskId"],
-        userId: json["userId"],
-        lastUpdate: json["lastUpdate"],
-        nextActive: json["nextActive"],
-        nextdeadline: json["nextdeadline"],
-        count: json["counter"],
+        taskId: json["taskid"],
+        userId: json["userid"],
+        lastUpdate: json["lastupdate"] == null
+            ? DateTime.now()
+            : DateTime.tryParse(json["lastupdate"]),
+        nextActive: json["nextactive"] == null
+            ? DateTime.now()
+            : DateTime.tryParse(json["nextactive"]),
+        nextdeadline: json["nextdeadline"] == null
+            ? DateTime.now()
+            : DateTime.tryParse(json["nextdeadline"]),
+        count: json["count"],
         complete: json["complete"],
         point: json["point"],
         task: json["task"] != null ? taskFromJson(json["task"]) : null,
@@ -46,16 +55,18 @@ class UserTask {
 
   Map<String, dynamic> toJson() => {
         "id": id,
-        "taskId": taskId,
-        "userId": userId,
-        "lastUpdate": lastUpdate,
-        "nextActive": nextActive,
-        "nextdeadline": nextdeadline,
-        "counter": count,
+        "taskid": taskId,
+        "userid": userId,
+        "lastupdate": iso8601string(lastUpdate),
+        "nextactive": iso8601string(nextActive),
+        "nextdeadline": iso8601string(nextdeadline),
+        "count": count,
         "complete": complete,
         "point": point,
         "task": task != null ? taskToJson(task) : null,
       };
+
+  String iso8601string(value) => value == null ? null : value.toIso8601String();
 }
 
 //{

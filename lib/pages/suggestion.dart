@@ -107,13 +107,13 @@ class _SuggestionPageState extends State<SuggestionPage> {
                                       Column(
                                         children: [
                                           Container(
-                                            width: 100,
-                                            height: 100,
-                                            child: GetCircleAvatar(
-                                              imageId:AuthenticationService.verifiedUser.image,
-                                              radius: 40,
-                                            )
-                                          ),
+                                              width: 100,
+                                              height: 100,
+                                              child: GetCircleAvatar(
+                                                imageId:AuthenticationService.verifiedUser.image,
+                                                radius: 40,
+                                              )
+                                              ),
                                           SizedBox(height: 10),
                                           Text(
                                             AuthenticationService
@@ -263,17 +263,26 @@ class _SuggestionPageState extends State<SuggestionPage> {
       if (descriptionController.text.length >= 10) {
         suggestion.title = titleController.text;
         suggestion.description = descriptionController.text;
-        await SuggestionRepository.instance.sendSuggestion(suggestion);
-        titleController.text = '';
-        descriptionController.text = '';
-        final user = context.read<User>();
-        user.suggestionUpdate();
-        return PopupHelper().showPopup(
-          context,
-          Text(
-            "Önerini bizimle paylaştığın için teşekkür ederiz !",
-          ),
-        );
+        bool success = await SuggestionRepository.instance.sendSuggestion(suggestion);
+        if (success) {
+          titleController.text = '';
+          descriptionController.text = '';
+          final user = context.read<User>();
+          user.suggestionUpdate();
+          return PopupHelper().showPopup(
+            context,
+            Text(
+              "Önerini bizimle paylaştığın için teşekkür ederiz !",
+            ),
+          );
+        } else {
+          return PopupHelper().showPopup(
+            context,
+            Text(
+              "Önerin gönderilirken bir hata oluştu, tekrar denemelisin",
+            ),
+          );
+        }
       }
       return PopupHelper().showPopup(
         context,

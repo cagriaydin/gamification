@@ -234,6 +234,8 @@ class BuildTask extends StatefulWidget {
 class _BuildTaskState extends State<BuildTask> {
   ConfettiController confettiController;
 
+  bool loading = false;
+
   @override
   void initState() {
     confettiController =
@@ -250,6 +252,12 @@ class _BuildTaskState extends State<BuildTask> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+    if (loading) {
+      return Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+
     return Stack(
       children: [
         Container(
@@ -288,7 +296,7 @@ class _BuildTaskState extends State<BuildTask> {
                       width: size.width / 2,
                       height: 20,
                       stepCount: widget.userTask.task.count,
-                      currentCount: widget.userTask.count,
+                      currentCount: widget.userTask.count ?? 0,
                     ),
                   ),
                 ],
@@ -463,17 +471,26 @@ class _BuildTaskState extends State<BuildTask> {
   }
 
   Future<void> stepComplete(BuildContext context) async {
-    if (TaskRepository.instance.canUpdate(widget.userTask)) {
-      await TaskRepository.instance.updateUserTask(widget.userTask);
-      if (widget.userTask.complete == 1) {
-        confettiController.play();
-        context.read<User>().updatePoint();
-//        await Future.delayed(Duration(milliseconds: 300));
-//        if (widget.changePointCallback != null) widget.changePointCallback();
-//        await Future.delayed(Duration(milliseconds: 1000));
-//        confettiController.stop();
-//        setState(() {});
+    try {
+      setState(() {
+        loading = true;
+      });
+      if (TaskRepository.instance.canUpdate(widget.userTask)) {
+        await TaskRepository.instance.updateUserTask(widget.userTask);
+        if (widget.userTask.complete == 1) {
+          //        confettiController.play();
+          await context.read<User>().updatePoint();
+          //        await Future.delayed(Duration(milliseconds: 300));
+          //        if (widget.changePointCallback != null) widget.changePointCallback();
+          //        await Future.delayed(Duration(milliseconds: 1000));
+          //        confettiController.stop();
+          //        setState(() {});
+        }
       }
+    } catch (e) {
+      print(e);
+    } finally {
+      loading = false;
     }
   }
 

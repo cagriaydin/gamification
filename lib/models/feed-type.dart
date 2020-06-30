@@ -9,22 +9,26 @@ FeedType feedTypeFromJson(String str) => FeedType.fromMap(json.decode(str));
 
 String feedTypeToJson(FeedType data) => json.encode(data.toMap());
 
+
+List<FeedType> feedTypeListFromJson(List<dynamic> listOfString) =>
+    (listOfString).map((e) => FeedType.fromMap(e)).toList();
+
 class FeedType {
     String id;
-    String title;
+    String name;
 
     FeedType({
         @required this.id,
-        @required this.title,
+        @required this.name,
     });
 
     factory FeedType.fromMap(Map<String, dynamic> json) => FeedType(
         id: json["id"],
-        title: json["title"],
+        name: json["name"],
     );
 
     Map<String, dynamic> toMap() => {
         "id": id,
-        "title": title,
+        "name": name,
     };
 }

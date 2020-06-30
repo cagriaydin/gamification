@@ -191,7 +191,7 @@ class BuildMyRewards extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final myRewards = context.select((UserReward value) => value.rewards);
-    return myRewards.length > 0
+    return myRewards != null && myRewards.length > 0
         ? GridView.count(
             scrollDirection: Axis.vertical,
             childAspectRatio: 90 / 165,
@@ -206,15 +206,16 @@ class BuildMyRewards extends StatelessWidget {
           )
         : Center(
             child: Padding(
-            padding: const EdgeInsets.all(24.0),
-            child: Text(
-              "Şimdilik ödülün bulunmamakta, puan toplamaya devam et!",
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontWeight: FontWeight.w300,
+              padding: const EdgeInsets.all(24.0),
+              child: Text(
+                "Şimdilik ödülün bulunmamakta, puan toplamaya devam et!",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontWeight: FontWeight.w300,
+                ),
               ),
             ),
-          ));
+          );
   }
 }
 

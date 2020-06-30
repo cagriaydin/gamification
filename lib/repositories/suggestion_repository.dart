@@ -1,9 +1,9 @@
-import 'package:mysql1/mysql1.dart';
+import 'package:dio/dio.dart';
 import 'package:uuid/uuid.dart';
 import 'package:yorglass_ik/models/suggestion.dart';
+import 'package:yorglass_ik/repositories/dio_repository.dart';
 import 'package:yorglass_ik/repositories/task-repository.dart';
 import 'package:yorglass_ik/services/authentication-service.dart';
-import 'package:yorglass_ik/services/db-connection.dart';
 
 class SuggestionRepository {
   static final SuggestionRepository _instance =
@@ -14,21 +14,12 @@ class SuggestionRepository {
   static SuggestionRepository get instance => _instance;
 
   Future<bool> hasSuggestionLimit() async {
-    Results res = await DbConnection.query(
-        "SELECT * FROM suggestion where uid = (?) and YEAR(date) = (?) and MONTH(date) = (?) and DAY(date) = (?)",
-        [
-          AuthenticationService.verifiedUser.id,
-          DateTime.now().year,
-          DateTime.now().month,
-          DateTime.now().day
-        ]);
-    if (res.length == 10) {
-      return false;
-    }
-    return true;
+    Response suggestionLimitRes =
+        await RestApi.instance.dio.get('/suggestion/hasSuggestionLimit');
+    return suggestionLimitRes.data ?? false;
   }
 
-  sendSuggestion(Suggestion suggestion) async {
+  Future<bool> sendSuggestion(Suggestion suggestion) async {
     suggestion.id = Uuid().v4();
     suggestion.uid = AuthenticationService.verifiedUser.id;
     suggestion.status = 0;
@@ -36,19 +27,17 @@ class SuggestionRepository {
     suggestion.date = DateTime.now();
     suggestion.flag = "";
 
-    await DbConnection.query(
-      'INSERT INTO suggestion (id, uid, title, description, type, status, flag, date) VALUES(?, ?, ?, ?, ?, ?, ?, ?)',
-      [
-        suggestion.id,
-        suggestion.uid,
-        suggestion.title,
-        suggestion.description,
-        suggestion.type,
-        suggestion.status,
-        suggestion.flag,
-        suggestion.date.toUtc(),
-      ],
-    );
-    await TaskRepository.instance.updateLeaderboardPoint(10);
+    Response response = await RestApi.instance.dio
+        .post('/suggestion/addSuggestion', data: suggestion.toJson());
+
+    if (response != null &&
+        response.data != null &&
+        response.statusCode == 200) {
+      await TaskRepository.instance.updateLeaderboardPoint(10);
+      return true;
+    }
+    else{
+      return false;
+    }
   }
 }

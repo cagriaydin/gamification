@@ -58,8 +58,8 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
       BranchRepository.instance.getBoardPointList(),
       BranchRepository.instance.getTopBranchPointList(),
       BranchRepository.instance.getBranchList(),
-      UserRepository.instance.getUserList(limit: limit),
-      UserRepository.instance.getUserPointList(limit: limit)
+      UserRepository.instance.getUserList(limit: limit, offset: 0),
+      UserRepository.instance.getUserPointList(limit: limit, offset: 0)
     ]);
     getMyRank();
     super.initState();
@@ -283,7 +283,7 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
                                                                         element
                                                                             .id ==
                                                                         item.userId)
-                                                                    .branchId))
+                                                                    .branch))
                                                             .name,
                                                         rank: showMyRank
                                                             ? (myRank -
@@ -384,7 +384,7 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
                                                               .branchId ==
                                                           AuthenticationService
                                                               .verifiedUser
-                                                              .branchId,
+                                                              .branch,
                                                       point: item.point,
                                                       subTitle: branchList
                                                           .singleWhere(
@@ -396,7 +396,7 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
                                                   decoration: item.branchId ==
                                                           AuthenticationService
                                                               .verifiedUser
-                                                              .branchId
+                                                              .branch
                                                       ? BoxDecoration(
                                                           color: Colors.white,
                                                           borderRadius:
@@ -441,7 +441,7 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
 
   getMyRank() async {
     List<UserLeaderBoard> userList =
-        await UserRepository.instance.getUserPointList();
+        await UserRepository.instance.getUserPointList(limit: 0, offset: 0);
 
     UserLeaderBoard user = userList.singleWhere(
         (element) => element.userId == AuthenticationService.verifiedUser.id);
