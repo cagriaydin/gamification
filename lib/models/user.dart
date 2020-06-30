@@ -46,6 +46,15 @@ class User extends ChangeNotifier {
     this.branch,
   });
 
+  factory User.fromJson(Map<String, dynamic> json) => User(
+        id: json["id"],
+        name: json["name"],
+        phone: json["phone"],
+        branch: json["branch"],
+        code: json["code"],
+        image: json["image"],
+      );
+
   User copyWith({
     String id,
     String name,
@@ -87,7 +96,8 @@ class User extends ChangeNotifier {
         code: json["code"] == null ? null : json["code"],
         image: json["image"] == null ? null : json["image"],
         likedFeeds: List<String>.from(json["likedFeeds"] ?? [].map((x) => x)),
-        deletedFeeds: List<String>.from(json["deletedFeeds"] ?? [].map((x) => x)),
+        deletedFeeds:
+            List<String>.from(json["deletedFeeds"] ?? [].map((x) => x)),
       );
 
   factory User.fromSnapshot(DocumentSnapshot snapshot) => User(
@@ -103,9 +113,8 @@ class User extends ChangeNotifier {
         branchName: snapshot.data["branchName"] == null
             ? null
             : snapshot.data["branchName"],
-        branch: snapshot.data["branch"] == null
-            ? null
-            : snapshot.data["branch"],
+        branch:
+            snapshot.data["branch"] == null ? null : snapshot.data["branch"],
         phone: snapshot.data["phone"] == null ? null : snapshot.data["phone"],
         code: snapshot.data["code"] == null ? null : snapshot.data["code"],
         image: snapshot.data["image"] == null ? null : snapshot.data["image"],

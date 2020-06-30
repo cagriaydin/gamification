@@ -1,7 +1,9 @@
 import 'dart:convert';
 
+import 'package:dio/dio.dart';
 import 'package:mysql1/mysql1.dart';
 import 'package:yorglass_ik/models/image.dart';
+import 'package:yorglass_ik/repositories/dio_repository.dart';
 import 'package:yorglass_ik/services/db-connection.dart';
 
 class ImageRepository {
@@ -14,26 +16,18 @@ class ImageRepository {
   Map<String, Image> storedImage = {};
 
   Future<Image> getImage(String id) async {
-//    CachedNetworkImage(imageUrl: '');
-//    ImageStreamCompleter imageStreamCompleter =
-//        MyImageCache.instance.putIfAbsent(id, () {
-//        });
     try {
       if (containsKey(id)) {
         return storedImage[id];
       } else {
-        Results res =
-            await DbConnection.query('SELECT * FROM images WHERE id = ?', [id]);
-        if (res.length > 0) {
-          Image data = Image(
-              id: res.single[0],
-              base64: res.single[4].toString(),
-              code: res.single[1],
-              base64Prefix: res.single[3],
-              suffix: res.single[2],
-              alt: res.single[5]);
-          data.decodedImage = Base64Codec().decode(data.base64);
-          storedImage[data.id] = data;
+        Image image;
+        Response imageRes =
+            await RestApi.instance.dio.get('/image/getImageById?id=' + id);
+
+        if (imageRes.data != null) {
+          image = Image.fromMap(imageRes.data);
+          image.decodedImage = Base64Codec().decode(image.base64);
+          storedImage[image.id] = image;
         }
       }
     } catch (e) {
@@ -45,17 +39,13 @@ class ImageRepository {
 
   Future<String> getImage64(String id) async {
     if (!containsKey(id)) {
-      Results res =
-          await DbConnection.query('SELECT * FROM images WHERE id = ?', [id]);
-      if (res.length > 0) {
-        Image data = Image(
-            id: res.single[0],
-            base64: res.single[4].toString(),
-            code: res.single[1],
-            base64Prefix: res.single[3],
-            suffix: res.single[2],
-            alt: res.single[5]);
-        storedImage[data.id] = data;
+      Image image;
+      Response imageRes =
+          await RestApi.instance.dio.get('/image/getImageById?id=' + id);
+
+      if (imageRes.data != null) {
+        image = Image.fromMap(imageRes.data);
+        storedImage[image.id] = image;
       }
     }
     return storedImage[id].base64;

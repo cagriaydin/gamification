@@ -16,7 +16,7 @@ class RestApi {
           'Authorization', () => 'Bearer ' + AuthenticationService?.verifiedAuth?.token);
     }
     BaseOptions options = new BaseOptions(
-      baseUrl: baseUrl,
+      baseUrl: localUrl,
       connectTimeout: 10000,
       headers: headers,
       receiveTimeout: 10000,
