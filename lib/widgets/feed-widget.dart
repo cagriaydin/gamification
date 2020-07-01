@@ -154,6 +154,7 @@ class _LikeWidgetState extends State<LikeWidget> {
       right: 0,
       bottom: 5,
       child: Stack(
+        alignment: Alignment.topCenter,
         children: <Widget>[
           IconButton(
             color: Color(0xFFF90A60),
