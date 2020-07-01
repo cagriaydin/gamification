@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:dio/dio.dart';
+import 'package:uuid/uuid.dart';
 import 'package:yorglass_ik/models/buyed-reward.dart';
 import 'package:yorglass_ik/models/reward-like-dto.dart';
 import 'package:yorglass_ik/models/reward-type.dart';
@@ -139,6 +140,7 @@ class RewardRepository {
       }
     } else {
       RewardLikeDTO reward = RewardLikeDTO(
+          id: Uuid().v4(),
           userid: userid,
           rewardid: rewardid,
           date: DateTime.now()
