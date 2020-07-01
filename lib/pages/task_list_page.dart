@@ -490,7 +490,9 @@ class _BuildTaskState extends State<BuildTask> {
     } catch (e) {
       print(e);
     } finally {
+      setState(() {
       loading = false;
+      });
     }
   }
 
