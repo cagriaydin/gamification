@@ -268,7 +268,7 @@ class _SuggestionPageState extends State<SuggestionPage> {
           titleController.text = '';
           descriptionController.text = '';
           final user = context.read<User>();
-          user.suggestionUpdate();
+          user.updatePoint();
           return PopupHelper().showPopup(
             context,
             Text(

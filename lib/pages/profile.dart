@@ -3,7 +3,6 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:yorglass_ik/models/content_option.dart';
-import 'package:yorglass_ik/models/leader_board_item.dart';
 import 'package:yorglass_ik/models/reward.dart';
 import 'package:yorglass_ik/models/user-reward.dart';
 import 'package:yorglass_ik/models/user.dart';
@@ -133,7 +132,7 @@ class _BuildProfileTabsState extends State<BuildProfileTabs> {
             physics: NeverScrollableScrollPhysics(),
             controller: pageController,
             children: [
-              BuildLeadersTab(leaderListFeature: leaderListFeature),
+              BuildLeadersTab(),
               SingleChildScrollView(
                 child: Transform.scale(
                   scale: size.height < 600 ? .7 : 1,
@@ -182,71 +181,36 @@ class _BuildProfileTabsState extends State<BuildProfileTabs> {
   }
 }
 
-class BuildLeadersTab extends StatefulWidget {
-  final Future<List<User>> leaderListFeature;
-
-  BuildLeadersTab({this.leaderListFeature});
-
-  @override
-  _BuildLeadersTabState createState() => _BuildLeadersTabState();
-}
-
-class _BuildLeadersTabState extends State<BuildLeadersTab>
-    with AutomaticKeepAliveClientMixin {
-  List<User> initialLeaders;
-
+class BuildLeadersTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final select = context.select((User value) => value.leaderBoardItemList);
     return Column(
       mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         Expanded(
-          child: FutureBuilder<List<User>>(
-            future: widget.leaderListFeature,
-            builder:
-                (BuildContext context, AsyncSnapshot<List<User>> snapshot) {
-              if (snapshot.hasData) {
-                return SingleChildScrollView(
+          child: select == null
+              ? Center(
+                  child: CircularProgressIndicator(),
+                )
+              : SingleChildScrollView(
                   child: GestureDetector(
                     onTap: () async {
-                      var push = await Navigator.push(
+                      await Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (BuildContext context) {
-                            BranchRepository.instance;
-                            List<LeaderBoardItem> newList =
-                                (initialLeaders ?? snapshot.data)
-                                    .map((e) => LeaderBoardItem(
-                                          imageId: e.image,
-                                          point: e.point,
-                                          name: e.name,
-                                          branchName: e.branchName,
-                                        ))
-                                    .toList();
-                            return LeaderBoardPage(leaderBoardUsers: newList);
+                            return LeaderBoardPage(leaderBoardUsers: select);
                           },
                         ),
                       );
-                      if (push != null) {
-                        if (mounted) {
-                          setState(() {
-                            initialLeaders = push;
-                          });
-                        }
-                      }
                     },
                     child: Column(
                       children: [
                         LeaderBoard(
                           isLeaderBoard: true,
-                          list: (initialLeaders ?? snapshot.data)
-                              .map((e) => LeaderBoardItem(
-                                    imageId: e.image,
-                                    point: e.point,
-                                    name: e.name,
-                                  ))
-                              .toList(),
+                          list: select,
                         ),
                         OutlineButton(
                           child: Text(
@@ -266,52 +230,25 @@ class _BuildLeadersTabState extends State<BuildLeadersTab>
                               borderRadius:
                                   BorderRadius.all(Radius.circular(20))),
                           onPressed: () async {
-                            var push = await Navigator.push(
+                            await Navigator.push(
                               context,
                               MaterialPageRoute(
                                 builder: (BuildContext context) {
-                                  BranchRepository.instance;
-                                  List<LeaderBoardItem> newList =
-                                      (initialLeaders ?? snapshot.data)
-                                          .map((e) => LeaderBoardItem(
-                                                imageId: e.image,
-                                                point: e.point,
-                                                name: e.name,
-                                                branchName: e.branchName,
-                                              ))
-                                          .toList();
                                   return LeaderBoardPage(
-                                      leaderBoardUsers: newList);
+                                      leaderBoardUsers: select);
                                 },
                               ),
                             );
-                            if (push != null) {
-                              if (mounted) {
-                                setState(() {
-                                  initialLeaders = push;
-                                });
-                              }
-                            }
                           },
                         ),
                       ],
                     ),
                   ),
-                );
-              } else {
-                return Center(
-                  child: CircularProgressIndicator(),
-                );
-              }
-            },
-          ),
+                ),
         ),
       ],
     );
   }
-
-  @override
-  bool get wantKeepAlive => true;
 }
 
 class BuildProfileInfo extends StatelessWidget {

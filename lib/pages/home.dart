@@ -30,6 +30,7 @@ class _HomePageState extends State<HomePage> {
     drawerController = GlobalKey<CustomDrawerState>();
     handleRemoteConfig(context);
     handleFCM();
+    AuthenticationService.verifiedUser.updatePoint();
     super.initState();
   }
 

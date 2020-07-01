@@ -7,6 +7,8 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:meta/meta.dart';
+import 'package:yorglass_ik/models/leader_board_item.dart';
+import 'package:yorglass_ik/repositories/user_repository.dart';
 import 'package:yorglass_ik/services/authentication-service.dart';
 
 User userFromJson(String str) => User.fromMap(json.decode(str));
@@ -30,6 +32,8 @@ class User extends ChangeNotifier {
   int point;
   List<String> likedFeeds;
   List<String> deletedFeeds;
+
+  List<LeaderBoardItem> leaderBoardItemList;
 
   User({
     this.id,
@@ -141,18 +145,23 @@ class User extends ChangeNotifier {
 
   Future<User> updatePoint() async {
 //    point = await RewardRepository.instance.getActivePoint();
+    UserRepository.instance.getTopUserPointList().then((value) {
+      leaderBoardItemList = value
+          .map((e) => LeaderBoardItem(
+                imageId: e.image,
+                point: e.point,
+                name: e.name,
+                branchName: e.branchName,
+              ))
+          .toList();
+      notifyListeners();
+    });
     var newUser = (await AuthenticationService.instance.refreshAuthenticate());
     this.point = newUser.point;
     this.percentage = newUser.percentage;
     this.taskCount = newUser.taskCount;
     notifyListeners();
     return newUser;
-  }
-
-  suggestionUpdate() async {
-    var newUser = (await AuthenticationService.instance.refreshAuthenticate());
-    this.point = newUser.point;
-    notifyListeners();
   }
 }
 
