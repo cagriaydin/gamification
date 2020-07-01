@@ -47,7 +47,6 @@ class CustomDrawerState extends State<CustomDrawer>
 
   @override
   void dispose() {
-    print('CustomDrawerState disposed');
     animationController.dispose();
     super.dispose();
   }
@@ -65,7 +64,6 @@ class CustomDrawerState extends State<CustomDrawer>
           child: widget.bodyBuilder,
           builder: (BuildContext context, Widget child) {
             final slide = maxSlide * animationController.value;
-//            print(animationController.value);
             final scale = 1 - (animationController.value * .3);
             return Stack(
               fit: StackFit.expand,
@@ -123,8 +121,6 @@ class CustomDrawerState extends State<CustomDrawer>
   }
 
   void onHorizontalDragStart(DragStartDetails details) {
-//    print('dx ' + details.globalPosition.dx.toString());
-//    print('dy ' + details.globalPosition.dy.toString());
 
     bool isDragOpenFromLeft = animationController.isDismissed &&
         details.globalPosition.dx < Offset.zero.dx + 50;
@@ -135,10 +131,7 @@ class CustomDrawerState extends State<CustomDrawer>
   }
 
   void onHorizontalDragUpdate(DragUpdateDetails details) {
-//    print(_canBeDragged);
-//    print(maxSlide);
     if (_canBeDragged) {
-//      print('details.primaryDelta' + details.primaryDelta.toString());
       double delta = details.primaryDelta / maxSlide;
       animationController.value += delta;
     }

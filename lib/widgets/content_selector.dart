@@ -242,6 +242,5 @@ class _ContentSelectorState extends State<ContentSelector>
     setState(() {
       isScrollable = scrollController.position.maxScrollExtent == 0;
     });
-    print(scrollController.position.maxScrollExtent);
   }
 }

@@ -36,7 +36,6 @@ class GetCircleAvatar extends StatelessWidget {
                   : MemoryImage(snapshot.data.decodedImage),
             );
           } catch (e) {
-            print(e);
             return CircleAvatar(
               radius: radius ?? 40,
               backgroundImage: AssetImage("assets/default-profile.png"),

@@ -1,10 +1,8 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
-import 'package:mysql1/mysql1.dart';
 import 'package:yorglass_ik/models/image.dart';
 import 'package:yorglass_ik/repositories/dio_repository.dart';
-import 'package:yorglass_ik/services/db-connection.dart';
 
 class ImageRepository {
   static final ImageRepository _instance =

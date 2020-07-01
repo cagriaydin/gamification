@@ -224,19 +224,6 @@ class FlagAvatar extends StatelessWidget {
     return EdgeInsets.fromLTRB(8, 8, 8, 64);
   }
 
-//  Object backgroundImage() {
-//    try {
-//      return imageUrl == null
-//          ? (image64 == null
-//              ? AssetImage("assets/default-profile.png")
-//              : MemoryImage(image64))
-//          : MemoryImage(base64.decode(imageUrl));
-//    } catch (e) {
-//      print(e);
-//      return AssetImage("assets/default-profile.png");
-//    }
-//  }
-
   double getRadius(size) {
     double currentSize = (size.height < 700 || size.width < 400) ? 90 : 70;
     if (rank == 1) {

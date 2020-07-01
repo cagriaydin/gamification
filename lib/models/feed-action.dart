@@ -24,14 +24,14 @@ class FeedAction {
   String userid;
 
   factory FeedAction.fromJson(Map<String, dynamic> json) => FeedAction(
-        feedid: json["feedId"],
+        feedid: json["feedid"],
         operation: json["operation"],
-        userid: json["userId"],
+        userid: json["userid"],
       );
 
   Map<String, dynamic> toJson() => {
-        "feedId": feedid,
+        "feedid": feedid,
         "operation": operation,
-        "userId": userid,
+        "userid": userid,
       };
 }

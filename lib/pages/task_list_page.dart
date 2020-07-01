@@ -50,11 +50,6 @@ class _TaskListPageState extends State<TaskListPage> {
 
   void scrollControllerListener() {
     if (controller.hasClients) {
-//      print('**********************************************');
-//      print(controller.offset);
-//      print(controller.position.activity.isScrolling);
-//      print(controller.position.userScrollDirection == ScrollDirection.forward);
-//      print(controller.offset >= 300);
       if (controller.position.userScrollDirection == ScrollDirection.reverse &&
           controller.offset >= 400) {
         if (crossFade.value != CrossFadeState.showSecond) {

@@ -41,7 +41,6 @@ class TaskRepository {
     List<UserTask> userTaskList = [];
     if (userTaskResponse.data != null) {
       userTaskList = userTaskListFromJson(userTaskResponse.data);
-      print(userTaskList.length);
     }
 
     forEach(taskList, (task) {
@@ -164,7 +163,6 @@ class TaskRepository {
     if (task.id != null) {
       post = await RestApi.instance.dio
           .post('/usertask/updateUserTask', data: task.toJson());
-      print(post.statusCode);
     } else {
       task.id = Uuid().v4();
       post = await RestApi.instance.dio

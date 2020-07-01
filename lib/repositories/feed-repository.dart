@@ -1,12 +1,11 @@
 import 'dart:async';
 
-import 'package:mysql1/mysql1.dart';
 import 'package:rxdart/subjects.dart';
+import 'package:uuid/uuid.dart';
 import 'package:yorglass_ik/models/feed-item.dart';
 import 'package:yorglass_ik/models/feed-type.dart';
 import 'package:yorglass_ik/repositories/dio_repository.dart';
 import 'package:yorglass_ik/services/authentication-service.dart';
-import 'package:yorglass_ik/services/db-connection.dart';
 
 class FeedRepository {
   static final FeedRepository _instance = FeedRepository._privateConstructor();
@@ -60,7 +59,8 @@ class FeedRepository {
         return updateLike.statusCode == 200;
       }
     } else {
-      var future = await RestApi.instance.dio.get('/feed_action/add?userId=${AuthenticationService.verifiedUser.id}&feedId=$id&operation=1');
+      var feedActionId = Uuid().v4();
+      var future = await RestApi.instance.dio.get('/feed_action/add?id=$feedActionId&userId=${AuthenticationService.verifiedUser.id}&feedId=$id&operation=1');
       if (future.statusCode == 200) {
         var updateLike = await RestApi.instance.dio.get('/feed/updateLikeCount?id=$id&value=1');
         return updateLike.statusCode == 200;

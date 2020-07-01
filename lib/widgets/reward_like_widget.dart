@@ -24,7 +24,7 @@ class _LikeRewardWidgetState extends State<LikeRewardWidget> {
   Widget build(BuildContext context) {
     final likedRewards = context.select((UserReward userReward) => userReward.liked);
     return Stack(
-      alignment: Alignment.center,
+      alignment: Alignment.topCenter,
       children: <Widget>[
         IconButton(
           color: Color(0xFFF90A60),

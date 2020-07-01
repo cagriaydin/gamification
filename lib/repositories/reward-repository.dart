@@ -1,9 +1,6 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:mysql1/mysql1.dart';
 import 'package:yorglass_ik/models/buyed-reward.dart';
 import 'package:yorglass_ik/models/reward-like-dto.dart';
 import 'package:yorglass_ik/models/reward-type.dart';
@@ -12,7 +9,6 @@ import 'package:yorglass_ik/models/user-reward-dto.dart';
 import 'package:yorglass_ik/models/user-reward.dart';
 import 'package:yorglass_ik/repositories/task-repository.dart';
 import 'package:yorglass_ik/services/authentication-service.dart';
-import 'package:yorglass_ik/services/db-connection.dart';
 import 'package:yorglass_ik/repositories/dio_repository.dart';
 
 class RewardRepository {

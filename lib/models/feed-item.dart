@@ -36,7 +36,7 @@ class FeedItem {
         date: json["date"] == null
             ? DateTime.now()
             : DateTime.tryParse(json["date"]),
-        likeCount: json["likeCount"] ?? 0,
+        likeCount: json["likecount"] ?? 0,
         itemType: json["type"],
         imageId: json["image"],
         url: json["url"],
@@ -47,7 +47,7 @@ class FeedItem {
         "title": title,
         "description": description,
         "date": iso8601string(date),
-        "likeCount": likeCount,
+        "likecount": likeCount,
         "type": itemType,
         "image": imageId,
         "url": url,
