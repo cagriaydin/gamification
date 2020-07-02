@@ -145,6 +145,16 @@ class User extends ChangeNotifier {
 
   Future<User> updatePoint() async {
 //    point = await RewardRepository.instance.getActivePoint();
+    getTopUserPointListAndNotify();
+    var newUser = (await AuthenticationService.instance.refreshAuthenticate());
+    this.point = newUser.point;
+    this.percentage = newUser.percentage;
+    this.taskCount = newUser.taskCount;
+    notifyListeners();
+    return newUser;
+  }
+
+  void getTopUserPointListAndNotify() {
     UserRepository.instance.getTopUserPointList().then((value) {
       leaderBoardItemList = value
           .map((e) => LeaderBoardItem(
@@ -156,12 +166,6 @@ class User extends ChangeNotifier {
           .toList();
       notifyListeners();
     });
-    var newUser = (await AuthenticationService.instance.refreshAuthenticate());
-    this.point = newUser.point;
-    this.percentage = newUser.percentage;
-    this.taskCount = newUser.taskCount;
-    notifyListeners();
-    return newUser;
   }
 }
 

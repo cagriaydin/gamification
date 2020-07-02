@@ -86,6 +86,7 @@ class UserRepository {
         user.likedFeeds = likedFeeds;
         user.deletedFeeds = deletedFeeds;
       }
+      user.getTopUserPointListAndNotify();
       return user;
     } else {
       return null;
