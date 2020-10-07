@@ -1,24 +1,18 @@
-# gamification
+# Gamification
 
+Solving employee engagement problems with gamification.
 
+<img src="https://github.com/cagriaydin/gamification/raw/master/screenshot.png" width="750">
 
-## Changing App icon
+## Getting Started
 
-First change `assets/app_icon.png` than run following command
+This project is a starting point for a Flutter application.
 
-    flutter clean
+A few resources to get you started if this is your first Flutter project:
 
-    flutter pub get
-    flutter packages get
-    
-    flutter pub run flutter_launcher_icons:main
+- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
+- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
 
-## Changing Splash icon
-First change `assets/splash_icon.png` than run following command
-    
-    flutter clean
-
-    flutter pub get
-    flutter packages get
-    
-    flutter pub pub run flutter_native_splash:create
+For help getting started with Flutter, view our
+[online documentation](https://flutter.dev/docs), which offers tutorials,
+samples, guidance on mobile development, and a full API reference.
